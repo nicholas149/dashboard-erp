@@ -187,8 +187,8 @@ input[type="date"].df:focus{border-color:var(--gold)}
     <div class="ni a" data-s="estoque"><span class="ni-i">▦</span>Estoque</div>
     <div class="ni" data-s="ret"><span class="ni-i">⟳</span>Retornáveis</div>
     <div class="ni" data-s="frota"><span class="ni-i">◬</span>Frota & Combustível</div>
-    <div class="ni" data-s="vendas"><span class="ni-i">◈</span>Vendas</div>
-    <div class="ni" data-s="overview"><span class="ni-i">◎</span>Visão Geral</div>
+    <div class="ni" data-s="vendas" style="display:none"><span class="ni-i">◈</span>Vendas</div>
+    <div class="ni" data-s="overview" style="display:none"><span class="ni-i">◎</span>Visão Geral</div>
   </div>
   <div class="sb-ft">Harden Cervejaria © 2025</div>
 </aside>
@@ -292,7 +292,8 @@ input[type="date"].df:focus{border-color:var(--gold)}
   <div class="kr c5" id="kF"></div>
   <div class="st">
     <div class="stb a" data-sub="f-ab">Abastecimentos</div>
-    <div class="stb" data-sub="f-cons">Análise de Consumo</div>
+    <div class="stb" data-sub="f-anal">Análise de Consumo</div>
+    <div class="stb" data-sub="f-veic">Veículos</div>
     <div class="stb" data-sub="f-chart">Gráficos</div>
     <div class="stb" data-sub="f-dados">Dados da Frota</div>
   </div>
@@ -300,19 +301,36 @@ input[type="date"].df:focus{border-color:var(--gold)}
     <div class="sb-f"><input class="si" placeholder="Buscar abastecimento…" oninput="ft('tFA',this.value,'cFA')"></div>
     <div class="pn"><div class="pn-h">Registros de Abastecimento <span class="bdg" id="cFA"></span></div><div class="tw tall" id="tFA"></div></div>
   </div>
-  <div class="sc" id="f-cons">
+  <div class="sc" id="f-anal">
+    <div class="sb-f">
+      <span class="df-l">Veículo:</span><select class="sf" id="fFV" onchange="rFrotaAnal()"><option value="">Todos</option></select>
+      <span class="df-l" style="margin-left:6px">De:</span><input type="date" class="df" id="fFDI" onchange="rFrotaAnal()">
+      <span class="df-l" style="margin-left:6px">Até:</span><input type="date" class="df" id="fFDF" onchange="rFrotaAnal()">
+      <button class="btn-r" style="margin-left:6px" onclick="document.getElementById('fFV').value='';document.getElementById('fFDI').value='';document.getElementById('fFDF').value='';rFrotaAnal()">Limpar</button>
+    </div>
+    <div class="kr c4" id="kFA"></div>
+    <div class="pn"><div class="pn-h">Consumo Médio por Veículo</div><div class="tw" id="tFAnal"></div></div>
+    <div class="g2">
+      <div class="pn"><div class="pn-h">Consumo (L) por Abastecimento</div><div class="cw lg"><canvas id="chFAL"></canvas></div></div>
+      <div class="pn"><div class="pn-h">KM/L por Abastecimento</div><div class="cw lg"><canvas id="chFAKML"></canvas></div></div>
+    </div>
+    <div class="pn"><div class="pn-h">Resumo Semanal</div><div class="tw" id="tFSem"></div></div>
+    <div class="pn"><div class="pn-h">Resumo Mensal</div><div class="tw" id="tFMes"></div></div>
+    <div class="g2">
+      <div class="pn"><div class="pn-h">Custo por KM (R$/km)</div><div class="cw"><canvas id="chFCKM"></canvas></div></div>
+      <div class="pn"><div class="pn-h">Autonomia Estimada (KM por Tanque)</div><div class="cw"><canvas id="chFAut"></canvas></div></div>
+    </div>
+  </div>
+  <div class="sc" id="f-veic">
     <div class="pn"><div class="pn-h">Veículos</div><div class="vg" id="gF"></div></div>
     <div class="pn"><div class="pn-h">Comparativo de Consumo por Veículo</div><div class="tw" id="tFC"></div></div>
   </div>
   <div class="sc" id="f-chart">
     <div class="g2">
       <div class="pn"><div class="pn-h">Consumo por Veículo (L)</div><div class="cw"><canvas id="chFC"></canvas></div></div>
-      <div class="pn"><div class="pn-h">KM/L Médio por Veículo</div><div class="cw"><canvas id="chFKML"></canvas></div></div>
-    </div>
-    <div class="g2">
       <div class="pn"><div class="pn-h">Consumo por Tipo de Veículo</div><div class="cw"><canvas id="chFTipo"></canvas></div></div>
-      <div class="pn"><div class="pn-h">Abastecimento por Veículo ao Longo do Tempo</div><div class="cw lg"><canvas id="chFTime"></canvas></div></div>
     </div>
+    <div class="pn"><div class="pn-h">Abastecimento por Veículo ao Longo do Tempo</div><div class="cw lg"><canvas id="chFTime"></canvas></div></div>
   </div>
   <div class="sc" id="f-dados"><div class="pn"><div class="tw" id="tFD"></div></div></div>
 </section>
@@ -504,8 +522,8 @@ function rEstoque(){
   const cats=[...new Set(est.map(r=>(r.categoria||'').trim()).filter(Boolean))];
   document.getElementById('fEC').innerHTML='<option value="">Todas Categorias</option>'+cats.map(c=>`<option value="${c}">${c}</option>`).join('');
 
-  const eCols=[{l:'Produto'},{l:'SKU'},{l:'Categoria'},{l:'Entradas',t:'n',f:'n'},{l:'Saídas',t:'n',f:'n'},{l:'Saldo',t:'n',f:'n',color:true}];
-  mt('tEP',eCols,Object.entries(pm).map(([pr,d])=>[pr,d.sku,d.cat,d.e,d.s,d.e-d.s]).sort((a,b)=>b[5]-a[5]));
+  const eCols=[{l:'Produto'},{l:'Saldo',t:'n',f:'n',color:true}];
+  mt('tEP',eCols,Object.entries(pm).map(([pr,d])=>[pr,d.e-d.s]).sort((a,b)=>b[1]-a[1]));
   document.getElementById('cEP').textContent=Object.keys(pm).length+' registros';
 
   // Movimentações — sorted by date descending
@@ -518,15 +536,16 @@ function rEstoque(){
   const top10=Object.entries(pm).map(([pr,d])=>[pr,d.e-d.s]).sort((a,b)=>b[1]-a[1]).slice(0,10);
   mk('chET',{type:'bar',data:{labels:top10.map(x=>x[0].length>20?x[0].slice(0,20)+'…':x[0]),datasets:[{data:top10.map(x=>x[1]),backgroundColor:'#059669',borderRadius:3,barPercentage:.7,categoryPercentage:.8}]},options:{indexAxis:'y',scales:{x:{},y:{}},plugins:{legend:{display:false}}}});
 
-  // Compostos — calculate quantity as (comp entries+exits + parent entries+exits / fator)
+  // Compostos — stock = own estoque entries + parent estoque / fator
   const comp=prod.filter(x=>x.sku_pai&&x.sku_pai.trim()!=='');
-  const skuN={};prod.forEach(x=>{skuN[x.sku]=x.nome_canonico||x.sku});
+  const skuN={};prod.forEach(x=>{skuN[x.sku.trim()]=x.nome_canonico||x.sku});
   const skuM={};est.forEach(r=>{const s=(r.sku||'').trim();if(!skuM[s])skuM[s]={e:0,s:0};skuM[s].e+=p(r.qtd_entrada);skuM[s].s+=p(r.qtd_saida)});
-  mt('tECo',[{l:'SKU'},{l:'Produto'},{l:'SKU Pai'},{l:'Produto Pai'},{l:'Fator',t:'n',f:'n1'},{l:'Qtd Composto',t:'n',f:'n1'},{l:'Qtd Pai (conv.)',t:'n',f:'n1'},{l:'Total',t:'n',f:'n1',color:true}],comp.map(x=>{
-    const f=p(x.fator_conversao);const cs=(skuM[x.sku]||{e:0,s:0});const ps=(skuM[(x.sku_pai||'').trim()]||{e:0,s:0});
+  mt('tECo',[{l:'Produto'},{l:'Produto Pai'},{l:'Fator',t:'n',f:'n1'},{l:'Estoque Próprio',t:'n',f:'n1'},{l:'Estoque Pai (÷fator)',t:'n',f:'n1'},{l:'Total',t:'n',f:'n1',color:true}],comp.map(x=>{
+    const f=p(x.fator_conversao);const sku=x.sku.trim();const skuPai=(x.sku_pai||'').trim();
+    const cs=(skuM[sku]||{e:0,s:0});const ps=(skuM[skuPai]||{e:0,s:0});
     const qComp=cs.e-cs.s;const qPai=f>0?(ps.e-ps.s)/f:0;
-    return[x.sku,x.nome_canonico,x.sku_pai,skuN[(x.sku_pai||'').trim()]||x.sku_pai,f,qComp,qPai,qComp+qPai]
-  }));
+    return[x.nome_canonico,skuN[skuPai]||skuPai,f,qComp,qPai,qComp+qPai]
+  }).sort((a,b)=>b[5]-a[5]));
 }
 
 /* ---- RETORNÁVEIS ---- */
@@ -661,6 +680,175 @@ function rFrota(){
   mk('chFTime',{type:'bar',data:{labels:dates,datasets:dsByPlaca},options:{scales:{x:{stacked:true},y:{stacked:true}},plugins:{legend:{position:'top'}}}});
 
   mt('tFD',[{l:'Placa'},{l:'Modelo'},{l:'Tipo'},{l:'Motorista'},{l:'Consumo Ref.'},{l:'KM Atual',t:'n',f:'n'},{l:'Cap. Tanque',t:'n',f:'n'}],fr.map(v=>{const pl=(v.placa||'').trim();return[pl,v.modelo,v.tipo,v.motorista_fixo||'—',v.consumo_medio_ref,kmM[pl]||p(v.km_atual),p(v.capacidade_tanque)]}));
+
+  // Populate vehicle filter for Análise de Consumo
+  const fFV=document.getElementById('fFV');
+  if(fFV){
+    const pls=[...new Set(saiT.map(r=>(r.placa||'').trim()).filter(Boolean))].sort();
+    fFV.innerHTML='<option value="">Todos</option>'+pls.map(pl=>`<option value="${pl}">${pl}</option>`).join('');
+  }
+  rFrotaAnal();
+}
+
+/* ---- FROTA: ANÁLISE DE CONSUMO ---- */
+function rFrotaAnal(){
+  const ab=D.abastecimento||[],fr=D.frota||[];
+  const selV=document.getElementById('fFV')?.value||'';
+  const dtI=document.getElementById('fFDI')?.value||'';
+  const dtF=document.getElementById('fFDF')?.value||'';
+
+  // Filter saídas (actual refuels)
+  let sai=ab.filter(r=>(r.tipo_mov||'').toLowerCase().includes('sa'));
+  if(selV)sai=sai.filter(r=>(r.placa||'').trim()===selV);
+  if(dtI||dtF){
+    const di=dtI?dtI.replace(/-/g,''):'00000000';
+    const df=dtF?dtF.replace(/-/g,''):'99999999';
+    sai=sai.filter(r=>{const dk=dK(r.data);return dk>=di&&dk<=df});
+  }
+
+  // Build frota baseline KM map
+  const frKm={};fr.forEach(v=>{frKm[(v.placa||'').trim()]=p(v.km_atual)});
+  const frCap={};fr.forEach(v=>{frCap[(v.placa||'').trim()]=p(v.capacidade_tanque)});
+  const frRef={};fr.forEach(v=>{frRef[(v.placa||'').trim()]=p(v.consumo_medio_ref)});
+  const frMod={};fr.forEach(v=>{frMod[(v.placa||'').trim()]=v.modelo||''});
+
+  // Sort by placa then date then km for consecutive calculation
+  const sorted=sai.slice().sort((a,b)=>{
+    const pa=(a.placa||'').trim(),pb=(b.placa||'').trim();
+    if(pa!==pb)return pa.localeCompare(pb);
+    const da=dK(a.data),db=dK(b.data);
+    if(da!==db)return da.localeCompare(db);
+    return p(a.km_atual)-p(b.km_atual);
+  });
+
+  // Calculate km_percorridos from consecutive records per vehicle
+  const byPlaca={};sorted.forEach(r=>{
+    const pl=(r.placa||'').trim();if(!pl)return;
+    if(!byPlaca[pl])byPlaca[pl]=[];
+    byPlaca[pl].push(r);
+  });
+
+  // Enrich records with computed km_perc
+  const enriched=[];
+  Object.entries(byPlaca).forEach(([pl,recs])=>{
+    recs.forEach((r,i)=>{
+      const lit=p(r.litros);const km=p(r.km_atual);const cost=p(r.valor_total);
+      let kmPerc=p(r.km_percorridos);
+      if(kmPerc<=0&&i>0){
+        const prevKm=p(recs[i-1].km_atual);
+        if(km>0&&prevKm>0)kmPerc=km-prevKm;
+      }
+      if(kmPerc<=0&&i===0&&frKm[pl]>0&&km>0&&km>frKm[pl]){
+        kmPerc=km-frKm[pl];
+      }
+      const kml=kmPerc>0&&lit>0?kmPerc/lit:0;
+      const custoKm=kmPerc>0&&cost>0?cost/kmPerc:0;
+      enriched.push({pl,data:r.data,lit,km,kmPerc,kml,cost,custoKm,mot:r.motorista||'—'});
+    });
+  });
+
+  // KPIs
+  const totLit=enriched.reduce((s,r)=>s+r.lit,0);
+  const totKm=enriched.reduce((s,r)=>s+r.kmPerc,0);
+  const totCost=enriched.reduce((s,r)=>s+r.cost,0);
+  const withKml=enriched.filter(r=>r.kml>0);
+  const avgKml=withKml.length>0?withKml.reduce((s,r)=>s+r.kml,0)/withKml.length:0;
+  const avgCustoKm=totKm>0?totCost/totKm:0;
+  kpi('kFA',[
+    {l:'Total Litros',v:fN(totLit,1),c:'go',s:enriched.length+' abastecimentos'},
+    {l:'KM Percorridos',v:totKm>0?fN(totKm):'—',c:'bl',s:totKm>0?'':'sem dados de KM'},
+    {l:'Média KM/L',v:avgKml>0?fN(avgKml,1):'—',c:'gr',s:avgKml>0?withKml.length+' registros c/ KM':'aguardando dados'},
+    {l:'Custo por KM',v:avgCustoKm>0?fR(avgCustoKm):'—',c:'re',s:avgCustoKm>0?'R$/km':'aguardando dados'}
+  ]);
+
+  // Table: Consumo médio por veículo
+  const vAgg={};enriched.forEach(r=>{
+    if(!vAgg[r.pl])vAgg[r.pl]={lit:0,km:0,cost:0,cnt:0,kmlS:0,kmlC:0};
+    const v=vAgg[r.pl];v.lit+=r.lit;v.km+=r.kmPerc;v.cost+=r.cost;v.cnt++;
+    if(r.kml>0){v.kmlS+=r.kml;v.kmlC++}
+  });
+  mt('tFAnal',[
+    {l:'Placa'},{l:'Modelo'},{l:'Abast.',t:'n',f:'n'},
+    {l:'Total Litros',t:'n',f:'n1'},{l:'Média L/Abast.',t:'n',f:'n1'},
+    {l:'KM Total',t:'n',f:'n'},{l:'KM/L Médio',t:'n',f:'n1'},
+    {l:'Custo Total',t:'n',f:'r'},{l:'Custo/KM',t:'n',f:'r'},
+    {l:'Ref. Fábrica',t:'n',f:'n1'},{l:'Eficiência'}
+  ],Object.entries(vAgg).map(([pl,d])=>{
+    const avgL=d.cnt>0?d.lit/d.cnt:0;
+    const kml=d.kmlC>0?d.kmlS/d.kmlC:0;
+    const ckm=d.km>0?d.cost/d.km:0;
+    const ref=frRef[pl]||0;
+    const eff=kml>0&&ref>0?(kml/ref*100):0;
+    const effTxt=eff>0?(fN(eff,0)+'%'+(eff>=90?' ✓':eff>=70?' ⚠':' ✗')):'—';
+    return[pl,frMod[pl]||'—',d.cnt,d.lit,avgL,d.km,kml,d.cost,ckm,ref,effTxt];
+  }).sort((a,b)=>b[3]-a[3]));
+
+  // Line charts: L por abastecimento e KM/L por abastecimento (over time)
+  const chronoSorted=enriched.slice().sort((a,b)=>dK(a.data).localeCompare(dK(b.data)));
+  const placas=[...new Set(enriched.map(r=>r.pl))].sort();
+  const allDates=[...new Set(chronoSorted.map(r=>r.data))].sort((a,b)=>dK(a).localeCompare(dK(b)));
+
+  if(placas.length<=1&&enriched.length>0){
+    mk('chFAL',{type:'bar',data:{labels:allDates,datasets:[{label:placas[0]||'Veículo',data:allDates.map(d=>{const r=chronoSorted.find(x=>x.data===d&&x.pl===placas[0]);return r?r.lit:0}),backgroundColor:'#B8942E',borderRadius:3,barPercentage:.6}]},options:{scales:{x:{},y:{title:{display:true,text:'Litros'}}},plugins:{legend:{display:false}}}});
+    mk('chFAKML',{type:'bar',data:{labels:allDates,datasets:[{label:placas[0]||'Veículo',data:allDates.map(d=>{const r=chronoSorted.find(x=>x.data===d&&x.pl===placas[0]);return r?r.kml:0}),backgroundColor:'#059669',borderRadius:3,barPercentage:.6}]},options:{scales:{x:{},y:{title:{display:true,text:'KM/L'}}},plugins:{legend:{display:false}}}});
+  } else {
+    const dsL=placas.map((pl,i)=>({label:pl,data:allDates.map(d=>{const r=chronoSorted.find(x=>x.data===d&&x.pl===pl);return r?r.lit:null}),borderColor:COL[i%COL.length],backgroundColor:COL[i%COL.length]+'33',tension:.3,pointRadius:4,spanGaps:true}));
+    mk('chFAL',{type:'line',data:{labels:allDates,datasets:dsL},options:{scales:{x:{},y:{title:{display:true,text:'Litros'}}},plugins:{legend:{position:'top'}}}});
+    const dsK=placas.map((pl,i)=>({label:pl,data:allDates.map(d=>{const r=chronoSorted.find(x=>x.data===d&&x.pl===pl);return r&&r.kml>0?r.kml:null}),borderColor:COL[i%COL.length],backgroundColor:COL[i%COL.length]+'33',tension:.3,pointRadius:4,spanGaps:true}));
+    mk('chFAKML',{type:'line',data:{labels:allDates,datasets:dsK},options:{scales:{x:{},y:{title:{display:true,text:'KM/L'}}},plugins:{legend:{position:'top'}}}});
+  }
+
+  // Weekly summary
+  const weekM={};enriched.forEach(r=>{
+    const pts=r.data.split('/');if(pts.length!==3)return;
+    const dt=new Date(+pts[2],+pts[1]-1,+pts[0]);
+    const day=dt.getDay();const mon=new Date(dt);mon.setDate(dt.getDate()-((day+6)%7));
+    const wk=mon.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'});
+    if(!weekM[wk])weekM[wk]={lit:0,km:0,cost:0,cnt:0,kmlS:0,kmlC:0};
+    const w=weekM[wk];w.lit+=r.lit;w.km+=r.kmPerc;w.cost+=r.cost;w.cnt++;
+    if(r.kml>0){w.kmlS+=r.kml;w.kmlC++}
+  });
+  const weeks=Object.keys(weekM).sort((a,b)=>dK(a).localeCompare(dK(b)));
+  mt('tFSem',[
+    {l:'Semana (início)'},{l:'Abast.',t:'n',f:'n'},
+    {l:'Litros',t:'n',f:'n1'},{l:'KM',t:'n',f:'n'},
+    {l:'KM/L Médio',t:'n',f:'n1'},{l:'Custo',t:'n',f:'r'},
+    {l:'Custo/KM',t:'n',f:'r'}
+  ],weeks.map(w=>{const d=weekM[w];const kml=d.kmlC>0?d.kmlS/d.kmlC:0;const ckm=d.km>0?d.cost/d.km:0;return[w,d.cnt,d.lit,d.km,kml,d.cost,ckm]}));
+
+  // Monthly summary
+  const monthM={};enriched.forEach(r=>{
+    const pts=r.data.split('/');if(pts.length!==3)return;
+    const mk2=pts[1]+'/'+pts[2];
+    if(!monthM[mk2])monthM[mk2]={lit:0,km:0,cost:0,cnt:0,kmlS:0,kmlC:0};
+    const m=monthM[mk2];m.lit+=r.lit;m.km+=r.kmPerc;m.cost+=r.cost;m.cnt++;
+    if(r.kml>0){m.kmlS+=r.kml;m.kmlC++}
+  });
+  const months=Object.keys(monthM).sort((a,b)=>{const[ma,ya]=a.split('/');const[mb,yb]=b.split('/');return(ya+ma).localeCompare(yb+mb)});
+  mt('tFMes',[
+    {l:'Mês'},{l:'Abast.',t:'n',f:'n'},
+    {l:'Litros',t:'n',f:'n1'},{l:'KM',t:'n',f:'n'},
+    {l:'KM/L Médio',t:'n',f:'n1'},{l:'Custo',t:'n',f:'r'},
+    {l:'Custo/KM',t:'n',f:'r'},{l:'L/Abast.',t:'n',f:'n1'}
+  ],months.map(m=>{const d=monthM[m];const kml=d.kmlC>0?d.kmlS/d.kmlC:0;const ckm=d.km>0?d.cost/d.km:0;const avg=d.cnt>0?d.lit/d.cnt:0;return[m,d.cnt,d.lit,d.km,kml,d.cost,ckm,avg]}));
+
+  // Cost per KM chart by vehicle
+  const ckmArr=Object.entries(vAgg).filter(([,d])=>d.km>0).map(([pl,d])=>({pl,ckm:d.cost/d.km})).sort((a,b)=>b.ckm-a.ckm);
+  if(ckmArr.length>0){
+    mk('chFCKM',{type:'bar',data:{labels:ckmArr.map(v=>v.pl),datasets:[{label:'R$/KM',data:ckmArr.map(v=>v.ckm),backgroundColor:'#dc2626',borderRadius:3,barPercentage:.6,categoryPercentage:.7}]},options:{scales:{x:{},y:{title:{display:true,text:'R$/KM'}}},plugins:{legend:{display:false}}}});
+  } else {
+    const el=document.getElementById('chFCKM');if(el)el.parentElement.innerHTML='<div style="text-align:center;color:var(--t3);padding:40px;font-size:.75rem">Sem dados de KM para calcular custo/km.<br>Os dados aparecerão quando houver km_percorridos registrados.</div>';
+  }
+
+  // Autonomy chart: estimated km per full tank based on KM/L * tank capacity
+  const autArr=Object.entries(vAgg).filter(([pl,d])=>d.kmlC>0&&frCap[pl]>0).map(([pl,d])=>{
+    const kml=d.kmlS/d.kmlC;const cap=frCap[pl];return{pl,aut:kml*cap,kml,cap};
+  }).sort((a,b)=>b.aut-a.aut);
+  if(autArr.length>0){
+    mk('chFAut',{type:'bar',data:{labels:autArr.map(v=>v.pl),datasets:[{label:'KM Estimados',data:autArr.map(v=>v.aut),backgroundColor:'#059669',borderRadius:3,barPercentage:.6,categoryPercentage:.7}]},options:{scales:{x:{},y:{title:{display:true,text:'KM por Tanque Cheio'}}},plugins:{legend:{display:false}}}});
+  } else {
+    const el=document.getElementById('chFAut');if(el)el.parentElement.innerHTML='<div style="text-align:center;color:var(--t3);padding:40px;font-size:.75rem">Sem dados suficientes para estimar autonomia.<br>Necessário km_percorridos e capacidade do tanque.</div>';
+  }
 }
 
 /* ---- VENDAS ---- */
