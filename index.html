@@ -401,7 +401,7 @@ const API_URL='https://script.google.com/macros/s/AKfycbxholHSDhAuzenkGyrBAukgqd
 let D={};const CH={};
 const COL=['#B8942E','#2563eb','#059669','#d97706','#7c3aed','#db2777','#0891b2','#dc2626','#65a30d','#ea580c','#4f46e5','#0d9488','#c026d3','#f59e0b','#84cc16'];
 
-function p(v){if(v==null||v==='')return 0;const s=String(v).replace(/\s/g,'').replace(/\./g,'').replace(',','.');const n=parseFloat(s);return isNaN(n)?0:n}
+function p(v){if(v==null||v==='')return 0;const s=String(v).replace(/\s/g,'');if(s.includes(','))return parseFloat(s.replace(/\./g,'').replace(',','.'))||0;return parseFloat(s)||0}
 function fN(n,d=0){return n.toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d})}
 function fR(n){return'R$ '+n.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}
 function dK(d){if(!d)return'';const p=d.split('/');return p.length===3?(p[2]+p[1]+p[0]):d}
@@ -527,8 +527,9 @@ function rEstoque(){
   document.getElementById('cEP').textContent=Object.keys(pm).length+' registros';
 
   // Movimentações — sorted by date descending
+  const pedCli={};(D.vendas||[]).forEach(v=>{if(v.pedido&&v.cliente)pedCli[v.pedido.trim()]=v.cliente});
   const estSorted=est.slice().sort((a,b)=>dK(b.data).localeCompare(dK(a.data)));
-  mt('tEM',[{l:'Data'},{l:'Produto'},{l:'SKU'},{l:'Categoria'},{l:'Tipo Mov.'},{l:'Entrada',t:'n',f:'n'},{l:'Saída',t:'n',f:'n'},{l:'Valor',t:'n',f:'r'}],estSorted.map(r=>[r.data,r.produto,r.sku,r.categoria,r.tipo_mov,p(r.qtd_entrada),p(r.qtd_saida),p(r.valor_total)]));
+  mt('tEM',[{l:'Data'},{l:'Produto'},{l:'SKU'},{l:'Categoria'},{l:'Tipo Mov.'},{l:'Cliente'},{l:'Entrada',t:'n',f:'n'},{l:'Saída',t:'n',f:'n'},{l:'Valor',t:'n',f:'r'}],estSorted.map(r=>[r.data,r.produto,r.sku,r.categoria,r.tipo_mov,pedCli[(r.ref||'').trim()]||'—',p(r.qtd_entrada),p(r.qtd_saida),p(r.valor_total)]));
   document.getElementById('cEM').textContent=est.length+' registros';
 
   const catM={};Object.entries(pm).forEach(([,d])=>{const c=d.cat||'Outros';catM[c]=(catM[c]||0)+(d.e-d.s)});
