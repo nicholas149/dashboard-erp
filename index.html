@@ -118,7 +118,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
 .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px}
 .g23{display:grid;grid-template-columns:2fr 3fr;gap:10px;margin-bottom:12px}
-.cw{position:relative;height:260px}.cw.sm{height:200px}.cw.xs{height:150px}
+.cw{position:relative;height:260px}.cw.sm{height:200px}.cw.xs{height:150px}.cw.lg{height:340px}
 .cw canvas{width:100%!important;height:100%!important}
 
 /* Tables */
@@ -132,11 +132,14 @@ td.r{text-align:right;font-variant-numeric:tabular-nums}
 tr:hover td{background:var(--gold-bg)}
 .vp{color:var(--green);font-weight:600}.vn{color:var(--red);font-weight:600}.vz{color:var(--t3)}
 
-/* Search */
+/* Search & Filters */
 .sb-f{display:flex;align-items:center;gap:6px;margin-bottom:8px;flex-wrap:wrap}
 .si{flex:1;min-width:180px;background:var(--white);border:1px solid var(--border);border-radius:var(--rs);padding:6px 10px 6px 28px;color:var(--t1);font-size:.72rem;outline:none;transition:.15s;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='13' height='13' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:8px center}
 .si:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(184,148,46,.08)}
 select.sf{background:var(--white);border:1px solid var(--border);border-radius:var(--rs);padding:6px 8px;font-size:.7rem;color:var(--t2);outline:none;cursor:pointer}
+input[type="date"].df{background:var(--white);border:1px solid var(--border);border-radius:var(--rs);padding:5px 8px;font-size:.7rem;color:var(--t2);outline:none;font-family:inherit}
+input[type="date"].df:focus{border-color:var(--gold)}
+.df-l{font-size:.62rem;color:var(--t3);margin-right:2px}
 
 /* Sub-tabs */
 .st{display:flex;gap:2px;margin-bottom:12px;background:var(--bg);border:1px solid var(--border);border-radius:var(--rs);padding:2px;width:fit-content;flex-wrap:wrap}
@@ -232,7 +235,7 @@ select.sf{background:var(--white);border:1px solid var(--border);border-radius:v
       <div class="pn"><div class="pn-h">Top 10 Produtos <span class="bdg">saldo</span></div><div class="cw"><canvas id="chET"></canvas></div></div>
     </div>
   </div>
-  <div class="sc" id="e-comp"><div class="pn"><div class="tw" id="tECo"></div></div></div>
+  <div class="sc" id="e-comp"><div class="pn"><div class="pn-h">Produtos Compostos</div><div class="tw tall" id="tECo"></div></div></div>
 </section>
 
 <!-- ===== RETORNÁVEIS ===== -->
@@ -254,11 +257,11 @@ select.sf{background:var(--white);border:1px solid var(--border);border-radius:v
     </div>
     <div class="sc a" id="rb-dist">
       <div class="sb-f"><input class="si" placeholder="Filtrar distribuidor…" oninput="ft('tRBD',this.value)"></div>
-      <div class="pn"><div class="pn-h">Distribuidores — Barris em Posse</div><div class="tw tall" id="tRBD"></div></div>
+      <div class="pn"><div class="pn-h">Distribuidores — Posição Atual por Tipo de Barril</div><div class="tw tall" id="tRBD"></div></div>
     </div>
     <div class="sc" id="rb-pdv">
       <div class="sb-f"><input class="si" placeholder="Filtrar PDV…" oninput="ft('tRBP',this.value)"></div>
-      <div class="pn"><div class="pn-h">PDV / Delivery — Barris em Posse</div><div class="tw tall" id="tRBP"></div></div>
+      <div class="pn"><div class="pn-h">PDV / Delivery — Posição Atual por Tipo de Barril</div><div class="tw tall" id="tRBP"></div></div>
     </div>
     <div class="sc" id="rb-mov">
       <div class="sb-f"><input class="si" placeholder="Buscar movimentação…" oninput="ft('tRBM',this.value,'cRBM')"></div>
@@ -287,19 +290,29 @@ select.sf{background:var(--white);border:1px solid var(--border);border-radius:v
 <section class="sec" id="sec-frota">
   <div class="sec-t">Frota & Combustível</div>
   <div class="kr c5" id="kF"></div>
-  <div class="pn"><div class="pn-h">Veículos</div><div class="vg" id="gF"></div></div>
   <div class="st">
-    <div class="stb a" data-sub="f-cons">Análise de Consumo</div>
-    <div class="stb" data-sub="f-ab">Abastecimentos</div>
+    <div class="stb a" data-sub="f-ab">Abastecimentos</div>
+    <div class="stb" data-sub="f-cons">Análise de Consumo</div>
+    <div class="stb" data-sub="f-chart">Gráficos</div>
     <div class="stb" data-sub="f-dados">Dados da Frota</div>
   </div>
-  <div class="sc a" id="f-cons">
-    <div class="pn"><div class="pn-h">Comparativo de Consumo por Veículo</div><div class="tw" id="tFC"></div></div>
-    <div class="pn"><div class="pn-h">Consumo por Veículo (L)</div><div class="cw"><canvas id="chFC"></canvas></div></div>
-  </div>
-  <div class="sc" id="f-ab">
+  <div class="sc a" id="f-ab">
     <div class="sb-f"><input class="si" placeholder="Buscar abastecimento…" oninput="ft('tFA',this.value,'cFA')"></div>
-    <div class="pn"><div class="pn-h">Registros <span class="bdg" id="cFA"></span></div><div class="tw tall" id="tFA"></div></div>
+    <div class="pn"><div class="pn-h">Registros de Abastecimento <span class="bdg" id="cFA"></span></div><div class="tw tall" id="tFA"></div></div>
+  </div>
+  <div class="sc" id="f-cons">
+    <div class="pn"><div class="pn-h">Veículos</div><div class="vg" id="gF"></div></div>
+    <div class="pn"><div class="pn-h">Comparativo de Consumo por Veículo</div><div class="tw" id="tFC"></div></div>
+  </div>
+  <div class="sc" id="f-chart">
+    <div class="g2">
+      <div class="pn"><div class="pn-h">Consumo por Veículo (L)</div><div class="cw"><canvas id="chFC"></canvas></div></div>
+      <div class="pn"><div class="pn-h">KM/L Médio por Veículo</div><div class="cw"><canvas id="chFKML"></canvas></div></div>
+    </div>
+    <div class="g2">
+      <div class="pn"><div class="pn-h">Consumo por Tipo de Veículo</div><div class="cw"><canvas id="chFTipo"></canvas></div></div>
+      <div class="pn"><div class="pn-h">Abastecimento por Veículo ao Longo do Tempo</div><div class="cw lg"><canvas id="chFTime"></canvas></div></div>
+    </div>
   </div>
   <div class="sc" id="f-dados"><div class="pn"><div class="tw" id="tFD"></div></div></div>
 </section>
@@ -307,6 +320,12 @@ select.sf{background:var(--white);border:1px solid var(--border);border-radius:v
 <!-- ===== VENDAS ===== -->
 <section class="sec" id="sec-vendas">
   <div class="sec-t">Vendas</div>
+  <div class="sb-f" style="margin-bottom:8px">
+    <span class="df-l">De:</span><input type="date" class="df" id="vDtI" onchange="rVendas()">
+    <span class="df-l" style="margin-left:6px">Até:</span><input type="date" class="df" id="vDtF" onchange="rVendas()">
+    <button class="btn-r" style="margin-left:6px" onclick="document.getElementById('vDtI').value='';document.getElementById('vDtF').value='';rVendas()">Limpar</button>
+    <span id="vPeriodInfo" style="font-size:.62rem;color:var(--t3);margin-left:8px"></span>
+  </div>
   <div class="kr c5" id="kV"></div>
   <div class="st">
     <div class="stb a" data-sub="v-all">Todas as Vendas</div>
@@ -367,6 +386,7 @@ const COL=['#B8942E','#2563eb','#059669','#d97706','#7c3aed','#db2777','#0891b2'
 function p(v){if(v==null||v==='')return 0;const s=String(v).replace(/\s/g,'').replace(/\./g,'').replace(',','.');const n=parseFloat(s);return isNaN(n)?0:n}
 function fN(n,d=0){return n.toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d})}
 function fR(n){return'R$ '+n.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function dK(d){if(!d)return'';const p=d.split('/');return p.length===3?(p[2]+p[1]+p[0]):d}
 
 function tick(){document.getElementById('hTime').textContent=new Date().toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'})}
 tick();setInterval(tick,30000);
@@ -405,6 +425,7 @@ function buildMaps(){
 }
 function opT(r){return D.cm[r.cliente_id]?.grp||'PDV/DELIV'}
 function normRetType(t){const l=t.toLowerCase();if(l.includes('barril'))return'Barril';if(l==='chopeira')return'Chopeira';return'Outros'}
+function barrelSize(prod){const m=(prod||'').match(/(\d+)L/);return m?m[1]+'L':null}
 
 // Chart
 function mk(id,cfg){
@@ -412,6 +433,7 @@ function mk(id,cfg){
   const d={responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#6b7280',font:{size:9,family:'Inter'},padding:8,boxWidth:9}}}};
   if(cfg.options?.scales?.x!==undefined)cfg.options.scales.x={...cfg.options.scales.x,ticks:{color:'#9ca3af',font:{size:8}},grid:{color:'#f0f0f0'},border:{color:'#e5e7eb'}};
   if(cfg.options?.scales?.y!==undefined)cfg.options.scales.y={...cfg.options.scales.y,ticks:{color:'#9ca3af',font:{size:8}},grid:{color:'#f0f0f0'},border:{color:'#e5e7eb'}};
+  if(cfg.options?.scales?.y1!==undefined)cfg.options.scales.y1={...cfg.options.scales.y1,ticks:{color:'#9ca3af',font:{size:8}},grid:{drawOnChartArea:false},border:{color:'#e5e7eb'}};
   cfg.options={...d,...cfg.options,plugins:{...d.plugins,...cfg.options?.plugins}};
   CH[id]=new Chart(el.getContext('2d'),cfg);
 }
@@ -421,7 +443,7 @@ function mt(cid,cols,rows){
   const w=document.getElementById(cid);if(!w)return;
   let h='<table><thead><tr>';cols.forEach(c=>{h+=`<th${c.t==='n'?' class="r"':''}>${c.l}</th>`});
   h+='</tr></thead><tbody>';
-  rows.forEach(row=>{h+='<tr>';row.forEach((v,i)=>{const c=cols[i];const isN=c.t==='n';let d;if(c.f==='r')d=fR(v);else if(c.f==='n')d=fN(v);else if(c.f==='n1')d=fN(v,1);else if(c.f==='p')d=fN(v,1)+'%';else d=v;let cls=isN?'r':'';if(c.color&&typeof v==='number'){if(v>0)cls+=' vp';else if(v<0)cls+=' vn';else cls+=' vz'}h+=`<td class="${cls}">${d}</td>`});h+='</tr>'});
+  rows.forEach(row=>{h+='<tr>';row.forEach((v,i)=>{const c=cols[i];const isN=c.t==='n';let d;if(c.f==='r')d=fR(v);else if(c.f==='n')d=fN(v);else if(c.f==='n1')d=fN(v,1);else if(c.f==='n2')d=fN(v,2);else if(c.f==='p')d=fN(v,1)+'%';else d=v;let cls=isN?'r':'';if(c.color&&typeof v==='number'){if(v>0)cls+=' vp';else if(v<0)cls+=' vn';else cls+=' vz'}h+=`<td class="${cls}">${d}</td>`});h+='</tr>'});
   if(!rows.length)h+=`<tr><td colspan="${cols.length}" style="text-align:center;color:var(--t3);padding:16px">Nenhum registro</td></tr>`;
   h+='</tbody></table>';w.innerHTML=h;
 }
@@ -486,7 +508,9 @@ function rEstoque(){
   mt('tEP',eCols,Object.entries(pm).map(([pr,d])=>[pr,d.sku,d.cat,d.e,d.s,d.e-d.s]).sort((a,b)=>b[5]-a[5]));
   document.getElementById('cEP').textContent=Object.keys(pm).length+' registros';
 
-  mt('tEM',[{l:'Produto'},{l:'SKU'},{l:'Categoria'},{l:'Tipo Mov.'},{l:'Entrada',t:'n',f:'n'},{l:'Saída',t:'n',f:'n'},{l:'Valor',t:'n',f:'r'}],est.map(r=>[r.produto,r.sku,r.categoria,r.tipo_mov,p(r.qtd_entrada),p(r.qtd_saida),p(r.valor_total)]));
+  // Movimentações — sorted by date descending
+  const estSorted=est.slice().sort((a,b)=>dK(b.data).localeCompare(dK(a.data)));
+  mt('tEM',[{l:'Data'},{l:'Produto'},{l:'SKU'},{l:'Categoria'},{l:'Tipo Mov.'},{l:'Entrada',t:'n',f:'n'},{l:'Saída',t:'n',f:'n'},{l:'Valor',t:'n',f:'r'}],estSorted.map(r=>[r.data,r.produto,r.sku,r.categoria,r.tipo_mov,p(r.qtd_entrada),p(r.qtd_saida),p(r.valor_total)]));
   document.getElementById('cEM').textContent=est.length+' registros';
 
   const catM={};Object.entries(pm).forEach(([,d])=>{const c=d.cat||'Outros';catM[c]=(catM[c]||0)+(d.e-d.s)});
@@ -494,20 +518,29 @@ function rEstoque(){
   const top10=Object.entries(pm).map(([pr,d])=>[pr,d.e-d.s]).sort((a,b)=>b[1]-a[1]).slice(0,10);
   mk('chET',{type:'bar',data:{labels:top10.map(x=>x[0].length>20?x[0].slice(0,20)+'…':x[0]),datasets:[{data:top10.map(x=>x[1]),backgroundColor:'#059669',borderRadius:3,barPercentage:.7,categoryPercentage:.8}]},options:{indexAxis:'y',scales:{x:{},y:{}},plugins:{legend:{display:false}}}});
 
-  const comp=prod.filter(x=>x.sku_pai&&x.sku_pai.trim()!=='');const skuN={};prod.forEach(x=>{skuN[x.sku]=x.nome_canonico||x.sku});
-  mt('tECo',[{l:'SKU'},{l:'Produto'},{l:'SKU Pai'},{l:'Produto Pai'},{l:'Fator',t:'n',f:'n1'}],comp.map(x=>[x.sku,x.nome_canonico,x.sku_pai,skuN[x.sku_pai]||x.sku_pai,p(x.fator_conversao)]));
+  // Compostos — calculate quantity as (comp entries+exits + parent entries+exits / fator)
+  const comp=prod.filter(x=>x.sku_pai&&x.sku_pai.trim()!=='');
+  const skuN={};prod.forEach(x=>{skuN[x.sku]=x.nome_canonico||x.sku});
+  const skuM={};est.forEach(r=>{const s=(r.sku||'').trim();if(!skuM[s])skuM[s]={e:0,s:0};skuM[s].e+=p(r.qtd_entrada);skuM[s].s+=p(r.qtd_saida)});
+  mt('tECo',[{l:'SKU'},{l:'Produto'},{l:'SKU Pai'},{l:'Produto Pai'},{l:'Fator',t:'n',f:'n1'},{l:'Qtd Composto',t:'n',f:'n1'},{l:'Qtd Pai (conv.)',t:'n',f:'n1'},{l:'Total',t:'n',f:'n1',color:true}],comp.map(x=>{
+    const f=p(x.fator_conversao);const cs=(skuM[x.sku]||{e:0,s:0});const ps=(skuM[(x.sku_pai||'').trim()]||{e:0,s:0});
+    const qComp=cs.e-cs.s;const qPai=f>0?(ps.e-ps.s)/f:0;
+    return[x.sku,x.nome_canonico,x.sku_pai,skuN[(x.sku_pai||'').trim()]||x.sku_pai,f,qComp,qPai,qComp+qPai]
+  }));
 }
 
 /* ---- RETORNÁVEIS ---- */
 function rRet(){
-  const bl=D.backlog||[];
+  const bl=D.backlog||[],est=D.estoque||[];
   const isSI=r=>(r.tipo_mov||'').trim()==='Saldo Inicial';
 
-  // Normalize and group by type
   const byType={Barril:[],Chopeira:[],Outros:[]};
   bl.forEach(r=>{const t=normRetType((r.tipo_retornavel||'').trim());byType[t].push(r)});
 
-  // Global KPIs (all types)
+  // Compute stock per barrel size from estoque (Chopp Barril products occupy barrels)
+  const estBySize={};(est).forEach(r=>{if((r.categoria||'').trim()==='Chopp Barril'){const sz=barrelSize(r.produto);if(sz){estBySize[sz]=(estBySize[sz]||0)+(p(r.qtd_entrada)-p(r.qtd_saida))}}});
+
+  // Global KPIs
   const barris=byType.Barril;
   const siCD=barris.filter(isSI).reduce((s,r)=>s+p(r.qtd_entrada_CD),0);
   const bMov=barris.filter(r=>!isSI(r)&&(r.terceiro||'').trim()!=='');
@@ -516,56 +549,67 @@ function rRet(){
   const totSai=bMov.reduce((s,r)=>s+p(r.qtd_saida_CD),0);
   const bCD=siCD+totRet-totSai;
   const taxa=totSai>0?totRet/totSai*100:0;
+  const choppInBarrels=Object.values(estBySize).reduce((s,v)=>s+v,0);
+  const bDisp=bCD-choppInBarrels;
 
   const chopSI=byType.Chopeira.filter(isSI).reduce((s,r)=>s+p(r.qtd_entrada_CD),0);
   const chopMov=byType.Chopeira.filter(r=>!isSI(r)&&(r.terceiro||'').trim()!=='');
   const chopTerc=chopMov.reduce((s,r)=>s+p(r.qtd_saida_CD)-p(r.qtd_entrada_CD),0);
+  const chopCD=chopSI+chopMov.reduce((s,r)=>s+p(r.qtd_entrada_CD),0)-chopMov.reduce((s,r)=>s+p(r.qtd_saida_CD),0);
 
   kpi('kR',[
-    {l:'Barris no CD (Pátio)',v:fN(bCD),c:'gr',s:'disponíveis'},
+    {l:'Barris Disponíveis (CD)',v:fN(Math.max(0,bDisp)),c:'gr',s:`${fN(bCD)} total — ${fN(choppInBarrels)} cheios`},
     {l:'Barris em Terceiros',v:fN(bTerc),c:'re',s:'fora do CD'},
     {l:'Taxa Retorno Barris',v:fN(taxa,1)+'%',c:'pu'},
-    {l:'Chopeiras em Terceiros',v:fN(chopTerc),c:'bl'},
+    {l:'Chopeiras no CD',v:fN(chopCD),c:'bl',s:`${fN(chopTerc)} em terceiros`},
     {l:'Total Registros',v:fN(bl.length),c:'or'},
   ]);
 
   // ---- BARRIL TAB ----
   const barM={};barris.forEach(r=>{const pr=r.produto||'N/A';if(!barM[pr])barM[pr]={si:0,me:0,ms:0};isSI(r)?barM[pr].si+=p(r.qtd_entrada_CD):(barM[pr].me+=p(r.qtd_entrada_CD),barM[pr].ms+=p(r.qtd_saida_CD))});
-  document.getElementById('gRB').innerHTML=Object.entries(barM).sort((a,b)=>b[1].si-a[1].si).map(([n,d])=>{const cd=d.si+d.me-d.ms;const tc=d.ms-d.me;return`<div class="pc"><div class="pc-n">${n}</div><div class="pc-v">${fN(cd)}<span style="font-size:.65rem;color:var(--t3);margin-left:3px">no CD</span></div><div class="pc-r"><span>Saldo Inicial</span><span class="v">${fN(d.si)}</span></div><div class="pc-r"><span>Em Terceiros</span><span class="v r">${fN(tc)}</span></div><div class="pc-r"><span>Retornos</span><span class="v b">${fN(d.me)}</span></div><div class="pc-r"><span>Saídas</span><span class="v">${fN(d.ms)}</span></div></div>`}).join('');
+  document.getElementById('gRB').innerHTML=Object.entries(barM).sort((a,b)=>(b[1].si+b[1].me-b[1].ms)-(a[1].si+a[1].me-a[1].ms)).map(([n,d])=>{
+    const cd=d.si+d.me-d.ms;const sz=barrelSize(n);const cheios=sz?estBySize[sz]||0:0;const disp=cd-cheios;
+    return`<div class="pc"><div class="pc-n">${n}</div><div class="pc-v">${fN(Math.max(0,disp))}<span style="font-size:.65rem;color:var(--t3);margin-left:3px">disponíveis</span></div><div class="pc-r"><span>Total no CD</span><span class="v">${fN(cd)}</span></div><div class="pc-r"><span>Cheios (com produto)</span><span class="v b">${fN(cheios)}</span></div></div>`
+  }).join('');
 
-  // Terceiro tables for barril — with barrel type breakdown
-  const tM={};bMov.forEach(r=>{const t=r.terceiro,id=r.terceiro_id||'',pr=r.produto||'';const k=t+'|||'+pr;if(!tM[k])tM[k]={terc:t,id,prod:pr,s:0,e:0};tM[k].s+=p(r.qtd_saida_CD);tM[k].e+=p(r.qtd_entrada_CD)});
+  // Terceiro tables for barril — pivoted: one row per terceiro, columns per barrel type
+  const barrelTypes=[...new Set(bMov.map(r=>r.produto||'N/A'))].sort();
+  const tM={};bMov.forEach(r=>{const t=r.terceiro;const id=r.terceiro_id||'';const pr=r.produto||'N/A';if(!tM[t])tM[t]={id,byType:{}};if(!tM[t].byType[pr])tM[t].byType[pr]=0;tM[t].byType[pr]+=p(r.qtd_saida_CD)-p(r.qtd_entrada_CD)});
   const gTT=id=>D.cm[id]?.grp||'PDV/DELIV';
-  const rCols=[{l:'Terceiro'},{l:'Tipo Barril'},{l:'Saídas CD',t:'n',f:'n'},{l:'Entradas CD',t:'n',f:'n'},{l:'Saldo',t:'n',f:'n',color:true}];
-  const dR=[],pR=[];
-  Object.values(tM).forEach(d=>{const saldo=d.s-d.e;const row=[d.terc,d.prod,d.s,d.e,saldo];gTT(d.id)==='Distribuidor'?dR.push(row):pR.push(row)});
-  mt('tRBD',rCols,dR.sort((a,b)=>b[4]-a[4]));
-  mt('tRBP',rCols,pR.sort((a,b)=>b[4]-a[4]));
 
-  // All barrel movements
-  mt('tRBM',[{l:'Data'},{l:'Produto'},{l:'Terceiro'},{l:'Tipo Mov.'},{l:'Entrada CD',t:'n',f:'n'},{l:'Saída CD',t:'n',f:'n'},{l:'Status'}],barris.map(r=>[r.data,r.produto,r.terceiro||'—',r.tipo_mov,p(r.qtd_entrada_CD),p(r.qtd_saida_CD),r.status]));
+  const pivotCols=[{l:'Terceiro'}];barrelTypes.forEach(bt=>{pivotCols.push({l:bt,t:'n',f:'n',color:true})});pivotCols.push({l:'Total',t:'n',f:'n',color:true});
+  const dR=[],pR=[];
+  Object.entries(tM).forEach(([t,d])=>{const row=[t];let tot=0;barrelTypes.forEach(bt=>{const v=d.byType[bt]||0;row.push(v);tot+=v});row.push(tot);gTT(d.id)==='Distribuidor'?dR.push(row):pR.push(row)});
+  mt('tRBD',pivotCols,dR.sort((a,b)=>b[b.length-1]-a[a.length-1]));
+  mt('tRBP',pivotCols,pR.sort((a,b)=>b[b.length-1]-a[a.length-1]));
+
+  // Barrel movements — sorted by date desc
+  const barrisSorted=barris.slice().sort((a,b)=>dK(b.data).localeCompare(dK(a.data)));
+  mt('tRBM',[{l:'Data'},{l:'Produto'},{l:'Terceiro'},{l:'Tipo Mov.'},{l:'Entrada CD',t:'n',f:'n'},{l:'Saída CD',t:'n',f:'n'},{l:'Status'}],barrisSorted.map(r=>[r.data,r.produto,r.terceiro||'—',r.tipo_mov,p(r.qtd_entrada_CD),p(r.qtd_saida_CD),r.status]));
   document.getElementById('cRBM').textContent=barris.length+' registros';
 
   // Charts
   let bDist=0,bPdv=0;
   const tercAgg={};bMov.forEach(r=>{const t=r.terceiro;if(!tercAgg[t])tercAgg[t]={id:r.terceiro_id,s:0,e:0};tercAgg[t].s+=p(r.qtd_saida_CD);tercAgg[t].e+=p(r.qtd_entrada_CD)});
   Object.values(tercAgg).forEach(d=>{const saldo=d.s-d.e;gTT(d.id)==='Distribuidor'?bDist+=saldo:bPdv+=saldo});
-  mk('chRD',{type:'doughnut',data:{labels:['No CD','Distribuidores','PDV/DELIV'],datasets:[{data:[Math.max(0,bCD),Math.max(0,bDist),Math.max(0,bPdv)],backgroundColor:['#059669','#B8942E','#2563eb']}]},options:{cutout:'60%',plugins:{legend:{position:'bottom'}}}});
+  mk('chRD',{type:'doughnut',data:{labels:['Disponíveis CD','Cheios CD','Distribuidores','PDV/DELIV'],datasets:[{data:[Math.max(0,bDisp),choppInBarrels,Math.max(0,bDist),Math.max(0,bPdv)],backgroundColor:['#059669','#B8942E','#d97706','#2563eb']}]},options:{cutout:'60%',plugins:{legend:{position:'bottom'}}}});
   const allT=Object.entries(tercAgg).map(([t,d])=>[t,d.s-d.e]).filter(t=>t[1]>0).sort((a,b)=>b[1]-a[1]).slice(0,15);
   mk('chRT',{type:'bar',data:{labels:allT.map(t=>t[0].length>22?t[0].slice(0,22)+'…':t[0]),datasets:[{data:allT.map(t=>t[1]),backgroundColor:'#B8942E',borderRadius:3,barPercentage:.7,categoryPercentage:.8}]},options:{indexAxis:'y',scales:{x:{},y:{}},plugins:{legend:{display:false}}}});
 
-  // ---- CHOPEIRA TAB ----
-  rRetSub(byType.Chopeira,'gRC','tRC','cRC',isSI);
+  // ---- CHOPEIRA TAB — cards show CD balance as main ----
+  rRetSubCD(byType.Chopeira,'gRC','tRC','cRC',isSI);
 
-  // ---- OUTROS TAB ----
-  rRetSub(byType.Outros,'gRO','tRO','cRO',isSI);
+  // ---- OUTROS TAB — same as chopeira ----
+  rRetSubCD(byType.Outros,'gRO','tRO','cRO',isSI);
 }
 
-function rRetSub(items,gridId,tblId,cntId,isSI){
+function rRetSubCD(items,gridId,tblId,cntId,isSI){
   const pm={};items.forEach(r=>{const pr=r.produto||'N/A';if(!pm[pr])pm[pr]={si:0,me:0,ms:0};isSI(r)?pm[pr].si+=p(r.qtd_entrada_CD):(pm[pr].me+=p(r.qtd_entrada_CD),pm[pr].ms+=p(r.qtd_saida_CD))});
-  document.getElementById(gridId).innerHTML=Object.entries(pm).sort((a,b)=>(b[1].si+b[1].me-b[1].ms)-(a[1].si+a[1].me-a[1].ms)).map(([n,d])=>{const cd=d.si+d.me-d.ms;const tc=d.ms-d.me;return`<div class="pc"><div class="pc-n">${n}</div><div class="pc-v">${fN(cd)}<span style="font-size:.65rem;color:var(--t3);margin-left:3px">no CD</span></div><div class="pc-r"><span>Em Terceiros</span><span class="v r">${fN(tc)}</span></div><div class="pc-r"><span>Retornos</span><span class="v b">${fN(d.me)}</span></div><div class="pc-r"><span>Saídas</span><span class="v">${fN(d.ms)}</span></div></div>`}).join('');
+  document.getElementById(gridId).innerHTML=Object.entries(pm).sort((a,b)=>(b[1].si+b[1].me-b[1].ms)-(a[1].si+a[1].me-a[1].ms)).map(([n,d])=>{
+    const cd=d.si+d.me-d.ms;const tc=d.ms-d.me;const total=cd+tc;
+    return`<div class="pc"><div class="pc-n">${n}</div><div class="pc-v">${fN(cd)}<span style="font-size:.65rem;color:var(--t3);margin-left:3px">no CD</span></div><div class="pc-r"><span>Total</span><span class="v">${fN(total)}</span></div><div class="pc-r"><span>Em Terceiros</span><span class="v r">${fN(tc)}</span></div></div>`
+  }).join('');
 
-  // Build detailed table with terceiro breakdown
   const mov=items.filter(r=>!isSI(r)&&(r.terceiro||'').trim()!=='');
   const tM={};mov.forEach(r=>{const t=r.terceiro,pr=r.produto||'';const k=t+'|||'+pr;if(!tM[k])tM[k]={terc:t,id:r.terceiro_id,prod:pr,s:0,e:0};tM[k].s+=p(r.qtd_saida_CD);tM[k].e+=p(r.qtd_entrada_CD)});
   const gTT=id=>D.cm[id]?.grp||'PDV/DELIV';
@@ -585,44 +629,83 @@ function rFrota(){
   const pm=tLE>0?entT.reduce((s,r)=>s+p(r.valor_total),0)/tLE:0;
   kpi('kF',[{l:'Saldo Tanque (L)',v:fN(saldo,1),c:'go',s:`${fN(tLE)} ent. — ${fN(tLS)} saída`},{l:'Custo Total',v:fR(custoT),c:'re'},{l:'Preço Médio / L',v:fR(pm),c:'bl'},{l:'Veículos',v:fN(fr.length),c:'pu'},{l:'Abastecimentos',v:fN(saiT.length),c:'gr',s:'saídas de tanque'}]);
 
+  // Abastecimentos table first — sorted by date desc
+  const abSorted=ab.slice().sort((a,b)=>dK(b.data).localeCompare(dK(a.data)));
+  mt('tFA',[{l:'Data'},{l:'Tipo'},{l:'Placa'},{l:'Motorista'},{l:'Litros',t:'n',f:'n1'},{l:'Preço/L',t:'n',f:'r'},{l:'Valor',t:'n',f:'r'},{l:'KM Atual',t:'n',f:'n'},{l:'KM/L',t:'n',f:'n1'}],abSorted.map(r=>[r.data,r.tipo_mov,r.placa||'—',r.motorista||'—',p(r.litros),p(r.preco_litro),p(r.valor_total),p(r.km_atual),p(r.kml)]));
+  document.getElementById('cFA').textContent=ab.length+' registros';
+
+  // Vehicle cards and consumption table
   const consM={};saiT.forEach(r=>{const pl=(r.placa||'').trim();if(!pl)return;consM[pl]=(consM[pl]||0)+p(r.litros)});
-  document.getElementById('gF').innerHTML=fr.map(v=>{const pl=(v.placa||'').trim();const tipo=(v.tipo||'').trim();const km=kmM[pl]||p(v.km_atual);const cons=consM[pl]||0;const ic=tipo==='HR'?'hr':tipo.includes('aminh')?'cam':'car';const em=tipo==='HR'?'🚚':tipo.includes('aminh')?'🚛':'🚗';return`<div class="vc"><div class="vc-i ${ic}">${em}</div><div class="vc-inf"><div class="vc-pl">${pl}</div><div class="vc-md">${v.modelo||''}${v.motorista_fixo?' — '+v.motorista_fixo:''}</div><div class="vc-sts"><div class="vc-st"><b>${km>0?fN(km):'—'}</b>KM Atual</div><div class="vc-st"><b>${fN(p(v.capacidade_tanque))}</b>Cap. Tanque</div><div class="vc-st"><b>${fN(cons,1)}</b>Consumo (L)</div></div></div></div>`}).join('');
+  const kmlM={};saiT.forEach(r=>{const pl=(r.placa||'').trim();const kml=p(r.kml);if(pl&&kml>0){if(!kmlM[pl])kmlM[pl]={sum:0,cnt:0};kmlM[pl].sum+=kml;kmlM[pl].cnt++}});
 
-  mt('tFC',[{l:'Placa'},{l:'Modelo'},{l:'Motorista'},{l:'KM Atual',t:'n',f:'n'},{l:'Consumo (L)',t:'n',f:'n1'},{l:'Cap. Tanque',t:'n',f:'n'},{l:'Consumo Ref.'}],fr.map(v=>{const pl=(v.placa||'').trim();return[pl,v.modelo,v.motorista_fixo||'—',kmM[pl]||p(v.km_atual),consM[pl]||0,p(v.capacidade_tanque),v.consumo_medio_ref]}));
+  document.getElementById('gF').innerHTML=fr.map(v=>{const pl=(v.placa||'').trim();const tipo=(v.tipo||'').trim();const km=kmM[pl]||p(v.km_atual);const cons=consM[pl]||0;const avgKml=kmlM[pl]?kmlM[pl].sum/kmlM[pl].cnt:0;const ic=tipo==='HR'?'hr':tipo.includes('aminh')?'cam':'car';const em=tipo==='HR'?'🚚':tipo.includes('aminh')?'🚛':'🚗';return`<div class="vc"><div class="vc-i ${ic}">${em}</div><div class="vc-inf"><div class="vc-pl">${pl}</div><div class="vc-md">${v.modelo||''}${v.motorista_fixo?' — '+v.motorista_fixo:''}</div><div class="vc-sts"><div class="vc-st"><b>${km>0?fN(km):'—'}</b>KM Atual</div><div class="vc-st"><b>${fN(p(v.capacidade_tanque))}</b>Cap. Tanque</div><div class="vc-st"><b>${fN(cons,1)}</b>Consumo (L)</div><div class="vc-st"><b>${avgKml>0?fN(avgKml,1):'—'}</b>KM/L Médio</div></div></div></div>`}).join('');
 
+  mt('tFC',[{l:'Placa'},{l:'Modelo'},{l:'Motorista'},{l:'KM Atual',t:'n',f:'n'},{l:'Consumo (L)',t:'n',f:'n1'},{l:'KM/L Médio',t:'n',f:'n1'},{l:'Cap. Tanque',t:'n',f:'n'},{l:'Consumo Ref.'}],fr.map(v=>{const pl=(v.placa||'').trim();const avgKml=kmlM[pl]?kmlM[pl].sum/kmlM[pl].cnt:0;return[pl,v.modelo,v.motorista_fixo||'—',kmM[pl]||p(v.km_atual),consM[pl]||0,avgKml,p(v.capacidade_tanque),v.consumo_medio_ref]}));
+
+  // Charts
   const consArr=fr.map(v=>{const pl=(v.placa||'').trim();return{pl,cons:consM[pl]||0}}).filter(v=>v.cons>0).sort((a,b)=>b.cons-a.cons);
   mk('chFC',{type:'bar',data:{labels:consArr.map(v=>v.pl),datasets:[{label:'Litros',data:consArr.map(v=>v.cons),backgroundColor:COL,borderRadius:3,barPercentage:.6,categoryPercentage:.7}]},options:{scales:{x:{},y:{}},plugins:{legend:{display:false}}}});
 
-  mt('tFA',[{l:'Data'},{l:'Tipo'},{l:'Placa'},{l:'Motorista'},{l:'Litros',t:'n',f:'n1'},{l:'Preço/L',t:'n',f:'r'},{l:'Valor',t:'n',f:'r'},{l:'KM Atual',t:'n',f:'n'}],ab.map(r=>[r.data,r.tipo_mov,r.placa||'—',r.motorista||'—',p(r.litros),p(r.preco_litro),p(r.valor_total),p(r.km_atual)]));
-  document.getElementById('cFA').textContent=ab.length+' registros';
+  // KM/L by vehicle
+  const kmlArr=fr.map(v=>{const pl=(v.placa||'').trim();const avg=kmlM[pl]?kmlM[pl].sum/kmlM[pl].cnt:0;return{pl,kml:avg}}).filter(v=>v.kml>0).sort((a,b)=>b.kml-a.kml);
+  mk('chFKML',{type:'bar',data:{labels:kmlArr.map(v=>v.pl),datasets:[{label:'KM/L',data:kmlArr.map(v=>v.kml),backgroundColor:'#059669',borderRadius:3,barPercentage:.6,categoryPercentage:.7}]},options:{scales:{x:{},y:{}},plugins:{legend:{display:false}}}});
+
+  // Consumption by vehicle type
+  const tipoM={};fr.forEach(v=>{const pl=(v.placa||'').trim();const tipo=(v.tipo||'Outro').trim();const cons=consM[pl]||0;tipoM[tipo]=(tipoM[tipo]||0)+cons});
+  mk('chFTipo',{type:'doughnut',data:{labels:Object.keys(tipoM),datasets:[{data:Object.values(tipoM),backgroundColor:COL}]},options:{cutout:'55%',plugins:{legend:{position:'bottom'}}}});
+
+  // Fuel over time per vehicle
+  const placas=[...new Set(saiT.map(r=>(r.placa||'').trim()).filter(Boolean))];
+  const dates=[...new Set(saiT.map(r=>r.data))].sort((a,b)=>dK(a).localeCompare(dK(b)));
+  const dsByPlaca=placas.map((pl,i)=>{const byDate={};saiT.filter(r=>(r.placa||'').trim()===pl).forEach(r=>{byDate[r.data]=(byDate[r.data]||0)+p(r.litros)});return{label:pl,data:dates.map(d=>byDate[d]||0),backgroundColor:COL[i%COL.length],borderRadius:2,barPercentage:.7,categoryPercentage:.85}});
+  mk('chFTime',{type:'bar',data:{labels:dates,datasets:dsByPlaca},options:{scales:{x:{stacked:true},y:{stacked:true}},plugins:{legend:{position:'top'}}}});
+
   mt('tFD',[{l:'Placa'},{l:'Modelo'},{l:'Tipo'},{l:'Motorista'},{l:'Consumo Ref.'},{l:'KM Atual',t:'n',f:'n'},{l:'Cap. Tanque',t:'n',f:'n'}],fr.map(v=>{const pl=(v.placa||'').trim();return[pl,v.modelo,v.tipo,v.motorista_fixo||'—',v.consumo_medio_ref,kmM[pl]||p(v.km_atual),p(v.capacidade_tanque)]}));
 }
 
 /* ---- VENDAS ---- */
 function rVendas(){
-  const v=D.vendas||[];
+  const allV=D.vendas||[];
+  const dtI=document.getElementById('vDtI')?.value;
+  const dtF=document.getElementById('vDtF')?.value;
+  let v=allV;
+  if(dtI||dtF){
+    const di=dtI?dtI.replace(/-/g,''):'00000000';
+    const df=dtF?dtF.replace(/-/g,''):'99999999';
+    v=allV.filter(r=>{const dk=dK(r.data);const iso=dk.slice(0,4)+dk.slice(4,6)+dk.slice(6,8);return iso>=di&&iso<=df});
+    const info=document.getElementById('vPeriodInfo');
+    if(info)info.textContent=`${v.length} de ${allV.length} registros no período`;
+  } else {
+    const info=document.getElementById('vPeriodInfo');if(info)info.textContent='';
+  }
+
   const cv=v.filter(r=>r.categoria==='Chopp Barril');
   const tL=cv.reduce((s,r)=>s+p(r.qtd_litros),0);const tB=cv.reduce((s,r)=>s+p(r.qtd_barris),0);
   const tF=cv.reduce((s,r)=>s+p(r.valor_total),0);
   const tmL=tL>0?tF/tL:0;const peds=[...new Set(v.map(r=>r.pedido))].length;
-  kpi('kV',[{l:'Volume Chopp (L)',v:fN(tL),c:'go'},{l:'Barris Vendidos',v:fN(tB),c:'bl'},{l:'Faturamento Chopp',v:fR(tF),c:'gr'},{l:'Ticket Médio / L',v:fR(tmL),c:'pu'},{l:'Pedidos',v:fN(peds),c:'or'}]);
 
-  // Product filter
+  // Compare with full period if filter active
+  let kpis=[{l:'Volume Chopp (L)',v:fN(tL),c:'go'},{l:'Barris Vendidos',v:fN(tB),c:'bl'},{l:'Faturamento Chopp',v:fR(tF),c:'gr'},{l:'Ticket Médio / L',v:fR(tmL),c:'pu'},{l:'Pedidos',v:fN(peds),c:'or'}];
+  if(dtI||dtF){
+    const allCV=allV.filter(r=>r.categoria==='Chopp Barril');
+    const aL=allCV.reduce((s,r)=>s+p(r.qtd_litros),0);const aF=allCV.reduce((s,r)=>s+p(r.valor_total),0);
+    const pctL=aL>0?(tL/aL*100):0;const pctF=aF>0?(tF/aF*100):0;
+    kpis[0].s=fN(pctL,1)+'% do total';kpis[2].s=fN(pctF,1)+'% do total';
+  }
+  kpi('kV',kpis);
+
   const prods=[...new Set(v.map(r=>r.produto).filter(Boolean))].sort();
   document.getElementById('fVP').innerHTML='<option value="">Todos Produtos</option>'+prods.map(pr=>`<option value="${pr}">${pr}</option>`).join('');
 
-  // All vendas table (first tab)
-  const allV=v.slice().sort((a,b)=>{const da=a.data.split('/'),db=b.data.split('/');return(db[2]+db[1]+db[0]).localeCompare(da[2]+da[1]+da[0])});
-  mt('tVA',[{l:'Data'},{l:'Pedido'},{l:'Origem'},{l:'Cliente'},{l:'Produto'},{l:'Cat.'},{l:'Litros',t:'n',f:'n'},{l:'Barris',t:'n',f:'n'},{l:'Valor',t:'n',f:'r'}],allV.map(r=>[r.data,r.pedido,r.origem,r.cliente,r.produto,r.categoria,p(r.qtd_litros),p(r.qtd_barris),p(r.valor_total)]));
+  const vSorted=v.slice().sort((a,b)=>dK(b.data).localeCompare(dK(a.data)));
+  mt('tVA',[{l:'Data'},{l:'Pedido'},{l:'Origem'},{l:'Cliente'},{l:'Produto'},{l:'Cat.'},{l:'Litros',t:'n',f:'n'},{l:'Barris',t:'n',f:'n'},{l:'Valor',t:'n',f:'r'}],vSorted.map(r=>[r.data,r.pedido,r.origem,r.cliente,r.produto,r.categoria,p(r.qtd_litros),p(r.qtd_barris),p(r.valor_total)]));
   document.getElementById('cVA').textContent=v.length+' registros';
 
-  // Por produto
   const prodM={};cv.forEach(r=>{const pr=r.produto;if(!prodM[pr])prodM[pr]={l:0,b:0,v:0};prodM[pr].l+=p(r.qtd_litros);prodM[pr].b+=p(r.qtd_barris);prodM[pr].v+=p(r.valor_total)});
   const pArr=Object.entries(prodM).sort((a,b)=>b[1].l-a[1].l);
   mt('tVP',[{l:'Produto'},{l:'Litros',t:'n',f:'n'},{l:'Barris',t:'n',f:'n'},{l:'Valor (R$)',t:'n',f:'r'},{l:'Ticket/L',t:'n',f:'r'},{l:'% Vol',t:'n',f:'p'},{l:'% Fat',t:'n',f:'p'}],pArr.map(([pr,d])=>[pr,d.l,d.b,d.v,d.l>0?d.v/d.l:0,tL>0?d.l/tL*100:0,tF>0?d.v/tF*100:0]));
   mk('chVP',{type:'bar',data:{labels:pArr.map(x=>x[0].length>20?x[0].slice(0,20)+'…':x[0]),datasets:[{label:'Litros',data:pArr.map(x=>x[1].l),backgroundColor:'#B8942E',borderRadius:3,barPercentage:.7,categoryPercentage:.8}]},options:{indexAxis:'y',scales:{x:{},y:{}},plugins:{legend:{display:false}}}});
 
-  // Ranking clientes
   const cliM={};v.forEach(r=>{const c=r.cliente;const t=opT(r);if(!cliM[c])cliM[c]={t,l:0,b:0,v:0,peds:new Set()};cliM[c].l+=p(r.qtd_litros);cliM[c].b+=p(r.qtd_barris);cliM[c].v+=p(r.valor_total);cliM[c].peds.add(r.pedido)});
   const dCols=[{l:'Cliente'},{l:'Tipo'},{l:'Litros',t:'n',f:'n'},{l:'Barris',t:'n',f:'n'},{l:'Valor',t:'n',f:'r'},{l:'Pedidos',t:'n',f:'n'},{l:'Ticket Médio',t:'n',f:'r'}];
   const dR=[],pR=[];
@@ -634,15 +717,13 @@ function rVendas(){
   mk('chVCL',{type:'bar',data:{labels:cliByL.map(c=>c[0].length>18?c[0].slice(0,18)+'…':c[0]),datasets:[{data:cliByL.map(c=>c[1].l),backgroundColor:'#2563eb',borderRadius:3,barPercentage:.7,categoryPercentage:.8}]},options:{indexAxis:'y',scales:{x:{},y:{}},plugins:{legend:{display:false}}}});
   mk('chVCR',{type:'bar',data:{labels:cliByR.map(c=>c[0].length>18?c[0].slice(0,18)+'…':c[0]),datasets:[{data:cliByR.map(c=>c[1].v),backgroundColor:'#059669',borderRadius:3,barPercentage:.7,categoryPercentage:.8}]},options:{indexAxis:'y',scales:{x:{},y:{}},plugins:{legend:{display:false}}}});
 
-  // Operação
   const opD={'Distribuidor':{l:0,v:0,cli:new Set(),ped:new Set()},'PDV/DELIV':{l:0,v:0,cli:new Set(),ped:new Set()}};
   v.forEach(r=>{const t=opT(r);opD[t].l+=p(r.qtd_litros);opD[t].v+=p(r.valor_total);opD[t].cli.add(r.cliente);opD[t].ped.add(r.pedido)});
   document.getElementById('opC').innerHTML=Object.entries(opD).map(([t,d])=>`<div class="pn"><div class="pn-h"><span class="tg ${t==='Distribuidor'?'di':'pv'}">${t}</span></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><div><span style="font-size:.6rem;color:var(--t3);display:block">Volume (L)</span><b style="font-size:1rem">${fN(d.l)}</b></div><div><span style="font-size:.6rem;color:var(--t3);display:block">Faturamento</span><b style="font-size:1rem;color:var(--green)">${fR(d.v)}</b></div><div><span style="font-size:.6rem;color:var(--t3);display:block">Clientes</span><b>${d.cli.size}</b></div><div><span style="font-size:.6rem;color:var(--t3);display:block">Pedidos</span><b>${d.ped.size}</b></div></div></div>`).join('');
   mk('chVO',{type:'bar',data:{labels:['Volume (L)','Faturamento (R$)'],datasets:[{label:'Distribuidor',data:[opD.Distribuidor.l,opD.Distribuidor.v],backgroundColor:'#B8942E',borderRadius:3,barPercentage:.6},{label:'PDV/DELIV',data:[opD['PDV/DELIV'].l,opD['PDV/DELIV'].v],backgroundColor:'#2563eb',borderRadius:3,barPercentage:.6}]},options:{scales:{x:{},y:{}},plugins:{legend:{position:'top'}}}});
 
-  // Evolução temporal
   const dayM={};v.forEach(r=>{const d=r.data;if(!dayM[d])dayM[d]={l:0,v:0,p:new Set()};dayM[d].l+=p(r.qtd_litros);dayM[d].v+=p(r.valor_total);dayM[d].p.add(r.pedido)});
-  const days=Object.keys(dayM).sort((a,b)=>{const pa=a.split('/'),pb=b.split('/');return(pa[2]+pa[1]+pa[0]).localeCompare(pb[2]+pb[1]+pb[0])});
+  const days=Object.keys(dayM).sort((a,b)=>dK(a).localeCompare(dK(b)));
   mt('tVT',[{l:'Data'},{l:'Litros',t:'n',f:'n'},{l:'Faturamento',t:'n',f:'r'},{l:'Pedidos',t:'n',f:'n'}],days.map(d=>[d,dayM[d].l,dayM[d].v,dayM[d].p.size]));
   mk('chVT',{type:'bar',data:{labels:days,datasets:[{label:'Litros',data:days.map(d=>dayM[d].l),backgroundColor:'#B8942E',borderRadius:3,barPercentage:.6,yAxisID:'y'},{label:'Faturamento',data:days.map(d=>dayM[d].v),type:'line',borderColor:'#059669',backgroundColor:'rgba(5,150,105,.1)',fill:true,tension:.3,yAxisID:'y1',pointRadius:3}]},options:{scales:{x:{},y:{position:'left'},y1:{position:'right',grid:{drawOnChartArea:false}}},plugins:{legend:{position:'top'}}}});
 }
