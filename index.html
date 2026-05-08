@@ -174,7 +174,7 @@ input[type="date"].df:focus{border-color:var(--gold)}
   .sec-t{font-size:.9rem}.pn{padding:10px}.kp{padding:9px 10px}.kp-v{font-size:1.1rem}
   .mh,th[data-mh="1"]{display:none}
 }
-@media(max-width:480px){.kr.c3,.kr.c4,.kr.c5,.kr.c6{grid-template-columns:1fr 1fr}.pg{grid-template-columns:1fr}.hdr-time{display:none}.gsearch{max-width:140px}}
+@media(max-width:480px){.kr.c3,.kr.c4,.kr.c5,.kr.c6{grid-template-columns:1fr 1fr}.pg{grid-template-columns:repeat(2,1fr)}.hdr-time{display:none}.gsearch{max-width:140px}}
 </style>
 </head>
 <body>
@@ -518,7 +518,7 @@ function rEstoque(){
   const tS=est.reduce((s,r)=>s+p(r.qtd_saida),0);
   kpi('kE',[{l:'Posição Chopp (barris)',v:fN(posT),c:'go'},{l:'Total SKUs',v:fN(tSKU),c:'bl'},{l:'Total Entradas',v:fN(tE),c:'gr'},{l:'Total Saídas',v:fN(tS),c:'or'},{l:'Movimentações',v:fN(est.length),c:'pu'}]);
 
-  document.getElementById('gE').innerHTML=chopp.map(([pr,d])=>({n:pr,saldo:d.e-d.s,e:d.e,s:d.s})).sort((a,b)=>b.saldo-a.saldo).map(x=>`<div class="pc"><div class="pc-n">${x.n}</div><div class="pc-v">${fN(x.saldo)}</div><div class="pc-r"><span>Entradas</span><span class="v g">+${fN(x.e)}</span></div><div class="pc-r"><span>Saídas</span><span class="v r">-${fN(x.s)}</span></div></div>`).join('');
+  document.getElementById('gE').innerHTML=chopp.map(([pr,d])=>({n:pr,saldo:d.e-d.s,e:d.e,s:d.s})).sort((a,b)=>{const aH=a.n.toLowerCase().includes('harden pilsen')?0:1;const bH=b.n.toLowerCase().includes('harden pilsen')?0:1;if(aH!==bH)return aH-bH;return a.n.localeCompare(b.n)}).map(x=>`<div class="pc"><div class="pc-n">${x.n}</div><div class="pc-v">${fN(x.saldo)}</div><div class="pc-r"><span>Entradas</span><span class="v g">+${fN(x.e)}</span></div><div class="pc-r"><span>Saídas</span><span class="v r">-${fN(x.s)}</span></div></div>`).join('');
 
   const cats=[...new Set(est.map(r=>(r.categoria||'').trim()).filter(Boolean))];
   document.getElementById('fEC').innerHTML='<option value="">Todas Categorias</option>'+cats.map(c=>`<option value="${c}">${c}</option>`).join('');
@@ -594,7 +594,7 @@ function rRet(){
   }).join('');
 
   // Terceiro tables for barril — pivoted: one row per terceiro, columns per barrel type
-  const barrelTypes=[...new Set(bMov.map(r=>r.produto||'N/A'))].sort();
+  const barrelTypes=[...new Set(bMov.map(r=>r.produto||'N/A'))].sort((a,b)=>{const sa=parseInt(barrelSize(a))||0;const sb=parseInt(barrelSize(b))||0;return sb-sa});
   const tM={};bMov.forEach(r=>{const t=r.terceiro;const id=r.terceiro_id||'';const pr=r.produto||'N/A';if(!tM[t])tM[t]={id,byType:{}};if(!tM[t].byType[pr])tM[t].byType[pr]=0;tM[t].byType[pr]+=p(r.qtd_saida_CD)-p(r.qtd_entrada_CD)});
   const gTT=id=>D.cm[id]?.grp||'PDV/DELIV';
 
@@ -731,6 +731,7 @@ function rFrotaAnal(){
   });
 
   // Enrich records with computed km_perc
+  // KM/L = km_percorridos / litros do abastecimento ANTERIOR
   const enriched=[];
   Object.entries(byPlaca).forEach(([pl,recs])=>{
     recs.forEach((r,i)=>{
@@ -743,7 +744,8 @@ function rFrotaAnal(){
       if(kmPerc<=0&&i===0&&frKm[pl]>0&&km>0&&km>frKm[pl]){
         kmPerc=km-frKm[pl];
       }
-      const kml=kmPerc>0&&lit>0?kmPerc/lit:0;
+      const litPrev=i>0?p(recs[i-1].litros):0;
+      const kml=kmPerc>0&&litPrev>0?kmPerc/litPrev:0;
       const custoKm=kmPerc>0&&cost>0?cost/kmPerc:0;
       enriched.push({pl,data:r.data,lit,km,kmPerc,kml,cost,custoKm,mot:r.motorista||'—'});
     });
