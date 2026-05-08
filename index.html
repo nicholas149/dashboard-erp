@@ -172,6 +172,7 @@ input[type="date"].df:focus{border-color:var(--gold)}
   .pg{grid-template-columns:repeat(2,1fr)}.vg{grid-template-columns:1fr}
   .g2,.g3,.g23{grid-template-columns:1fr}.st{width:100%}
   .sec-t{font-size:.9rem}.pn{padding:10px}.kp{padding:9px 10px}.kp-v{font-size:1.1rem}
+  .mh,th[data-mh="1"]{display:none}
 }
 @media(max-width:480px){.kr.c3,.kr.c4,.kr.c5,.kr.c6{grid-template-columns:1fr 1fr}.pg{grid-template-columns:1fr}.hdr-time{display:none}.gsearch{max-width:140px}}
 </style>
@@ -459,9 +460,9 @@ function mk(id,cfg){
 // Table
 function mt(cid,cols,rows){
   const w=document.getElementById(cid);if(!w)return;
-  let h='<table><thead><tr>';cols.forEach(c=>{h+=`<th${c.t==='n'?' class="r"':''}>${c.l}</th>`});
+  let h='<table><thead><tr>';cols.forEach((c,i)=>{h+=`<th${c.t==='n'?' class="r"':''}${c.mh?' data-mh="1"':''}>${c.l}</th>`});
   h+='</tr></thead><tbody>';
-  rows.forEach(row=>{h+='<tr>';row.forEach((v,i)=>{const c=cols[i];const isN=c.t==='n';let d;if(c.f==='r')d=fR(v);else if(c.f==='n')d=fN(v);else if(c.f==='n1')d=fN(v,1);else if(c.f==='n2')d=fN(v,2);else if(c.f==='p')d=fN(v,1)+'%';else d=v;let cls=isN?'r':'';if(c.color&&typeof v==='number'){if(v>0)cls+=' vp';else if(v<0)cls+=' vn';else cls+=' vz'}h+=`<td class="${cls}">${d}</td>`});h+='</tr>'});
+  rows.forEach(row=>{h+='<tr>';row.forEach((v,i)=>{const c=cols[i];const isN=c.t==='n';let d;if(c.f==='r')d=fR(v);else if(c.f==='n')d=fN(v);else if(c.f==='n1')d=fN(v,1);else if(c.f==='n2')d=fN(v,2);else if(c.f==='p')d=fN(v,1)+'%';else d=v;let cls=isN?'r':'';if(c.mh)cls+=' mh';if(c.color&&typeof v==='number'){if(v>0)cls+=' vp';else if(v<0)cls+=' vn';else cls+=' vz'}h+=`<td class="${cls}">${d}</td>`});h+='</tr>'});
   if(!rows.length)h+=`<tr><td colspan="${cols.length}" style="text-align:center;color:var(--t3);padding:16px">Nenhum registro</td></tr>`;
   h+='</tbody></table>';w.innerHTML=h;
 }
@@ -529,7 +530,7 @@ function rEstoque(){
   // Movimentações — sorted by date descending
   const pedCli={};(D.vendas||[]).forEach(v=>{if(v.pedido&&v.cliente)pedCli[v.pedido.trim()]=v.cliente});
   const estSorted=est.slice().sort((a,b)=>dK(b.data).localeCompare(dK(a.data)));
-  mt('tEM',[{l:'Data'},{l:'Produto'},{l:'SKU'},{l:'Categoria'},{l:'Tipo Mov.'},{l:'Cliente'},{l:'Entrada',t:'n',f:'n'},{l:'Saída',t:'n',f:'n'},{l:'Valor',t:'n',f:'r'}],estSorted.map(r=>[r.data,r.produto,r.sku,r.categoria,r.tipo_mov,pedCli[(r.ref||'').trim()]||'—',p(r.qtd_entrada),p(r.qtd_saida),p(r.valor_total)]));
+  mt('tEM',[{l:'Data'},{l:'Produto'},{l:'SKU',mh:1},{l:'Categoria',mh:1},{l:'Tipo Mov.',mh:1},{l:'Cliente'},{l:'Entrada',t:'n',f:'n'},{l:'Saída',t:'n',f:'n'},{l:'Valor',t:'n',f:'r',mh:1}],estSorted.map(r=>[r.data,r.produto,r.sku,r.categoria,r.tipo_mov,pedCli[(r.ref||'').trim()]||'—',p(r.qtd_entrada),p(r.qtd_saida),p(r.valor_total)]));
   document.getElementById('cEM').textContent=est.length+' registros';
 
   const catM={};Object.entries(pm).forEach(([,d])=>{const c=d.cat||'Outros';catM[c]=(catM[c]||0)+(d.e-d.s)});
@@ -605,7 +606,7 @@ function rRet(){
 
   // Barrel movements — sorted by date desc
   const barrisSorted=barris.slice().sort((a,b)=>dK(b.data).localeCompare(dK(a.data)));
-  mt('tRBM',[{l:'Data'},{l:'Produto'},{l:'Terceiro'},{l:'Tipo Mov.'},{l:'Entrada CD',t:'n',f:'n'},{l:'Saída CD',t:'n',f:'n'},{l:'Status'}],barrisSorted.map(r=>[r.data,r.produto,r.terceiro||'—',r.tipo_mov,p(r.qtd_entrada_CD),p(r.qtd_saida_CD),r.status]));
+  mt('tRBM',[{l:'Data'},{l:'Produto'},{l:'Terceiro'},{l:'Tipo Mov.',mh:1},{l:'Entrada CD',t:'n',f:'n'},{l:'Saída CD',t:'n',f:'n'},{l:'Status',mh:1}],barrisSorted.map(r=>[r.data,r.produto,r.terceiro||'—',r.tipo_mov,p(r.qtd_entrada_CD),p(r.qtd_saida_CD),r.status]));
   document.getElementById('cRBM').textContent=barris.length+' registros';
 
   // Charts
@@ -645,13 +646,13 @@ function rFrota(){
   const saiT=ab.filter(r=>(r.tipo_mov||'').toLowerCase().includes('sa'));
   const entT=ab.filter(r=>(r.tipo_mov||'').toLowerCase().includes('entrada'));
   const tLE=entT.reduce((s,r)=>s+p(r.litros),0);const tLS=saiT.reduce((s,r)=>s+p(r.litros),0);
-  const saldo=tLE-tLS;const custoT=ab.reduce((s,r)=>s+p(r.valor_total),0);
-  const pm=tLE>0?entT.reduce((s,r)=>s+p(r.valor_total),0)/tLE:0;
-  kpi('kF',[{l:'Saldo Tanque (L)',v:fN(saldo,1),c:'go',s:`${fN(tLE)} ent. — ${fN(tLS)} saída`},{l:'Custo Total',v:fR(custoT),c:'re'},{l:'Preço Médio / L',v:fR(pm),c:'bl'},{l:'Veículos',v:fN(fr.length),c:'pu'},{l:'Abastecimentos',v:fN(saiT.length),c:'gr',s:'saídas de tanque'}]);
+  const saldo=tLE-tLS;const custoSai=saiT.reduce((s,r)=>s+p(r.valor_total),0);
+  const pm=entT.length>0?entT.reduce((s,r)=>s+p(r.preco_litro),0)/entT.length:0;
+  kpi('kF',[{l:'Saldo Tanque (L)',v:fN(saldo,1),c:'go',s:`${fN(tLE)} ent. — ${fN(tLS)} saída`},{l:'Custo Total',v:fR(custoSai),c:'re',s:'saídas de tanque'},{l:'Preço Médio / L',v:fR(pm),c:'bl',s:'média entradas'},{l:'Veículos',v:fN(fr.length),c:'pu'},{l:'Abastecimentos',v:fN(saiT.length),c:'gr',s:'saídas de tanque'}]);
 
   // Abastecimentos table first — sorted by date desc
   const abSorted=ab.slice().sort((a,b)=>dK(b.data).localeCompare(dK(a.data)));
-  mt('tFA',[{l:'Data'},{l:'Tipo'},{l:'Placa'},{l:'Motorista'},{l:'Litros',t:'n',f:'n1'},{l:'Preço/L',t:'n',f:'r'},{l:'Valor',t:'n',f:'r'},{l:'KM Atual',t:'n',f:'n'},{l:'KM/L',t:'n',f:'n1'}],abSorted.map(r=>[r.data,r.tipo_mov,r.placa||'—',r.motorista||'—',p(r.litros),p(r.preco_litro),p(r.valor_total),p(r.km_atual),p(r.kml)]));
+  mt('tFA',[{l:'Data'},{l:'Tipo',mh:1},{l:'Placa'},{l:'Motorista'},{l:'Litros',t:'n',f:'n1'},{l:'Preço/L',t:'n',f:'r',mh:1},{l:'Valor',t:'n',f:'r',mh:1},{l:'KM Atual',t:'n',f:'n'},{l:'KM/L',t:'n',f:'n1',mh:1}],abSorted.map(r=>[r.data,r.tipo_mov,r.placa||'—',r.motorista||'—',p(r.litros),p(r.preco_litro),p(r.valor_total),p(r.km_atual),p(r.kml)]));
   document.getElementById('cFA').textContent=ab.length+' registros';
 
   // Vehicle cards and consumption table
@@ -784,19 +785,32 @@ function rFrotaAnal(){
     return[pl,frMod[pl]||'—',d.cnt,d.lit,avgL,d.km,kml,d.cost,ckm,ref,effTxt];
   }).sort((a,b)=>b[3]-a[3]));
 
-  // Line charts: L por abastecimento e KM/L por abastecimento (over time)
-  const chronoSorted=enriched.slice().sort((a,b)=>dK(a.data).localeCompare(dK(b.data)));
+  // Line charts: L por abastecimento e KM/L ao longo do tempo
+  const chronoSorted=enriched.slice().sort((a,b)=>{const dc=dK(a.data).localeCompare(dK(b.data));return dc!==0?dc:a.km-b.km});
   const placas=[...new Set(enriched.map(r=>r.pl))].sort();
   const allDates=[...new Set(chronoSorted.map(r=>r.data))].sort((a,b)=>dK(a).localeCompare(dK(b)));
 
+  // KM/L médio acumulado ao longo do tempo (média móvel por data)
+  const kmlByDate={};chronoSorted.forEach(r=>{
+    if(!kmlByDate[r.data])kmlByDate[r.data]={totLit:0,totKm:0,vals:[]};
+    kmlByDate[r.data].totLit+=r.lit;kmlByDate[r.data].totKm+=r.kmPerc;
+    if(r.kml>0)kmlByDate[r.data].vals.push(r.kml);
+  });
+
   if(placas.length<=1&&enriched.length>0){
-    mk('chFAL',{type:'bar',data:{labels:allDates,datasets:[{label:placas[0]||'Veículo',data:allDates.map(d=>{const r=chronoSorted.find(x=>x.data===d&&x.pl===placas[0]);return r?r.lit:0}),backgroundColor:'#B8942E',borderRadius:3,barPercentage:.6}]},options:{scales:{x:{},y:{title:{display:true,text:'Litros'}}},plugins:{legend:{display:false}}}});
-    mk('chFAKML',{type:'bar',data:{labels:allDates,datasets:[{label:placas[0]||'Veículo',data:allDates.map(d=>{const r=chronoSorted.find(x=>x.data===d&&x.pl===placas[0]);return r?r.kml:0}),backgroundColor:'#059669',borderRadius:3,barPercentage:.6}]},options:{scales:{x:{},y:{title:{display:true,text:'KM/L'}}},plugins:{legend:{display:false}}}});
+    mk('chFAL',{type:'bar',data:{labels:allDates,datasets:[{label:placas[0]||'Veículo',data:allDates.map(d=>{const dd=kmlByDate[d];return dd?dd.totLit:0}),backgroundColor:'#B8942E',borderRadius:3,barPercentage:.6}]},options:{scales:{x:{},y:{title:{display:true,text:'Litros'}}},plugins:{legend:{display:false}}}});
+    mk('chFAKML',{type:'line',data:{labels:allDates,datasets:[{label:'KM/L',data:allDates.map(d=>{const dd=kmlByDate[d];return dd&&dd.vals.length>0?dd.vals.reduce((a,b)=>a+b,0)/dd.vals.length:null}),borderColor:'#059669',backgroundColor:'#05966933',tension:.3,pointRadius:5,pointBackgroundColor:'#059669',fill:true,spanGaps:true}]},options:{scales:{x:{},y:{title:{display:true,text:'KM/L'},beginAtZero:true}},plugins:{legend:{display:false}}}});
   } else {
     const dsL=placas.map((pl,i)=>({label:pl,data:allDates.map(d=>{const r=chronoSorted.find(x=>x.data===d&&x.pl===pl);return r?r.lit:null}),borderColor:COL[i%COL.length],backgroundColor:COL[i%COL.length]+'33',tension:.3,pointRadius:4,spanGaps:true}));
     mk('chFAL',{type:'line',data:{labels:allDates,datasets:dsL},options:{scales:{x:{},y:{title:{display:true,text:'Litros'}}},plugins:{legend:{position:'top'}}}});
-    const dsK=placas.map((pl,i)=>({label:pl,data:allDates.map(d=>{const r=chronoSorted.find(x=>x.data===d&&x.pl===pl);return r&&r.kml>0?r.kml:null}),borderColor:COL[i%COL.length],backgroundColor:COL[i%COL.length]+'33',tension:.3,pointRadius:4,spanGaps:true}));
-    mk('chFAKML',{type:'line',data:{labels:allDates,datasets:dsK},options:{scales:{x:{},y:{title:{display:true,text:'KM/L'}}},plugins:{legend:{position:'top'}}}});
+    // KM/L por veículo ao longo do tempo
+    const dsK=placas.map((pl,i)=>{
+      const plRecs=chronoSorted.filter(x=>x.pl===pl);
+      return{label:pl,data:allDates.map(d=>{const r=plRecs.find(x=>x.data===d);return r&&r.kml>0?r.kml:null}),borderColor:COL[i%COL.length],backgroundColor:COL[i%COL.length]+'33',tension:.3,pointRadius:4,spanGaps:true};
+    });
+    // Adicionar linha de média geral
+    dsK.push({label:'Média Geral',data:allDates.map(d=>{const dd=kmlByDate[d];return dd&&dd.vals.length>0?dd.vals.reduce((a,b)=>a+b,0)/dd.vals.length:null}),borderColor:'#111827',borderDash:[5,3],backgroundColor:'transparent',tension:.3,pointRadius:3,spanGaps:true,borderWidth:2});
+    mk('chFAKML',{type:'line',data:{labels:allDates,datasets:dsK},options:{scales:{x:{},y:{title:{display:true,text:'KM/L'},beginAtZero:true}},plugins:{legend:{position:'top'}}}});
   }
 
   // Weekly summary
