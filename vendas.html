@@ -11,11 +11,11 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
   --g:#0F6E56;--g1:#0a5240;--g2:#E1F5EE;--g3:#A7F3D0;
-  --a:#D97706;--a2:#FEF3C7;--a3:#FDE68A;
+  --a:#D97706;--a2:#FEF3C7;
   --r:#DC2626;--r2:#FEE2E2;
-  --b:#185FA5;--b2:#EFF6FF;--b3:#93C5FD;
+  --b:#185FA5;--b2:#EFF6FF;
   --ink:#0D1B14;--ink2:#374151;--ink3:#6B7280;--ink4:#9CA3AF;
-  --bg:#F4F7F5;--bg2:#FFFFFF;--bd:#E5E7EB;--bd2:#D1D5DB;
+  --bg:#F4F7F5;--bg2:#FFFFFF;--bd:#E5E7EB;
   --rad:14px;--rad2:10px;--rad3:8px;
   --sh:0 1px 4px rgba(0,0,0,.07),0 4px 16px rgba(0,0,0,.06);
   --sh2:0 2px 8px rgba(0,0,0,.1),0 8px 32px rgba(0,0,0,.08);
@@ -25,7 +25,7 @@
 html{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);font-size:15px}
 body{min-height:100dvh;display:flex;flex-direction:column}
 
-/* ── Topbar ──────────────────────────────── */
+/* ── Topbar */
 .topbar{background:var(--g);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;box-shadow:0 2px 8px rgba(15,110,86,.3)}
 .logo{font-weight:700;font-size:17px;letter-spacing:-.3px}
 .logo-sub{opacity:.55;font-weight:400;font-size:12px;margin-left:5px}
@@ -34,14 +34,14 @@ body{min-height:100dvh;display:flex;flex-direction:column}
 .btn-portal{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.22);border-radius:99px;padding:4px 11px;font-size:12px;font-weight:500;color:#fff;text-decoration:none;transition:background .15s}
 .btn-portal:hover{background:rgba(255,255,255,.25)}
 
-/* ── Layout ──────────────────────────────── */
+/* ── Layout */
 .dash-wrap{display:flex;flex:1;overflow:hidden}
 .sidebar{width:var(--sidebar-w);background:var(--bg2);border-right:1px solid var(--bd);padding:16px;overflow-y:auto;flex-shrink:0;display:flex;flex-direction:column;gap:16px}
 .dash-main{flex:1;overflow-y:auto;padding:16px 20px;display:flex;flex-direction:column;gap:14px}
 #dashContent{display:none;flex-direction:column;gap:14px;flex:1}
-#dashContent.show{display:flex}
+#dashContent.show{display:flex;flex-direction:column}
 
-/* ── Sidebar ─────────────────────────────── */
+/* ── Sidebar */
 .sb-title{font-size:11px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:var(--ink3)}
 .sb-group{display:flex;flex-direction:column;gap:6px}
 .sb-label{font-size:12px;font-weight:500;color:var(--ink2)}
@@ -57,7 +57,7 @@ body{min-height:100dvh;display:flex;flex-direction:column}
 .sb-btn-clear{background:transparent;color:var(--ink3);border:1px solid var(--bd)}
 .sb-btn-clear:hover{background:var(--bg);color:var(--ink2)}
 
-/* ── Dropdown de busca ───────────────────── */
+/* ── Dropdown search */
 .sb-dd{position:relative}
 .sb-dd-list{position:absolute;top:calc(100% + 2px);left:0;right:0;background:var(--bg2);border:1.5px solid var(--g);border-radius:var(--rad3);box-shadow:var(--sh2);z-index:300;max-height:180px;overflow-y:auto;display:none}
 .sb-dd-list.open{display:block}
@@ -65,17 +65,18 @@ body{min-height:100dvh;display:flex;flex-direction:column}
 .sb-dd-item:last-child{border-bottom:none}
 .sb-dd-item:hover{background:var(--g2)}
 
-/* ── Tabs ────────────────────────────────── */
+/* ── Tabs */
 .tab-bar{display:flex;gap:0;border-bottom:2px solid var(--bd);overflow-x:auto;flex-shrink:0}
 .tab-btn{padding:10px 16px;font-size:13px;font-weight:500;color:var(--ink3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap;transition:all .15s}
 .tab-btn:hover{color:var(--ink)}
 .tab-btn.active{color:var(--g);border-bottom-color:var(--g);font-weight:600}
 .tab-panel{display:none;flex-direction:column;gap:14px;animation:fi .18s ease;width:100%}
-.tab-panel.active{display:flex}
+.tab-panel.active{display:flex;flex-direction:column;width:100%}
 @keyframes fi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
 
-/* ── KPI Cards ───────────────────────────── */
-.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+/* ── KPI Cards */
+.kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.kpi-row-4{grid-template-columns:repeat(4,1fr)}
 .kpi-row-3{grid-template-columns:repeat(3,1fr)}
 .kpi{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--rad);padding:14px 16px;box-shadow:var(--sh)}
 .kpi-label{font-size:11px;font-weight:500;color:var(--ink3);text-transform:uppercase;letter-spacing:.4px}
@@ -85,15 +86,15 @@ body{min-height:100dvh;display:flex;flex-direction:column}
 .kpi-delta.up{color:var(--g)}
 .kpi-delta.down{color:var(--r)}
 
-/* ── Chart containers ────────────────────── */
+/* ── Chart containers */
 .chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.chart-full{grid-column:1/-1}
 .chart-card{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--rad);padding:16px;box-shadow:var(--sh)}
 .chart-title{font-size:13px;font-weight:600;color:var(--ink2);margin-bottom:10px}
-.chart-wrap{position:relative;width:100%}
+.chart-wrap{position:relative;width:100%;max-height:280px}
+.chart-wrap canvas{max-height:250px}
 
-/* ── Canal compare cards ─────────────────── */
-.canal-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+/* ── Canal compare cards */
+.canal-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
 .canal-card{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--rad);padding:16px;box-shadow:var(--sh)}
 .canal-head{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;display:flex;align-items:center;gap:6px}
 .canal-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
@@ -102,24 +103,29 @@ body{min-height:100dvh;display:flex;flex-direction:column}
 .canal-row-label{color:var(--ink3)}
 .canal-row-val{font-weight:600}
 
-/* ── Tables ──────────────────────────────── */
-.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+/* ── Tables */
+.tbl-card{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--rad);padding:16px;box-shadow:var(--sh)}
+.tbl-card-title{font-size:13px;font-weight:600;color:var(--ink2);margin-bottom:10px}
+.tbl-search{width:100%;max-width:360px;border:1.5px solid var(--bd);border-radius:var(--rad3);padding:8px 12px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink);background:var(--bg);outline:none;margin-bottom:10px}
+.tbl-search:focus{border-color:var(--g);background:#fff}
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;max-height:520px;overflow-y:auto}
 .tbl{width:100%;border-collapse:collapse;font-size:13px}
-.tbl th{text-align:left;padding:8px 10px;font-size:11px;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:.3px;border-bottom:2px solid var(--bd);cursor:pointer;white-space:nowrap;user-select:none}
+.tbl th{position:sticky;top:0;background:var(--bg2);text-align:left;padding:8px 10px;font-size:11px;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:.3px;border-bottom:2px solid var(--bd);cursor:pointer;white-space:nowrap;user-select:none;z-index:2}
 .tbl th:hover{color:var(--ink)}
 .tbl th.sorted-asc::after{content:' ▲';font-size:9px}
 .tbl th.sorted-desc::after{content:' ▼';font-size:9px}
 .tbl td{padding:7px 10px;border-bottom:1px solid var(--bd);white-space:nowrap}
-.tbl tr:hover{background:var(--g2)}
-.tbl .num{text-align:right;font-variant-numeric:tabular-nums}
+.tbl tr:hover td{background:var(--g2)}
+.tbl .num{text-align:right;font-variant-numeric:tabular-nums;font-family:'DM Mono',monospace;font-size:12px}
+.tbl .no-cost{color:var(--ink4);font-style:italic}
 
-/* ── Loading ─────────────────────────────── */
+/* ── Loading */
 .loading{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;gap:12px;color:var(--ink3)}
 .loading-spinner{width:32px;height:32px;border:3px solid var(--bd);border-top-color:var(--g);border-radius:50%;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .empty-msg{text-align:center;padding:40px 20px;color:var(--ink4);font-size:14px}
 
-/* ── Responsive ──────────────────────────── */
+/* ── Responsive */
 @media(max-width:768px){
   .sidebar{display:none;position:fixed;top:0;left:0;bottom:0;width:280px;z-index:500;box-shadow:var(--sh2)}
   .sidebar.open{display:flex}
@@ -127,12 +133,17 @@ body{min-height:100dvh;display:flex;flex-direction:column}
   .sidebar-overlay.open{display:block}
   .btn-sidebar-toggle{display:block}
   .kpi-row{grid-template-columns:1fr 1fr}
+  .kpi-row-4{grid-template-columns:1fr 1fr}
   .kpi-row-3{grid-template-columns:1fr 1fr}
   .chart-grid{grid-template-columns:1fr}
-  .canal-grid{grid-template-columns:1fr}
+  .canal-grid{grid-template-columns:1fr 1fr}
   .dash-main{padding:12px}
   .tab-btn{padding:8px 12px;font-size:12px}
   .kpi-value{font-size:18px}
+}
+@media(max-width:480px){
+  .kpi-row,.kpi-row-4,.kpi-row-3{grid-template-columns:1fr}
+  .canal-grid{grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -142,8 +153,8 @@ body{min-height:100dvh;display:flex;flex-direction:column}
 <div class="topbar">
   <div><span class="logo">Harden</span><span class="logo-sub">Dashboard BI</span></div>
   <div class="topbar-right">
-    <button class="btn-sidebar-toggle" onclick="toggleSidebar()">☰ Filtros</button>
-    <a href="index.html" class="btn-portal">Operações →</a>
+    <button class="btn-sidebar-toggle" onclick="toggleSidebar()">&#9776; Filtros</button>
+    <a href="index.html" class="btn-portal">Operações &rarr;</a>
   </div>
 </div>
 
@@ -158,7 +169,7 @@ body{min-height:100dvh;display:flex;flex-direction:column}
     <div class="sb-title">Filtros</div>
 
     <div class="sb-group">
-      <label class="sb-label">Período</label>
+      <label class="sb-label">Periodo</label>
       <input type="date" class="sb-input" id="f-dt-ini">
       <input type="date" class="sb-input" id="f-dt-fim">
     </div>
@@ -166,7 +177,7 @@ body{min-height:100dvh;display:flex;flex-direction:column}
     <div class="sb-group">
       <label class="sb-label">Canal</label>
       <label class="sb-chk-row"><input type="checkbox" id="f-canal-dist" checked> Distribuidor</label>
-      <label class="sb-chk-row"><input type="checkbox" id="f-canal-pdv" checked> PDV / Delivery</label>
+      <label class="sb-chk-row"><input type="checkbox" id="f-canal-pdv" checked> PDV / Deliv</label>
       <label class="sb-chk-row"><input type="checkbox" id="f-canal-quio" checked> Quiosque</label>
     </div>
 
@@ -209,67 +220,101 @@ body{min-height:100dvh;display:flex;flex-direction:column}
     <div id="dashContent">
       <!-- Tab bar -->
       <div class="tab-bar" id="tabBar">
-        <div class="tab-btn active" data-tab="visao">Visão Geral</div>
-        <div class="tab-btn" data-tab="canal">Análise por Canal</div>
-        <div class="tab-btn" data-tab="tempo">Evolução Temporal</div>
+        <div class="tab-btn active" data-tab="visao">Visao Geral</div>
+        <div class="tab-btn" data-tab="canal">Analise por Canal</div>
+        <div class="tab-btn" data-tab="tempo">Evolucao Temporal</div>
         <div class="tab-btn" data-tab="mix">Mix de Produtos</div>
-        <div class="tab-btn" data-tab="clientes">Gestão de Clientes</div>
+        <div class="tab-btn" data-tab="clientes">Gestao de Clientes</div>
+        <div class="tab-btn" data-tab="financeiro">Resultado Financeiro</div>
       </div>
 
-      <!-- ABA 1: Visão Geral -->
+      <!-- TAB 1: Visao Geral -->
       <div class="tab-panel active" id="tab-visao">
-        <div class="kpi-row" id="kpi-visao"></div>
-        <div class="kpi-row kpi-row-3" id="kpi-visao2"></div>
+        <div class="kpi-row" id="kpi-visao1"></div>
+        <div class="kpi-row kpi-row-4" id="kpi-visao2"></div>
         <div class="chart-grid">
-          <div class="chart-card chart-full"><div class="chart-title">Faturamento Mensal por Canal</div><div class="chart-wrap"><canvas id="ch-fat-mensal"></canvas></div></div>
-          <div class="chart-card"><div class="chart-title">Distribuição por Canal</div><div class="chart-wrap"><canvas id="ch-canal-donut"></canvas></div></div>
-          <div class="chart-card"><div class="chart-title">Top 5 Produtos</div><div class="chart-wrap"><canvas id="ch-top-prod"></canvas></div></div>
+          <div class="chart-card"><div class="chart-title">Faturamento Mensal por Canal</div><div class="chart-wrap"><canvas id="ch-fat-mensal"></canvas></div></div>
+          <div class="chart-card"><div class="chart-title">Distribuicao por Canal</div><div class="chart-wrap"><canvas id="ch-canal-donut"></canvas></div></div>
+        </div>
+        <div class="tbl-card">
+          <div class="tbl-card-title">Listagem de Vendas</div>
+          <input type="text" class="tbl-search" id="search-vendas" placeholder="Buscar por pedido, cliente, produto...">
+          <div class="tbl-wrap" id="tbl-vendas-wrap"><table class="tbl" id="tbl-vendas"></table></div>
         </div>
       </div>
 
-      <!-- ABA 2: Análise por Canal -->
+      <!-- TAB 2: Analise por Canal -->
       <div class="tab-panel" id="tab-canal">
         <div class="canal-grid" id="canal-cards"></div>
         <div class="chart-grid">
-          <div class="chart-card chart-full"><div class="chart-title">Faturamento Mensal por Canal</div><div class="chart-wrap"><canvas id="ch-canal-mensal"></canvas></div></div>
-          <div class="chart-card"><div class="chart-title">Volume Mensal por Canal (L)</div><div class="chart-wrap"><canvas id="ch-canal-vol"></canvas></div></div>
-          <div class="chart-card"><div class="chart-title">Participação Canal %</div><div class="chart-wrap"><canvas id="ch-canal-share"></canvas></div></div>
-          <div class="chart-card chart-full"><div class="chart-title">Ticket Médio por Canal</div><div class="chart-wrap"><canvas id="ch-canal-ticket"></canvas></div></div>
+          <div class="chart-card"><div class="chart-title">Fat. Mensal por Canal</div><div class="chart-wrap"><canvas id="ch-canal-mensal"></canvas></div></div>
+          <div class="chart-card"><div class="chart-title">Participacao Canal %</div><div class="chart-wrap"><canvas id="ch-canal-share"></canvas></div></div>
+        </div>
+        <div class="tbl-card">
+          <div class="tbl-card-title">Resumo por Canal</div>
+          <div class="tbl-wrap" id="tbl-canal-wrap"><table class="tbl" id="tbl-canal"></table></div>
         </div>
       </div>
 
-      <!-- ABA 3: Evolução Temporal -->
+      <!-- TAB 3: Evolucao Temporal -->
       <div class="tab-panel" id="tab-tempo">
-        <div class="kpi-row kpi-row-3" id="kpi-tempo"></div>
+        <div class="kpi-row kpi-row-4" id="kpi-tempo"></div>
         <div class="chart-grid">
-          <div class="chart-card chart-full"><div class="chart-title">Faturamento Semanal</div><div class="chart-wrap"><canvas id="ch-fat-semanal"></canvas></div></div>
-          <div class="chart-card"><div class="chart-title">Faturamento Mensal + Crescimento</div><div class="chart-wrap"><canvas id="ch-fat-growth"></canvas></div></div>
-          <div class="chart-card"><div class="chart-title">Volume Mensal (L)</div><div class="chart-wrap"><canvas id="ch-vol-mensal"></canvas></div></div>
+          <div class="chart-card"><div class="chart-title">Faturamento Semanal</div><div class="chart-wrap"><canvas id="ch-fat-semanal"></canvas></div></div>
+          <div class="chart-card"><div class="chart-title">Fat Mensal + Crescimento %</div><div class="chart-wrap"><canvas id="ch-fat-growth"></canvas></div></div>
         </div>
-        <div class="chart-card"><div class="chart-title">Tabela de Crescimento</div><div class="tbl-wrap" id="tbl-growth"></div></div>
+        <div class="tbl-card">
+          <div class="tbl-card-title">Crescimento Mensal</div>
+          <div class="tbl-wrap" id="tbl-growth-wrap"><table class="tbl" id="tbl-growth"></table></div>
+        </div>
       </div>
 
-      <!-- ABA 4: Mix de Produtos -->
+      <!-- TAB 4: Mix de Produtos -->
       <div class="tab-panel" id="tab-mix">
         <div class="kpi-row" id="kpi-mix"></div>
         <div class="chart-grid">
-          <div class="chart-card"><div class="chart-title">Top 15 Produtos por Faturamento</div><div class="chart-wrap"><canvas id="ch-prod-fat"></canvas></div></div>
-          <div class="chart-card"><div class="chart-title">Top 15 Produtos por Volume (L)</div><div class="chart-wrap"><canvas id="ch-prod-vol"></canvas></div></div>
-          <div class="chart-card"><div class="chart-title">Margem por Categoria</div><div class="chart-wrap"><canvas id="ch-cat-margem"></canvas></div></div>
-          <div class="chart-card"><div class="chart-title">Análise Volume × Margem</div><div class="chart-wrap"><canvas id="ch-scatter-margem"></canvas></div></div>
+          <div class="chart-card"><div class="chart-title">Top 10 Produtos Fat.</div><div class="chart-wrap"><canvas id="ch-prod-fat"></canvas></div></div>
+          <div class="chart-card"><div class="chart-title">Top 10 Produtos Volume</div><div class="chart-wrap"><canvas id="ch-prod-vol"></canvas></div></div>
         </div>
-        <div class="chart-card"><div class="chart-title">Detalhamento por Produto</div><div class="tbl-wrap" id="tbl-mix"></div></div>
+        <div class="tbl-card">
+          <div class="tbl-card-title">Detalhamento por Produto</div>
+          <div class="tbl-wrap" id="tbl-mix-wrap"><table class="tbl" id="tbl-mix"></table></div>
+        </div>
       </div>
 
-      <!-- ABA 5: Gestão de Clientes -->
+      <!-- TAB 5: Gestao de Clientes -->
       <div class="tab-panel" id="tab-clientes">
         <div class="kpi-row" id="kpi-cli"></div>
         <div class="chart-grid">
-          <div class="chart-card chart-full"><div class="chart-title">Top 20 Clientes por Faturamento</div><div class="chart-wrap"><canvas id="ch-cli-top"></canvas></div></div>
-          <div class="chart-card"><div class="chart-title">Top 10 Distribuidores</div><div class="chart-wrap"><canvas id="ch-cli-dist"></canvas></div></div>
-          <div class="chart-card"><div class="chart-title">Concentração de Receita (Pareto)</div><div class="chart-wrap"><canvas id="ch-cli-pareto"></canvas></div></div>
+          <div class="chart-card"><div class="chart-title">Top 10 Clientes Fat.</div><div class="chart-wrap"><canvas id="ch-cli-top"></canvas></div></div>
+          <div class="chart-card"><div class="chart-title">Pareto Concentracao</div><div class="chart-wrap"><canvas id="ch-cli-pareto"></canvas></div></div>
         </div>
-        <div class="chart-card"><div class="chart-title">Tabela de Clientes</div><div class="tbl-wrap" id="tbl-cli"></div></div>
+        <div class="tbl-card">
+          <div class="tbl-card-title">Tabela de Clientes</div>
+          <div class="tbl-wrap" id="tbl-cli-wrap"><table class="tbl" id="tbl-cli"></table></div>
+        </div>
+      </div>
+
+      <!-- TAB 6: Resultado Financeiro -->
+      <div class="tab-panel" id="tab-financeiro">
+        <div class="kpi-row kpi-row-4" id="kpi-fin1"></div>
+        <div class="kpi-row kpi-row-4" id="kpi-fin2"></div>
+        <div class="chart-grid">
+          <div class="chart-card"><div class="chart-title">Margem por Canal</div><div class="chart-wrap"><canvas id="ch-fin-canal"></canvas></div></div>
+          <div class="chart-card"><div class="chart-title">Margem Mensal</div><div class="chart-wrap"><canvas id="ch-fin-mensal"></canvas></div></div>
+        </div>
+        <div class="tbl-card">
+          <div class="tbl-card-title">Top 15 Clientes por Margem</div>
+          <div class="tbl-wrap" id="tbl-fin-cli-wrap"><table class="tbl" id="tbl-fin-cli"></table></div>
+        </div>
+        <div class="tbl-card">
+          <div class="tbl-card-title">Top 15 Produtos por Margem</div>
+          <div class="tbl-wrap" id="tbl-fin-prod-wrap"><table class="tbl" id="tbl-fin-prod"></table></div>
+        </div>
+        <div class="tbl-card">
+          <div class="tbl-card-title">Produtos sem Custo Cadastrado</div>
+          <div class="tbl-wrap" id="tbl-fin-nocost-wrap"><table class="tbl" id="tbl-fin-nocost"></table></div>
+        </div>
       </div>
 
     </div><!-- /dashContent -->
@@ -277,21 +322,23 @@ body{min-height:100dvh;display:flex;flex-direction:column}
 </div>
 
 <script>
-// ════════════════════════════════════════════════════════
+// ================================================================
 // CONFIG
-// ════════════════════════════════════════════════════════
+// ================================================================
 const API = 'https://script.google.com/macros/s/AKfycbxholHSDhAuzenkGyrBAukgqdNaJXArt5YBL-pRRELOHDC2uOHu_5M59eIawYWYytb2/exec';
 Chart.defaults.locale = 'pt-BR';
 Chart.defaults.font.family = "'DM Sans', sans-serif";
 Chart.defaults.font.size = 12;
 Chart.defaults.plugins.legend.labels.usePointStyle = true;
 Chart.defaults.plugins.legend.labels.padding = 14;
-const CANAL_COLORS = { 'Distribuidor':'#0F6E56', 'PDV/Delivery':'#D97706', 'Quiosque':'#185FA5' };
-const CANAL_BG     = { 'Distribuidor':'rgba(15,110,86,.15)', 'PDV/Delivery':'rgba(217,119,6,.15)', 'Quiosque':'rgba(24,95,165,.15)' };
 
-// ════════════════════════════════════════════════════════
+const CANAL_COLORS = { 'Distribuidor':'#0F6E56', 'PDV/Deliv':'#D97706', 'Quiosque':'#185FA5' };
+const CANAL_BG     = { 'Distribuidor':'rgba(15,110,86,.15)', 'PDV/Deliv':'rgba(217,119,6,.15)', 'Quiosque':'rgba(24,95,165,.15)' };
+const CANAIS = ['Distribuidor','PDV/Deliv','Quiosque'];
+
+// ================================================================
 // STATE
-// ════════════════════════════════════════════════════════
+// ================================================================
 let RAW_VENDAS = [], RAW_PRODUTOS = [], RAW_CLIENTES = [];
 let PROD_MAP = {}, CLI_MAP = {};
 let FILTERED = [];
@@ -299,9 +346,9 @@ let CHARTS = {};
 let selectedClients = [];
 let selectedProducts = [];
 
-// ════════════════════════════════════════════════════════
+// ================================================================
 // UTILS
-// ════════════════════════════════════════════════════════
+// ================================================================
 function parseBR(v) {
   if (typeof v === 'number') return v;
   if (!v) return 0;
@@ -313,9 +360,9 @@ function parseBR(v) {
 
 function parseDateBR(str) {
   if (!str) return null;
-  const s = String(str);
+  const s = String(str).trim();
   if (s.includes('/')) { const [d,m,y] = s.split('/'); return new Date(+y, +m-1, +d); }
-  if (s.includes('-')) return new Date(s);
+  if (s.includes('-')) { const p = s.split('-'); if(p[0].length===4) return new Date(+p[0],+p[1]-1,+p[2]); return new Date(+p[2],+p[1]-1,+p[0]); }
   return null;
 }
 
@@ -324,10 +371,22 @@ function fmtNum(v, d=0) { return (v||0).toLocaleString('pt-BR',{minimumFractionD
 function fmtPct(v) { return (v||0).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})+'%'; }
 
 function getCanal(v) {
-  const tipo = CLI_MAP[v.cliente_id]?.tipo || '';
+  const tipo = (CLI_MAP[v.cliente_id]?.tipo || '').trim();
+  if (tipo === 'Distribuidor') return 'Distribuidor';
+  if (tipo === 'PDV' || tipo === 'DELV.') return 'PDV/Deliv';
+  if (tipo === 'Quiosque') return 'Quiosque';
+  // Fallback by empresa
   const emp = (v.empresa||'').toLowerCase();
-  if (tipo === 'Distribuidor' || emp.includes('master') || emp.includes('wine')) return 'Distribuidor';
-  if (emp.includes('pdv') || tipo === 'PDV') return 'PDV/Delivery';
+  if (emp.includes('master') || emp.includes('wine')) return 'Distribuidor';
+  if (emp.includes('pdv')) return 'PDV/Deliv';
+  return 'Quiosque';
+}
+
+function getClientCanal(c) {
+  const tipo = (c.tipo || '').trim();
+  if (tipo === 'Distribuidor') return 'Distribuidor';
+  if (tipo === 'PDV' || tipo === 'DELV.') return 'PDV/Deliv';
+  if (tipo === 'Quiosque') return 'Quiosque';
   return 'Quiosque';
 }
 
@@ -335,7 +394,7 @@ function getMesKey(v) { return v.mes || 'SEM'; }
 
 function getWeekKey(dataStr) {
   const d = parseDateBR(dataStr);
-  if (!d) return 'SEM';
+  if (!d || isNaN(d)) return 'SEM';
   const jan1 = new Date(d.getFullYear(), 0, 1);
   const week = Math.ceil(((d - jan1) / 86400000 + jan1.getDay() + 1) / 7);
   return 'Sem ' + String(week).padStart(2,'0') + '/' + d.getFullYear();
@@ -343,9 +402,19 @@ function getWeekKey(dataStr) {
 
 function sortMesKeys(keys) {
   return keys.sort((a,b) => {
-    const [ma,ya] = (a||'00/0000').split('/').map(Number);
-    const [mb,yb] = (b||'00/0000').split('/').map(Number);
-    return (ya*100+ma)-(yb*100+mb);
+    const pa = (a||'00/0000').split('/').map(Number);
+    const pb = (b||'00/0000').split('/').map(Number);
+    const va = (pa[1]||0)*100+(pa[0]||0);
+    const vb = (pb[1]||0)*100+(pb[0]||0);
+    return va - vb;
+  });
+}
+
+function sortWeekKeys(keys) {
+  return keys.sort((a,b) => {
+    const pa = a.replace('Sem ','').split('/').map(Number);
+    const pb = b.replace('Sem ','').split('/').map(Number);
+    return ((pa[1]||0)*100+(pa[0]||0)) - ((pb[1]||0)*100+(pb[0]||0));
   });
 }
 
@@ -356,9 +425,55 @@ function buscaSemelhanca(texto, query) {
   return query.toLowerCase().split(/\s+/).filter(Boolean).every(p => t.includes(p));
 }
 
-// ════════════════════════════════════════════════════════
+function clienteName(v) {
+  const c = CLI_MAP[v.cliente_id];
+  return c ? (c.nome_canonico || c.nome_master_bling || c.nome_wine_bling || v.cliente || '') : (v.cliente || '');
+}
+
+// ================================================================
+// CHART HELPERS
+// ================================================================
+function destroyChart(key) {
+  if (CHARTS[key]) { CHARTS[key].destroy(); delete CHARTS[key]; }
+}
+
+function chartOpts(extra={}) {
+  return Object.assign({
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { datalabels: { display: false } }
+  }, extra);
+}
+
+// ================================================================
+// TABLE SORTING
+// ================================================================
+function makeTableSortable(tableEl) {
+  const ths = tableEl.querySelectorAll('th');
+  ths.forEach((th, colIdx) => {
+    th.addEventListener('click', () => {
+      const tbody = tableEl.querySelector('tbody');
+      if (!tbody) return;
+      const rows = Array.from(tbody.rows);
+      const isAsc = th.classList.contains('sorted-asc');
+      ths.forEach(h => { h.classList.remove('sorted-asc','sorted-desc'); });
+      th.classList.add(isAsc ? 'sorted-desc' : 'sorted-asc');
+      const dir = isAsc ? -1 : 1;
+      rows.sort((a,b) => {
+        let va = a.cells[colIdx]?.getAttribute('data-v') ?? a.cells[colIdx]?.textContent ?? '';
+        let vb = b.cells[colIdx]?.getAttribute('data-v') ?? b.cells[colIdx]?.textContent ?? '';
+        const na = parseFloat(va), nb = parseFloat(vb);
+        if (!isNaN(na) && !isNaN(nb)) return (na - nb) * dir;
+        return String(va).localeCompare(String(vb),'pt-BR') * dir;
+      });
+      rows.forEach(r => tbody.appendChild(r));
+    });
+  });
+}
+
+// ================================================================
 // DATA LOADING
-// ════════════════════════════════════════════════════════
+// ================================================================
 async function carregarDados() {
   try {
     const [rv, rp, rc] = await Promise.all([
@@ -382,18 +497,18 @@ async function carregarDados() {
       v._qtd = parseBR(v.qtd) || parseBR(v.qtd_barris) || 0;
       v._litros = parseBR(v.qtd_litros) || 0;
       v._preco = parseBR(v.preco_unitario) || 0;
-      v._litBarril = parseBR(v.litros_barril) || (PROD_MAP[v.sku]?.litros_barril ? parseBR(PROD_MAP[v.sku].litros_barril) : 0);
+      v._litBarril = parseBR(v.litros_barril) || (PROD_MAP[v.sku] ? parseBR(PROD_MAP[v.sku].litros_barril) : 0);
       v._custoMedio = PROD_MAP[v.sku] ? parseBR(PROD_MAP[v.sku].custo_medio) : 0;
       v._canal = getCanal(v);
       v._date = parseDateBR(v.data);
-      v._margemUnit = v._preco - v._custoMedio;
-      v._margemTotal = v._margemUnit * v._qtd;
+      v._margemUnit = v._custoMedio > 0 ? (v._preco - v._custoMedio) : 0;
+      v._margemTotal = v._custoMedio > 0 ? (v._preco - v._custoMedio) * v._qtd : 0;
+      v._custoTotal = v._custoMedio > 0 ? v._custoMedio * v._qtd : 0;
     });
 
-    // Populate sidebar dropdowns
     populateSidebar();
 
-    // Set default date range (last 30 days)
+    // Default date range (last 30 days)
     const hoje = new Date();
     const d30 = new Date(); d30.setDate(d30.getDate() - 30);
     document.getElementById('f-dt-fim').value = hoje.toISOString().slice(0,10);
@@ -403,47 +518,51 @@ async function carregarDados() {
 
     document.getElementById('loading').style.display = 'none';
     document.getElementById('dashContent').classList.add('show');
+
   } catch(e) {
-    document.getElementById('loading').innerHTML = '<div style="color:var(--r)">Erro ao carregar: '+e.message+'</div>';
+    console.error('Erro ao carregar dados:', e);
+    document.getElementById('loading').innerHTML = '<div style="color:var(--r)">Erro ao carregar dados. Verifique a conexao.</div>';
   }
 }
 
+// ================================================================
+// SIDEBAR
+// ================================================================
 function populateSidebar() {
-  // Categories
-  const cats = new Set();
-  RAW_PRODUTOS.forEach(p => { if(p.categoria) cats.add(p.categoria); });
+  // Categorias
+  const cats = [...new Set(RAW_VENDAS.map(v => v.categoria).filter(Boolean))].sort();
   const sel = document.getElementById('f-cat');
-  [...cats].sort().forEach(c => { const o = document.createElement('option'); o.value=c; o.textContent=c; sel.appendChild(o); });
+  sel.innerHTML = '<option value="">Todas</option>';
+  cats.forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = c; sel.appendChild(o); });
 
-  // Client search
-  setupSearchDD('f-cli-input','f-cli-dd','f-cli-chips', selectedClients,
-    q => RAW_CLIENTES.filter(c => buscaSemelhanca(c.nome_canonico||c.nome||'', q)).slice(0,8).map(c => ({label:c.nome_canonico||c.nome||'',value:c.id}))
+  // Client dropdown
+  setupDropdown('f-cli-input','f-cli-dd','f-cli-chips', selectedClients,
+    () => RAW_CLIENTES.map(c => ({ id: c.id, label: c.nome_canonico || c.nome_master_bling || '' })).filter(x=>x.label)
   );
 
-  // Product search
-  setupSearchDD('f-prod-input','f-prod-dd','f-prod-chips', selectedProducts,
-    q => RAW_PRODUTOS.filter(p => buscaSemelhanca(p.nome_canonico||p.nome||'', q) || buscaSemelhanca(p.sku||'', q)).slice(0,8).map(p => ({label:p.nome_canonico||p.nome||'',value:p.sku,meta:p.sku}))
+  // Product dropdown
+  setupDropdown('f-prod-input','f-prod-dd','f-prod-chips', selectedProducts,
+    () => RAW_PRODUTOS.map(p => ({ id: p.sku, label: (p.nome_canonico || p.nome || '') + (p.sku ? ' ('+p.sku+')' : '') })).filter(x=>x.label)
   );
 }
 
-function setupSearchDD(inputId, ddId, chipsId, arr, searchFn) {
+function setupDropdown(inputId, ddId, chipsId, arr, getItems) {
   const inp = document.getElementById(inputId);
   const dd = document.getElementById(ddId);
   const chips = document.getElementById(chipsId);
 
   inp.addEventListener('input', () => {
     const q = inp.value.trim();
-    if (!q) { dd.classList.remove('open'); return; }
-    const opts = searchFn(q);
-    if (!opts.length) { dd.classList.remove('open'); return; }
-    dd.innerHTML = opts.map(o => `<div class="sb-dd-item" data-value="${o.value}">${o.label}${o.meta?' <span style="color:var(--ink4);font-size:11px">'+o.meta+'</span>':''}</div>`).join('');
+    if (q.length < 2) { dd.classList.remove('open'); return; }
+    const items = getItems().filter(i => buscaSemelhanca(i.label, q)).slice(0,15);
+    if (!items.length) { dd.classList.remove('open'); return; }
+    dd.innerHTML = items.map(i => '<div class="sb-dd-item" data-id="'+i.id+'">'+i.label+'</div>').join('');
     dd.classList.add('open');
     dd.querySelectorAll('.sb-dd-item').forEach(el => {
       el.addEventListener('click', () => {
-        const val = el.dataset.value;
-        const label = el.textContent.trim();
-        if (!arr.find(x => x.value === val)) {
-          arr.push({value:val, label});
+        const id = el.getAttribute('data-id');
+        if (!arr.find(x=>x.id===id)) {
+          arr.push({ id, label: el.textContent });
           renderChips(chipsId, arr);
         }
         inp.value = '';
@@ -452,47 +571,20 @@ function setupSearchDD(inputId, ddId, chipsId, arr, searchFn) {
     });
   });
 
-  document.addEventListener('click', e => {
-    if (!inp.contains(e.target) && !dd.contains(e.target)) dd.classList.remove('open');
-  });
+  inp.addEventListener('blur', () => { setTimeout(()=> dd.classList.remove('open'), 200); });
 }
 
 function renderChips(chipsId, arr) {
   const el = document.getElementById(chipsId);
-  el.innerHTML = arr.map((c,i) => `<span class="sb-chip">${c.label}<span class="sb-chip-x" onclick="removeChip('${chipsId}',${i})">×</span></span>`).join('');
-}
-
-function removeChip(chipsId, idx) {
-  const arr = chipsId.includes('cli') ? selectedClients : selectedProducts;
-  arr.splice(idx,1);
-  renderChips(chipsId, arr);
-}
-
-// ════════════════════════════════════════════════════════
-// FILTER ENGINE
-// ════════════════════════════════════════════════════════
-function aplicarFiltros() {
-  const dtIni = document.getElementById('f-dt-ini').value ? new Date(document.getElementById('f-dt-ini').value+'T00:00:00') : null;
-  const dtFim = document.getElementById('f-dt-fim').value ? new Date(document.getElementById('f-dt-fim').value+'T23:59:59') : null;
-  const canais = [];
-  if (document.getElementById('f-canal-dist').checked) canais.push('Distribuidor');
-  if (document.getElementById('f-canal-pdv').checked) canais.push('PDV/Delivery');
-  if (document.getElementById('f-canal-quio').checked) canais.push('Quiosque');
-  const cat = document.getElementById('f-cat').value;
-  const cliIds = selectedClients.map(c=>c.value);
-  const prodSkus = selectedProducts.map(p=>p.value);
-
-  FILTERED = RAW_VENDAS.filter(v => {
-    if (dtIni && v._date && v._date < dtIni) return false;
-    if (dtFim && v._date && v._date > dtFim) return false;
-    if (canais.length && !canais.includes(v._canal)) return false;
-    if (cat && (v.categoria||'') !== cat) return false;
-    if (cliIds.length && !cliIds.includes(v.cliente_id)) return false;
-    if (prodSkus.length && !prodSkus.includes(v.sku)) return false;
-    return true;
+  el.innerHTML = arr.map((c,i) => '<span class="sb-chip">'+c.label+'<span class="sb-chip-x" data-i="'+i+'">&times;</span></span>').join('');
+  el.querySelectorAll('.sb-chip-x').forEach(x => {
+    x.addEventListener('click', () => { arr.splice(+x.getAttribute('data-i'),1); renderChips(chipsId, arr); });
   });
+}
 
-  renderAll();
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebarOverlay').classList.toggle('open');
 }
 
 function limparFiltros() {
@@ -504,488 +596,808 @@ function limparFiltros() {
   document.getElementById('f-canal-pdv').checked = true;
   document.getElementById('f-canal-quio').checked = true;
   document.getElementById('f-cat').value = '';
-  selectedClients.length = 0;
-  selectedProducts.length = 0;
+  selectedClients = [];
+  selectedProducts = [];
   renderChips('f-cli-chips', selectedClients);
   renderChips('f-prod-chips', selectedProducts);
   aplicarFiltros();
 }
 
-// ════════════════════════════════════════════════════════
+function aplicarFiltros() {
+  const dtIni = parseDateBR(document.getElementById('f-dt-ini').value);
+  const dtFim = parseDateBR(document.getElementById('f-dt-fim').value);
+  if (dtFim) dtFim.setHours(23,59,59,999);
+  const cDist = document.getElementById('f-canal-dist').checked;
+  const cPdv  = document.getElementById('f-canal-pdv').checked;
+  const cQuio = document.getElementById('f-canal-quio').checked;
+  const cat   = document.getElementById('f-cat').value;
+  const cliIds = selectedClients.map(c=>c.id);
+  const prodIds = selectedProducts.map(p=>p.id);
+
+  FILTERED = RAW_VENDAS.filter(v => {
+    if (dtIni && v._date && v._date < dtIni) return false;
+    if (dtFim && v._date && v._date > dtFim) return false;
+    const canal = v._canal;
+    if (canal === 'Distribuidor' && !cDist) return false;
+    if (canal === 'PDV/Deliv' && !cPdv) return false;
+    if (canal === 'Quiosque' && !cQuio) return false;
+    if (cat && v.categoria !== cat) return false;
+    if (cliIds.length && !cliIds.includes(v.cliente_id)) return false;
+    if (prodIds.length && !prodIds.includes(v.sku)) return false;
+    return true;
+  });
+
+  renderAll();
+
+  // Close sidebar on mobile
+  if (window.innerWidth <= 768) {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebarOverlay').classList.remove('open');
+  }
+}
+
+// ================================================================
+// TABS
+// ================================================================
+document.addEventListener('click', e => {
+  if (e.target.classList.contains('tab-btn')) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    e.target.classList.add('active');
+    document.getElementById('tab-'+e.target.dataset.tab).classList.add('active');
+  }
+});
+
+// ================================================================
 // RENDER ALL
-// ════════════════════════════════════════════════════════
+// ================================================================
 function renderAll() {
   renderVisaoGeral();
   renderCanal();
   renderTempo();
   renderMix();
   renderClientes();
+  renderFinanceiro();
 }
 
-// ════════════════════════════════════════════════════════
-// HELPERS - aggregation
-// ════════════════════════════════════════════════════════
-function aggByKey(data, keyFn) {
-  const m = {};
-  data.forEach(v => {
-    const k = keyFn(v);
-    if (!m[k]) m[k] = {key:k, fat:0, litros:0, barris:0, qtd:0, margem:0, pedidos:new Set(), clientes:new Set(), count:0};
-    m[k].fat += v._valor;
-    m[k].litros += v._litros;
-    m[k].barris += v._litBarril > 0 ? v._qtd : 0;
-    m[k].qtd += v._qtd;
-    m[k].margem += v._margemTotal;
-    if(v.pedido) m[k].pedidos.add(pedidoKey(v));
-    if(v.cliente_id) m[k].clientes.add(v.cliente_id);
-    m[k].count++;
-  });
-  return Object.values(m).map(r => ({...r, pedidos:r.pedidos.size, clientes:r.clientes.size, ticketMedio:r.pedidos.size?r.fat/r.pedidos.size:0, margemPct:r.fat?r.margem/r.fat*100:0}));
-}
-
-function destroyChart(id) {
-  if(CHARTS[id]) { CHARTS[id].destroy(); delete CHARTS[id]; }
-}
-
-function createChart(id, cfg) {
-  destroyChart(id);
-  const ctx = document.getElementById(id);
-  if (!ctx) return null;
-  CHARTS[id] = new Chart(ctx, cfg);
-  return CHARTS[id];
-}
-
-// ════════════════════════════════════════════════════════
-// ABA 1 — VISÃO GERAL
-// ════════════════════════════════════════════════════════
+// ================================================================
+// TAB 1 — VISAO GERAL
+// ================================================================
 function renderVisaoGeral() {
-  const d = FILTERED;
-  const fat = d.reduce((s,v) => s+v._valor, 0);
-  const litros = d.reduce((s,v) => s+v._litros, 0);
-  const barris = d.reduce((s,v) => s+(v._litBarril>0?v._qtd:0), 0);
-  const peds = new Set(d.filter(v=>v.pedido).map(pedidoKey)).size;
-  const ticket = peds > 0 ? fat/peds : 0;
-  const clis = new Set(d.map(v=>v.cliente_id).filter(Boolean)).size;
-  const margemTotal = d.reduce((s,v) => s+v._margemTotal, 0);
-  const margemPct = fat > 0 ? margemTotal/fat*100 : 0;
+  const D = FILTERED;
+  const fatTotal = D.reduce((s,v) => s + v._valor, 0);
+  const volTotal = D.reduce((s,v) => s + v._litros, 0);
+  const pedidos = new Set(D.map(pedidoKey));
+  const nPedidos = pedidos.size;
+  const ticketMedio = nPedidos ? fatTotal / nPedidos : 0;
+  // Ticket/Litro for barrels only (items with litros_barril > 0)
+  const barrelItems = D.filter(v => v._litBarril > 0);
+  const barrelFat = barrelItems.reduce((s,v) => s + v._valor, 0);
+  const barrelLitros = barrelItems.reduce((s,v) => s + v._litros, 0);
+  const ticketLitro = barrelLitros ? barrelFat / barrelLitros : 0;
+  const totalBarris = barrelItems.reduce((s,v) => s + v._qtd, 0);
 
-  document.getElementById('kpi-visao').innerHTML = [
-    kpiCard('Faturamento', fmtBRL(fat)),
-    kpiCard('Volume', fmtNum(litros,0)+' L'),
-    kpiCard('Ticket Médio', fmtBRL(ticket)),
-    kpiCard('Total Barris', fmtNum(barris,0)),
+  const cliAtivos = new Set(D.map(v => v.cliente_id)).size;
+  const margemTotal = D.reduce((s,v) => s + v._margemTotal, 0);
+  const custoTotal = D.reduce((s,v) => s + v._custoTotal, 0);
+  const margemPct = fatTotal ? (margemTotal / fatTotal) * 100 : 0;
+  const pedidoMedioCli = cliAtivos ? fatTotal / cliAtivos : 0;
+
+  document.getElementById('kpi-visao1').innerHTML = [
+    kpiCard('Faturamento Total', fmtBRL(fatTotal)),
+    kpiCard('Volume Total (L)', fmtNum(volTotal,1)),
+    kpiCard('Ticket Medio', fmtBRL(ticketMedio), nPedidos+' pedidos'),
+    kpiCard('Ticket/Litro', fmtBRL(ticketLitro), 'barris apenas'),
+    kpiCard('Total Barris', fmtNum(totalBarris)),
   ].join('');
 
   document.getElementById('kpi-visao2').innerHTML = [
-    kpiCard('Clientes Ativos', fmtNum(clis)),
-    kpiCard('Total Pedidos', fmtNum(peds)),
-    kpiCard('Margem Média', fmtPct(margemPct)),
+    kpiCard('Clientes Ativos', fmtNum(cliAtivos)),
+    kpiCard('Total Pedidos', fmtNum(nPedidos)),
+    kpiCard('Margem Media %', fmtPct(margemPct), custoTotal > 0 ? 'c/ custo' : ''),
+    kpiCard('Pedido Medio/Cliente', fmtBRL(pedidoMedioCli)),
   ].join('');
 
-  // Chart: Faturamento Mensal por Canal
-  const byMesCanal = {};
-  d.forEach(v => {
-    const m = getMesKey(v);
-    const c = v._canal;
-    if(!byMesCanal[m]) byMesCanal[m] = {};
-    byMesCanal[m][c] = (byMesCanal[m][c]||0) + v._valor;
-  });
-  const meses = sortMesKeys(Object.keys(byMesCanal));
-  const canais = ['Distribuidor','PDV/Delivery','Quiosque'];
+  // Chart: Faturamento Mensal por Canal (stacked bar)
+  const meses = sortMesKeys([...new Set(D.map(getMesKey))]);
+  const canalMes = {};
+  CANAIS.forEach(c => { canalMes[c] = {}; meses.forEach(m => canalMes[c][m] = 0); });
+  D.forEach(v => { const c = v._canal; const m = getMesKey(v); if(canalMes[c]) canalMes[c][m] = (canalMes[c][m]||0) + v._valor; });
 
-  createChart('ch-fat-mensal', {
-    type:'bar',
-    data:{
+  destroyChart('fatMensal');
+  CHARTS.fatMensal = new Chart(document.getElementById('ch-fat-mensal'), {
+    type: 'bar',
+    data: {
       labels: meses,
-      datasets: canais.map(c => ({
-        label:c, backgroundColor:CANAL_COLORS[c], data:meses.map(m => Math.round(byMesCanal[m]?.[c]||0)),
-        borderRadius:4, maxBarThickness:40,
+      datasets: CANAIS.map(c => ({
+        label: c, data: meses.map(m => canalMes[c][m]||0),
+        backgroundColor: CANAL_COLORS[c], stack: 's1'
       }))
     },
-    options:{responsive:true,plugins:{legend:{position:'bottom'},datalabels:{display:false}},scales:{x:{stacked:true},y:{stacked:true,ticks:{callback:v=>fmtBRL(v)}}}}
+    options: chartOpts({ scales: { y: { ticks: { callback: v => fmtBRL(v) } } }, plugins: { datalabels: { display: false }, legend: { position: 'bottom' } } })
   });
 
-  // Donut Canal
-  const byCanal = aggByKey(d, v=>v._canal);
-  createChart('ch-canal-donut', {
-    type:'doughnut',
-    data:{
-      labels:byCanal.map(c=>c.key),
-      datasets:[{data:byCanal.map(c=>Math.round(c.fat)), backgroundColor:byCanal.map(c=>CANAL_COLORS[c.key]||'#999')}]
+  // Chart: Distribuicao por Canal (doughnut)
+  const canalFat = {};
+  CANAIS.forEach(c => canalFat[c] = 0);
+  D.forEach(v => { if(canalFat[v._canal] !== undefined) canalFat[v._canal] += v._valor; });
+
+  destroyChart('canalDonut');
+  CHARTS.canalDonut = new Chart(document.getElementById('ch-canal-donut'), {
+    type: 'doughnut',
+    data: {
+      labels: CANAIS,
+      datasets: [{ data: CANAIS.map(c => canalFat[c]||0), backgroundColor: CANAIS.map(c => CANAL_COLORS[c]) }]
     },
-    options:{responsive:true,plugins:{legend:{position:'bottom'},datalabels:{formatter:(v,ctx)=>{const t=ctx.dataset.data.reduce((a,b)=>a+b,0);return t?fmtPct(v/t*100):'';},color:'#fff',font:{weight:'bold',size:13}}}}
+    options: chartOpts({
+      cutout: '55%',
+      plugins: {
+        datalabels: { display: true, color: '#fff', font: { weight: 'bold', size: 11 },
+          formatter: (val, ctx) => { const t = ctx.dataset.data.reduce((a,b)=>a+b,0); return t ? fmtPct(val/t*100) : ''; }
+        },
+        legend: { position: 'bottom' }
+      }
+    })
   });
 
-  // Top 5 Produtos
-  const byProd = aggByKey(d, v=>v.sku);
-  byProd.forEach(p => { p.nome = PROD_MAP[p.key]?.nome_canonico || p.key; });
-  byProd.sort((a,b)=>b.fat-a.fat);
-  const top5 = byProd.slice(0,5);
-
-  createChart('ch-top-prod', {
-    type:'bar',
-    data:{
-      labels:top5.map(p=>p.nome),
-      datasets:[{data:top5.map(p=>Math.round(p.fat)),backgroundColor:'#0F6E56',borderRadius:4,maxBarThickness:28}]
-    },
-    options:{indexAxis:'y',responsive:true,plugins:{legend:{display:false},datalabels:{anchor:'end',align:'right',formatter:v=>fmtBRL(v),font:{size:11,weight:600},color:'#374151'}},scales:{x:{ticks:{callback:v=>fmtBRL(v)}}}}
-  });
+  // Sales listing table
+  renderVendasTable();
 }
 
-function kpiCard(label, value, sub, delta) {
-  return `<div class="kpi"><div class="kpi-label">${label}</div><div class="kpi-value">${value}</div>${sub?'<div class="kpi-sub">'+sub+'</div>':''}${delta?'<div class="kpi-delta '+(delta>=0?'up':'down')+'">'+(delta>=0?'▲':'▼')+' '+fmtPct(Math.abs(delta))+'</div>':''}</div>`;
+function renderVendasTable() {
+  const D = FILTERED.slice().sort((a,b) => (b._date||0) - (a._date||0));
+  const show = D.slice(0, 200);
+  const tbl = document.getElementById('tbl-vendas');
+  let html = '<thead><tr><th>Data</th><th>Pedido</th><th>Cliente</th><th>Canal</th><th>Produto</th><th class="num">Qtd</th><th class="num">Preco Unit</th><th class="num">Valor Total</th><th>Origem</th></tr></thead><tbody>';
+  show.forEach(v => {
+    const dt = v._date ? v._date.toLocaleDateString('pt-BR') : (v.data||'');
+    html += '<tr data-search="'+(v.pedido+' '+clienteName(v)+' '+(v.produto||'')).toLowerCase()+'">'
+      +'<td>'+dt+'</td>'
+      +'<td>'+( v.pedido||'')+'</td>'
+      +'<td>'+clienteName(v)+'</td>'
+      +'<td>'+v._canal+'</td>'
+      +'<td>'+(v.produto||'')+'</td>'
+      +'<td class="num" data-v="'+v._qtd+'">'+fmtNum(v._qtd)+'</td>'
+      +'<td class="num" data-v="'+v._preco+'">'+fmtBRL(v._preco)+'</td>'
+      +'<td class="num" data-v="'+v._valor+'">'+fmtBRL(v._valor)+'</td>'
+      +'<td>'+(v.origem||'')+'</td>'
+      +'</tr>';
+  });
+  html += '</tbody>';
+  tbl.innerHTML = html;
+  makeTableSortable(tbl);
+
+  // Search
+  const searchEl = document.getElementById('search-vendas');
+  searchEl.value = '';
+  searchEl.oninput = () => {
+    const q = searchEl.value.toLowerCase().trim();
+    tbl.querySelectorAll('tbody tr').forEach(tr => {
+      tr.style.display = (!q || buscaSemelhanca(tr.getAttribute('data-search'), q)) ? '' : 'none';
+    });
+  };
 }
 
-// ════════════════════════════════════════════════════════
-// ABA 2 — ANÁLISE POR CANAL
-// ════════════════════════════════════════════════════════
+// ================================================================
+// TAB 2 — ANALISE POR CANAL
+// ================================================================
 function renderCanal() {
-  const d = FILTERED;
-  const fatTotal = d.reduce((s,v)=>s+v._valor,0);
-  const canais = ['Distribuidor','PDV/Delivery','Quiosque'];
+  const D = FILTERED;
+  const fatTotal = D.reduce((s,v) => s + v._valor, 0);
 
-  // Cards
-  const byCanal = {};
-  canais.forEach(c => { byCanal[c] = aggByKey(d.filter(v=>v._canal===c), ()=>'all')[0] || {fat:0,litros:0,barris:0,pedidos:0,clientes:0,ticketMedio:0}; });
-
-  document.getElementById('canal-cards').innerHTML = canais.map(c => {
-    const a = byCanal[c];
-    const pct = fatTotal > 0 ? a.fat/fatTotal*100 : 0;
-    return `<div class="canal-card">
-      <div class="canal-head"><span class="canal-dot" style="background:${CANAL_COLORS[c]}"></span>${c}</div>
-      <div class="canal-row"><span class="canal-row-label">Faturamento</span><span class="canal-row-val">${fmtBRL(a.fat)}</span></div>
-      <div class="canal-row"><span class="canal-row-label">Volume</span><span class="canal-row-val">${fmtNum(a.litros)} L</span></div>
-      <div class="canal-row"><span class="canal-row-label">Barris</span><span class="canal-row-val">${fmtNum(a.barris)}</span></div>
-      <div class="canal-row"><span class="canal-row-label">Ticket Médio</span><span class="canal-row-val">${fmtBRL(a.ticketMedio)}</span></div>
-      <div class="canal-row"><span class="canal-row-label">Clientes</span><span class="canal-row-val">${a.clientes}</span></div>
-      <div class="canal-row"><span class="canal-row-label">% do Total</span><span class="canal-row-val">${fmtPct(pct)}</span></div>
-    </div>`;
-  }).join('');
-
-  // Chart: Fat mensal por canal (agrupado)
-  const byMesCanal = {};
-  d.forEach(v => { const m=getMesKey(v); if(!byMesCanal[m]) byMesCanal[m]={}; byMesCanal[m][v._canal]=(byMesCanal[m][v._canal]||0)+v._valor; });
-  const meses = sortMesKeys(Object.keys(byMesCanal));
-
-  createChart('ch-canal-mensal', {
-    type:'bar',
-    data:{labels:meses, datasets:canais.map(c=>({label:c,backgroundColor:CANAL_COLORS[c],data:meses.map(m=>Math.round(byMesCanal[m]?.[c]||0)),borderRadius:4,maxBarThickness:30}))},
-    options:{responsive:true,plugins:{legend:{position:'bottom'},datalabels:{display:false}},scales:{y:{ticks:{callback:v=>fmtBRL(v)}}}}
+  // Canal stats
+  const stats = {};
+  CANAIS.forEach(c => stats[c] = { fat: 0, vol: 0, barris: 0, clis: new Set(), peds: new Set() });
+  D.forEach(v => {
+    const c = v._canal;
+    if (!stats[c]) return;
+    stats[c].fat += v._valor;
+    stats[c].vol += v._litros;
+    if (v._litBarril > 0) stats[c].barris += v._qtd;
+    stats[c].clis.add(v.cliente_id);
+    stats[c].peds.add(pedidoKey(v));
   });
 
-  // Chart: Volume mensal por canal (empilhado)
-  const byMesVol = {};
-  d.forEach(v => { const m=getMesKey(v); if(!byMesVol[m]) byMesVol[m]={}; byMesVol[m][v._canal]=(byMesVol[m][v._canal]||0)+v._litros; });
+  // Total card stats
+  const totalStats = { fat: fatTotal, vol: D.reduce((s,v)=>s+v._litros,0), barris: D.filter(v=>v._litBarril>0).reduce((s,v)=>s+v._qtd,0), clis: new Set(D.map(v=>v.cliente_id)).size, peds: new Set(D.map(pedidoKey)).size };
 
-  createChart('ch-canal-vol', {
-    type:'bar',
-    data:{labels:meses, datasets:canais.map(c=>({label:c,backgroundColor:CANAL_COLORS[c],data:meses.map(m=>Math.round(byMesVol[m]?.[c]||0)),borderRadius:4,maxBarThickness:30}))},
-    options:{responsive:true,plugins:{legend:{position:'bottom'},datalabels:{display:false}},scales:{x:{stacked:true},y:{stacked:true,ticks:{callback:v=>fmtNum(v)+'L'}}}}
+  let cardsHtml = '';
+  CANAIS.forEach(c => {
+    const s = stats[c];
+    const nPed = s.peds.size;
+    const nCli = s.clis.size;
+    const tm = nPed ? s.fat / nPed : 0;
+    // Ticket/Litro: barrel items only in this canal
+    const bItems = D.filter(v => v._canal === c && v._litBarril > 0);
+    const bFat = bItems.reduce((s2,v)=>s2+v._valor,0);
+    const bLit = bItems.reduce((s2,v)=>s2+v._litros,0);
+    const tl = bLit ? bFat / bLit : 0;
+    const pct = fatTotal ? (s.fat / fatTotal * 100) : 0;
+
+    cardsHtml += '<div class="canal-card">'
+      +'<div class="canal-head"><span class="canal-dot" style="background:'+CANAL_COLORS[c]+'"></span>'+c+'</div>'
+      +canalRow('Faturamento', fmtBRL(s.fat))
+      +canalRow('Volume L', fmtNum(s.vol,1))
+      +canalRow('Barris', fmtNum(s.barris))
+      +canalRow('Ticket Medio', fmtBRL(tm))
+      +canalRow('Ticket/Litro', fmtBRL(tl))
+      +canalRow('Clientes', fmtNum(nCli))
+      +canalRow('Pedidos', fmtNum(nPed))
+      +canalRow('% do Total', fmtPct(pct))
+      +'</div>';
   });
 
-  // Chart: Participação %
-  const shareData = {};
-  meses.forEach(m => {
-    const total = canais.reduce((s,c) => s+(byMesCanal[m]?.[c]||0),0);
-    canais.forEach(c => {
-      if(!shareData[c]) shareData[c]=[];
-      shareData[c].push(total>0 ? Math.round((byMesCanal[m]?.[c]||0)/total*1000)/10 : 0);
-    });
+  // Total card
+  const totalTm = totalStats.peds ? totalStats.fat / totalStats.peds : 0;
+  const bAll = D.filter(v=>v._litBarril>0);
+  const bAllFat = bAll.reduce((s,v)=>s+v._valor,0);
+  const bAllLit = bAll.reduce((s,v)=>s+v._litros,0);
+  const totalTl = bAllLit ? bAllFat / bAllLit : 0;
+  cardsHtml += '<div class="canal-card" style="border-color:var(--g);border-width:2px">'
+    +'<div class="canal-head"><span class="canal-dot" style="background:var(--ink)"></span>TOTAL</div>'
+    +canalRow('Faturamento', fmtBRL(totalStats.fat))
+    +canalRow('Volume L', fmtNum(totalStats.vol,1))
+    +canalRow('Barris', fmtNum(totalStats.barris))
+    +canalRow('Ticket Medio', fmtBRL(totalTm))
+    +canalRow('Ticket/Litro', fmtBRL(totalTl))
+    +canalRow('Clientes', fmtNum(totalStats.clis))
+    +canalRow('Pedidos', fmtNum(totalStats.peds))
+    +canalRow('% do Total', '100,0%')
+    +'</div>';
+
+  document.getElementById('canal-cards').innerHTML = cardsHtml;
+
+  // Chart: Fat Mensal por Canal (grouped bar)
+  const meses = sortMesKeys([...new Set(D.map(getMesKey))]);
+  const canalMes = {};
+  CANAIS.forEach(c => { canalMes[c] = {}; meses.forEach(m => canalMes[c][m] = 0); });
+  D.forEach(v => { const c = v._canal; const m = getMesKey(v); if(canalMes[c]) canalMes[c][m] = (canalMes[c][m]||0) + v._valor; });
+
+  destroyChart('canalMensal');
+  CHARTS.canalMensal = new Chart(document.getElementById('ch-canal-mensal'), {
+    type: 'bar',
+    data: {
+      labels: meses,
+      datasets: CANAIS.map(c => ({
+        label: c, data: meses.map(m => canalMes[c][m]||0),
+        backgroundColor: CANAL_COLORS[c]
+      }))
+    },
+    options: chartOpts({ scales: { y: { ticks: { callback: v => fmtBRL(v) } } }, plugins: { datalabels: { display: false }, legend: { position: 'bottom' } } })
   });
 
-  createChart('ch-canal-share', {
-    type:'line',
-    data:{labels:meses, datasets:canais.map(c=>({label:c,borderColor:CANAL_COLORS[c],backgroundColor:CANAL_BG[c],data:shareData[c],fill:true,tension:.3,pointRadius:3}))},
-    options:{responsive:true,plugins:{legend:{position:'bottom'},datalabels:{display:false}},scales:{y:{ticks:{callback:v=>v+'%'},max:100}}}
+  // Chart: Participacao Canal % (line over months)
+  destroyChart('canalShare');
+  const totalMes = {};
+  meses.forEach(m => { totalMes[m] = CANAIS.reduce((s,c)=>s+(canalMes[c][m]||0),0); });
+  CHARTS.canalShare = new Chart(document.getElementById('ch-canal-share'), {
+    type: 'line',
+    data: {
+      labels: meses,
+      datasets: CANAIS.map(c => ({
+        label: c, data: meses.map(m => totalMes[m] ? (canalMes[c][m]||0)/totalMes[m]*100 : 0),
+        borderColor: CANAL_COLORS[c], backgroundColor: CANAL_BG[c], tension: .3, fill: false, pointRadius: 3
+      }))
+    },
+    options: chartOpts({ scales: { y: { ticks: { callback: v => v+'%' }, max: 100 } }, plugins: { datalabels: { display: false }, legend: { position: 'bottom' } } })
   });
 
-  // Chart: Ticket medio
-  const byMesTicket = {};
-  meses.forEach(m => {
-    canais.forEach(c => {
-      const vendas = d.filter(v=>getMesKey(v)===m && v._canal===c);
-      const f = vendas.reduce((s,v)=>s+v._valor,0);
-      const p = new Set(vendas.filter(v=>v.pedido).map(pedidoKey)).size;
-      if(!byMesTicket[c]) byMesTicket[c]=[];
-      byMesTicket[c].push(p>0?Math.round(f/p):0);
-    });
+  // Canal breakdown table
+  const tbl = document.getElementById('tbl-canal');
+  let html = '<thead><tr><th>Canal</th><th class="num">Faturamento</th><th class="num">% Fat</th><th class="num">Volume L</th><th class="num">Barris</th><th class="num">Pedidos</th><th class="num">Clientes</th><th class="num">Ticket Medio</th><th class="num">Ticket/Litro</th></tr></thead><tbody>';
+  CANAIS.forEach(c => {
+    const s = stats[c];
+    const nPed = s.peds.size;
+    const nCli = s.clis.size;
+    const tm = nPed ? s.fat / nPed : 0;
+    const bItems = D.filter(v => v._canal === c && v._litBarril > 0);
+    const bFat = bItems.reduce((s2,v)=>s2+v._valor,0);
+    const bLit = bItems.reduce((s2,v)=>s2+v._litros,0);
+    const tl = bLit ? bFat / bLit : 0;
+    const pct = fatTotal ? s.fat / fatTotal * 100 : 0;
+    html += '<tr>'
+      +'<td><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:'+CANAL_COLORS[c]+';margin-right:6px;vertical-align:middle"></span>'+c+'</td>'
+      +'<td class="num" data-v="'+s.fat+'">'+fmtBRL(s.fat)+'</td>'
+      +'<td class="num" data-v="'+pct+'">'+fmtPct(pct)+'</td>'
+      +'<td class="num" data-v="'+s.vol+'">'+fmtNum(s.vol,1)+'</td>'
+      +'<td class="num" data-v="'+s.barris+'">'+fmtNum(s.barris)+'</td>'
+      +'<td class="num" data-v="'+nPed+'">'+fmtNum(nPed)+'</td>'
+      +'<td class="num" data-v="'+nCli+'">'+fmtNum(nCli)+'</td>'
+      +'<td class="num" data-v="'+tm+'">'+fmtBRL(tm)+'</td>'
+      +'<td class="num" data-v="'+tl+'">'+fmtBRL(tl)+'</td>'
+      +'</tr>';
   });
-
-  createChart('ch-canal-ticket', {
-    type:'line',
-    data:{labels:meses, datasets:canais.map(c=>({label:c,borderColor:CANAL_COLORS[c],backgroundColor:CANAL_COLORS[c],data:byMesTicket[c],tension:.3,pointRadius:4,pointBackgroundColor:CANAL_COLORS[c]}))},
-    options:{responsive:true,plugins:{legend:{position:'bottom'},datalabels:{display:false}},scales:{y:{ticks:{callback:v=>fmtBRL(v)}}}}
-  });
+  html += '</tbody>';
+  tbl.innerHTML = html;
+  makeTableSortable(tbl);
 }
 
-// ════════════════════════════════════════════════════════
-// ABA 3 — EVOLUÇÃO TEMPORAL
-// ════════════════════════════════════════════════════════
+function canalRow(label, val) {
+  return '<div class="canal-row"><span class="canal-row-label">'+label+'</span><span class="canal-row-val">'+val+'</span></div>';
+}
+
+// ================================================================
+// TAB 3 — EVOLUCAO TEMPORAL
+// ================================================================
 function renderTempo() {
-  const d = FILTERED;
+  const D = FILTERED;
+  const meses = sortMesKeys([...new Set(D.map(getMesKey))]);
 
-  // Mensal
-  const byMes = aggByKey(d, v=>getMesKey(v));
-  byMes.sort((a,b) => {
-    const [ma,ya]=(a.key||'00/0000').split('/').map(Number);
-    const [mb,yb]=(b.key||'00/0000').split('/').map(Number);
-    return (ya*100+ma)-(yb*100+mb);
-  });
+  // Monthly aggregation
+  const mesFat = {}, mesVol = {}, mesPed = {};
+  meses.forEach(m => { mesFat[m]=0; mesVol[m]=0; mesPed[m]=new Set(); });
+  D.forEach(v => { const m = getMesKey(v); mesFat[m]=(mesFat[m]||0)+v._valor; mesVol[m]=(mesVol[m]||0)+v._litros; if(mesPed[m]) mesPed[m].add(pedidoKey(v)); });
 
-  // Growth calcs
-  const momFat = byMes.length >= 2 ? ((byMes[byMes.length-1].fat - byMes[byMes.length-2].fat) / (byMes[byMes.length-2].fat||1) * 100) : 0;
-  const momVol = byMes.length >= 2 ? ((byMes[byMes.length-1].litros - byMes[byMes.length-2].litros) / (byMes[byMes.length-2].litros||1) * 100) : 0;
+  // MoM
+  const lastM = meses.length >= 1 ? meses[meses.length-1] : null;
+  const prevM = meses.length >= 2 ? meses[meses.length-2] : null;
+  const momFat = (prevM && mesFat[prevM]) ? ((mesFat[lastM]||0) / mesFat[prevM] - 1) * 100 : 0;
+  const momVol = (prevM && mesVol[prevM]) ? ((mesVol[lastM]||0) / mesVol[prevM] - 1) * 100 : 0;
 
-  // Semanal
-  const bySem = aggByKey(d, v=>getWeekKey(v.data));
-  bySem.sort((a,b) => a.key.localeCompare(b.key));
-  const wowFat = bySem.length >= 2 ? ((bySem[bySem.length-1].fat - bySem[bySem.length-2].fat) / (bySem[bySem.length-2].fat||1) * 100) : 0;
+  // Weekly
+  const weeks = sortWeekKeys([...new Set(D.map(v => getWeekKey(v.data)))].filter(w=>w!=='SEM'));
+  const weekFat = {};
+  weeks.forEach(w => weekFat[w] = 0);
+  D.forEach(v => { const w = getWeekKey(v.data); if(weekFat[w] !== undefined) weekFat[w] += v._valor; });
+
+  const lastW = weeks.length >= 1 ? weeks[weeks.length-1] : null;
+  const prevW = weeks.length >= 2 ? weeks[weeks.length-2] : null;
+  const wowFat = (prevW && weekFat[prevW]) ? ((weekFat[lastW]||0) / weekFat[prevW] - 1) * 100 : 0;
+  const avgWeek = weeks.length ? weeks.reduce((s,w) => s + (weekFat[w]||0), 0) / weeks.length : 0;
 
   document.getElementById('kpi-tempo').innerHTML = [
-    kpiCard('MoM Faturamento', fmtPct(momFat), 'vs mês anterior', momFat),
-    kpiCard('MoM Volume', fmtPct(momVol), 'vs mês anterior', momVol),
-    kpiCard('WoW Faturamento', fmtPct(wowFat), 'vs semana anterior', wowFat),
+    kpiCard('MoM Faturamento', fmtPct(momFat), momFat >= 0 ? 'up' : 'down', momFat >= 0),
+    kpiCard('MoM Volume', fmtPct(momVol), momVol >= 0 ? 'up' : 'down', momVol >= 0),
+    kpiCard('WoW Faturamento', fmtPct(wowFat), wowFat >= 0 ? 'up' : 'down', wowFat >= 0),
+    kpiCard('Media Semanal', fmtBRL(avgWeek)),
   ].join('');
 
-  // Chart: Fat semanal
-  createChart('ch-fat-semanal', {
-    type:'line',
-    data:{labels:bySem.map(s=>s.key), datasets:[{label:'Faturamento',data:bySem.map(s=>Math.round(s.fat)),borderColor:'#0F6E56',backgroundColor:'rgba(15,110,86,.1)',fill:true,tension:.3,pointRadius:3}]},
-    options:{responsive:true,plugins:{legend:{display:false},datalabels:{display:false}},scales:{y:{ticks:{callback:v=>fmtBRL(v)}}}}
+  // Chart: Faturamento Semanal (line)
+  const showWeeks = weeks.slice(-20);
+  destroyChart('fatSemanal');
+  CHARTS.fatSemanal = new Chart(document.getElementById('ch-fat-semanal'), {
+    type: 'line',
+    data: {
+      labels: showWeeks,
+      datasets: [{ label: 'Faturamento', data: showWeeks.map(w => weekFat[w]||0), borderColor: 'var(--g)', backgroundColor: 'rgba(15,110,86,.1)', fill: true, tension: .3, pointRadius: 2 }]
+    },
+    options: chartOpts({ scales: { y: { ticks: { callback: v => fmtBRL(v) } } }, plugins: { datalabels: { display: false }, legend: { display: false } } })
   });
 
-  // Chart: Fat mensal + growth
-  const growths = byMes.map((m,i) => i===0 ? 0 : Math.round((m.fat-(byMes[i-1].fat||0))/(byMes[i-1].fat||1)*1000)/10);
+  // Chart: Fat Mensal + Crescimento % (combo)
+  const growthPct = meses.map((m,i) => i === 0 ? 0 : (mesFat[meses[i-1]] ? ((mesFat[m]||0)/mesFat[meses[i-1]]-1)*100 : 0));
 
-  createChart('ch-fat-growth', {
-    type:'bar',
-    data:{
-      labels:byMes.map(m=>m.key),
-      datasets:[
-        {type:'bar',label:'Faturamento',data:byMes.map(m=>Math.round(m.fat)),backgroundColor:'#0F6E56',borderRadius:4,yAxisID:'y',maxBarThickness:35},
-        {type:'line',label:'Crescimento %',data:growths,borderColor:'#D97706',backgroundColor:'#D97706',pointRadius:4,yAxisID:'y1',tension:.3}
+  destroyChart('fatGrowth');
+  CHARTS.fatGrowth = new Chart(document.getElementById('ch-fat-growth'), {
+    type: 'bar',
+    data: {
+      labels: meses,
+      datasets: [
+        { label: 'Faturamento', data: meses.map(m => mesFat[m]||0), backgroundColor: 'var(--g)', order: 2, yAxisID: 'y' },
+        { label: 'Crescimento %', data: growthPct, type: 'line', borderColor: 'var(--a)', backgroundColor: 'transparent', tension: .3, pointRadius: 3, order: 1, yAxisID: 'y1' }
       ]
     },
-    options:{responsive:true,plugins:{legend:{position:'bottom'},datalabels:{display:false}},scales:{y:{position:'left',ticks:{callback:v=>fmtBRL(v)}},y1:{position:'right',grid:{drawOnChartArea:false},ticks:{callback:v=>v+'%'}}}}
-  });
-
-  // Chart: Volume mensal
-  createChart('ch-vol-mensal', {
-    type:'bar',
-    data:{labels:byMes.map(m=>m.key), datasets:[{label:'Volume (L)',data:byMes.map(m=>Math.round(m.litros)),backgroundColor:'#185FA5',borderRadius:4,maxBarThickness:35}]},
-    options:{responsive:true,plugins:{legend:{display:false},datalabels:{display:false}},scales:{y:{ticks:{callback:v=>fmtNum(v)+'L'}}}}
+    options: chartOpts({
+      scales: {
+        y: { position: 'left', ticks: { callback: v => fmtBRL(v) } },
+        y1: { position: 'right', grid: { drawOnChartArea: false }, ticks: { callback: v => v+'%' } }
+      },
+      plugins: { datalabels: { display: false }, legend: { position: 'bottom' } }
+    })
   });
 
   // Growth table
-  let html = '<table class="tbl"><thead><tr><th>Mês</th><th class="num">Faturamento</th><th class="num">Δ R$</th><th class="num">Δ%</th><th class="num">Volume L</th><th class="num">Δ L</th><th class="num">Δ%</th></tr></thead><tbody>';
-  byMes.forEach((m,i) => {
-    const prev = i>0 ? byMes[i-1] : null;
-    const dFat = prev ? m.fat-prev.fat : 0;
-    const dFatP = prev && prev.fat ? dFat/prev.fat*100 : 0;
-    const dVol = prev ? m.litros-prev.litros : 0;
-    const dVolP = prev && prev.litros ? dVol/prev.litros*100 : 0;
-    html += `<tr><td>${m.key}</td><td class="num">${fmtBRL(m.fat)}</td><td class="num" style="color:${dFat>=0?'var(--g)':'var(--r)'}">${dFat>=0?'+':''}${fmtBRL(dFat)}</td><td class="num" style="color:${dFatP>=0?'var(--g)':'var(--r)'}">${dFatP>=0?'+':''}${fmtPct(dFatP)}</td><td class="num">${fmtNum(m.litros)}</td><td class="num" style="color:${dVol>=0?'var(--g)':'var(--r)'}">${dVol>=0?'+':''}${fmtNum(dVol)}</td><td class="num" style="color:${dVolP>=0?'var(--g)':'var(--r)'}">${dVolP>=0?'+':''}${fmtPct(dVolP)}</td></tr>`;
+  const tbl = document.getElementById('tbl-growth');
+  let html = '<thead><tr><th>Mes</th><th class="num">Faturamento</th><th class="num">&Delta; R$</th><th class="num">&Delta;%</th><th class="num">Volume L</th><th class="num">&Delta; L</th><th class="num">&Delta;% Vol</th><th class="num">Pedidos</th><th class="num">Ticket Medio</th></tr></thead><tbody>';
+  meses.forEach((m,i) => {
+    const fat = mesFat[m]||0;
+    const vol = mesVol[m]||0;
+    const ped = mesPed[m] ? mesPed[m].size : 0;
+    const tm = ped ? fat / ped : 0;
+    const dFat = i > 0 ? fat - (mesFat[meses[i-1]]||0) : 0;
+    const dFatPct = i > 0 && mesFat[meses[i-1]] ? ((fat / mesFat[meses[i-1]])-1)*100 : 0;
+    const dVol = i > 0 ? vol - (mesVol[meses[i-1]]||0) : 0;
+    const dVolPct = i > 0 && mesVol[meses[i-1]] ? ((vol / mesVol[meses[i-1]])-1)*100 : 0;
+    const cls = v => v >= 0 ? 'color:var(--g)' : 'color:var(--r)';
+    html += '<tr>'
+      +'<td>'+m+'</td>'
+      +'<td class="num" data-v="'+fat+'">'+fmtBRL(fat)+'</td>'
+      +'<td class="num" data-v="'+dFat+'" style="'+cls(dFat)+'">'+fmtBRL(dFat)+'</td>'
+      +'<td class="num" data-v="'+dFatPct+'" style="'+cls(dFatPct)+'">'+(i>0?fmtPct(dFatPct):'-')+'</td>'
+      +'<td class="num" data-v="'+vol+'">'+fmtNum(vol,1)+'</td>'
+      +'<td class="num" data-v="'+dVol+'" style="'+cls(dVol)+'">'+fmtNum(dVol,1)+'</td>'
+      +'<td class="num" data-v="'+dVolPct+'" style="'+cls(dVolPct)+'">'+(i>0?fmtPct(dVolPct):'-')+'</td>'
+      +'<td class="num" data-v="'+ped+'">'+fmtNum(ped)+'</td>'
+      +'<td class="num" data-v="'+tm+'">'+fmtBRL(tm)+'</td>'
+      +'</tr>';
   });
-  html += '</tbody></table>';
-  document.getElementById('tbl-growth').innerHTML = html;
+  html += '</tbody>';
+  tbl.innerHTML = html;
+  makeTableSortable(tbl);
 }
 
-// ════════════════════════════════════════════════════════
-// ABA 4 — MIX DE PRODUTOS E FINANCEIRO
-// ════════════════════════════════════════════════════════
+// ================================================================
+// TAB 4 — MIX DE PRODUTOS
+// ================================================================
 function renderMix() {
-  const d = FILTERED;
-  const fat = d.reduce((s,v)=>s+v._valor,0);
-  const litros = d.reduce((s,v)=>s+v._litros,0);
-  const margemTotal = d.reduce((s,v)=>s+v._margemTotal,0);
-  const margemPct = fat > 0 ? margemTotal/fat*100 : 0;
-  const skus = new Set(d.map(v=>v.sku).filter(Boolean)).size;
-  const valLitro = litros > 0 ? fat/litros : 0;
+  const D = FILTERED;
+  const prodMap = {};
+  D.forEach(v => {
+    const key = v.sku || v.produto || 'SEM';
+    if (!prodMap[key]) prodMap[key] = { sku: v.sku||'', nome: v.produto||'', cat: v.categoria||'', qtd: 0, fat: 0, custoTotal: 0, litros: 0, hasCusto: false };
+    const p = prodMap[key];
+    p.qtd += v._qtd;
+    p.fat += v._valor;
+    p.litros += v._litros;
+    if (v._custoMedio > 0) { p.custoTotal += v._custoTotal; p.hasCusto = true; }
+    if (!p.nome && v.produto) p.nome = v.produto;
+    if (!p.cat && v.categoria) p.cat = v.categoria;
+  });
+
+  const prods = Object.values(prodMap).sort((a,b) => b.fat - a.fat);
+  const fatTotal = D.reduce((s,v) => s + v._valor, 0);
+  const volTotal = D.reduce((s,v) => s + v._litros, 0);
+  const nProds = prods.length;
+  const valLitro = volTotal ? fatTotal / volTotal : 0;
+  const topProd = prods.length ? prods[0].nome : '-';
 
   document.getElementById('kpi-mix').innerHTML = [
-    kpiCard('Margem Total', fmtBRL(margemTotal)),
-    kpiCard('Margem Média', fmtPct(margemPct)),
-    kpiCard('Produtos Vendidos', fmtNum(skus)),
+    kpiCard('Produtos Vendidos', fmtNum(nProds)),
+    kpiCard('Faturamento Total', fmtBRL(fatTotal)),
+    kpiCard('Volume Total L', fmtNum(volTotal,1)),
     kpiCard('Valor/Litro', fmtBRL(valLitro)),
+    kpiCard('Produto Top', topProd.length > 20 ? topProd.slice(0,20)+'...' : topProd),
   ].join('');
 
-  // Aggregate by product
-  const byProd = {};
-  d.forEach(v => {
-    const k = v.sku || 'SEM-SKU';
-    if(!byProd[k]) byProd[k] = {sku:k, nome:PROD_MAP[k]?.nome_canonico||v.produto||k, cat:PROD_MAP[k]?.categoria||v.categoria||'', fat:0, qtd:0, litros:0, custo:0, margem:0, custoOk:!!PROD_MAP[k]?.custo_medio};
-    byProd[k].fat += v._valor;
-    byProd[k].qtd += v._qtd;
-    byProd[k].litros += v._litros;
-    byProd[k].custo += v._custoMedio * v._qtd;
-    byProd[k].margem += v._margemTotal;
-  });
-  const prods = Object.values(byProd);
-  prods.forEach(p => { p.margemPct = p.fat > 0 ? p.margem/p.fat*100 : 0; p.valLitro = p.litros > 0 ? p.fat/p.litros : 0; });
-
-  // Top 15 by fat
-  const topFat = [...prods].sort((a,b)=>b.fat-a.fat).slice(0,15);
-  createChart('ch-prod-fat', {
-    type:'bar',
-    data:{labels:topFat.map(p=>p.nome), datasets:[{data:topFat.map(p=>Math.round(p.fat)),backgroundColor:'#0F6E56',borderRadius:4,maxBarThickness:22}]},
-    options:{indexAxis:'y',responsive:true,plugins:{legend:{display:false},datalabels:{anchor:'end',align:'right',formatter:v=>fmtBRL(v),font:{size:10,weight:600},color:'#374151'}},scales:{x:{ticks:{callback:v=>fmtBRL(v)}}}}
-  });
-
-  // Top 15 by volume
-  const topVol = [...prods].filter(p=>p.litros>0).sort((a,b)=>b.litros-a.litros).slice(0,15);
-  createChart('ch-prod-vol', {
-    type:'bar',
-    data:{labels:topVol.map(p=>p.nome), datasets:[{data:topVol.map(p=>Math.round(p.litros)),backgroundColor:'#185FA5',borderRadius:4,maxBarThickness:22}]},
-    options:{indexAxis:'y',responsive:true,plugins:{legend:{display:false},datalabels:{anchor:'end',align:'right',formatter:v=>fmtNum(v)+'L',font:{size:10,weight:600},color:'#374151'}},scales:{x:{ticks:{callback:v=>fmtNum(v)+'L'}}}}
-  });
-
-  // Margem por categoria
-  const byCat = {};
-  prods.forEach(p => {
-    const c = p.cat || 'Outros';
-    if(!byCat[c]) byCat[c] = {cat:c, fat:0, margem:0};
-    byCat[c].fat += p.fat;
-    byCat[c].margem += p.margem;
-  });
-  const cats = Object.values(byCat).sort((a,b)=>b.fat-a.fat).slice(0,8);
-  const catColors = ['#0F6E56','#D97706','#185FA5','#DC2626','#7C3AED','#0891B2','#65A30D','#BE185D'];
-
-  createChart('ch-cat-margem', {
-    type:'bar',
-    data:{
-      labels:cats.map(c=>c.cat),
-      datasets:[
-        {label:'Faturamento',data:cats.map(c=>Math.round(c.fat)),backgroundColor:'rgba(15,110,86,.7)',borderRadius:4},
-        {label:'Margem',data:cats.map(c=>Math.round(c.margem)),backgroundColor:'rgba(217,119,6,.7)',borderRadius:4},
-      ]
+  // Chart: Top 10 Produtos Fat (horizontal bar)
+  const top10Fat = prods.slice(0,10);
+  destroyChart('prodFat');
+  CHARTS.prodFat = new Chart(document.getElementById('ch-prod-fat'), {
+    type: 'bar',
+    data: {
+      labels: top10Fat.map(p => p.nome.length > 25 ? p.nome.slice(0,25)+'...' : p.nome),
+      datasets: [{ label: 'Faturamento', data: top10Fat.map(p => p.fat), backgroundColor: 'var(--g)' }]
     },
-    options:{responsive:true,plugins:{legend:{position:'bottom'},datalabels:{display:false}},scales:{y:{ticks:{callback:v=>fmtBRL(v)}}}}
+    options: chartOpts({ indexAxis: 'y', scales: { x: { ticks: { callback: v => fmtBRL(v) } } }, plugins: { datalabels: { display: false }, legend: { display: false } } })
   });
 
-  // Scatter: Volume x Margem%
-  const scatterData = prods.filter(p=>p.custoOk && p.qtd>0).map(p=>({x:p.qtd, y:Math.round(p.margemPct*10)/10, r:Math.max(4,Math.min(25,Math.sqrt(p.fat/100))), label:p.nome}));
-
-  createChart('ch-scatter-margem', {
-    type:'bubble',
-    data:{datasets:[{label:'Produtos',data:scatterData,backgroundColor:'rgba(15,110,86,.4)',borderColor:'#0F6E56',borderWidth:1}]},
-    options:{responsive:true,plugins:{legend:{display:false},datalabels:{display:false},tooltip:{callbacks:{label:ctx=>{const d=ctx.raw;return d.label+': '+fmtPct(d.y)+' margem, '+fmtNum(d.x)+' un';}}}},scales:{x:{title:{display:true,text:'Quantidade vendida'}},y:{title:{display:true,text:'Margem %'},ticks:{callback:v=>v+'%'}}}}
+  // Chart: Top 10 Produtos Volume (horizontal bar)
+  const top10Vol = prods.slice().sort((a,b) => b.litros - a.litros).slice(0,10);
+  destroyChart('prodVol');
+  CHARTS.prodVol = new Chart(document.getElementById('ch-prod-vol'), {
+    type: 'bar',
+    data: {
+      labels: top10Vol.map(p => p.nome.length > 25 ? p.nome.slice(0,25)+'...' : p.nome),
+      datasets: [{ label: 'Volume L', data: top10Vol.map(p => p.litros), backgroundColor: 'var(--b)' }]
+    },
+    options: chartOpts({ indexAxis: 'y', scales: { x: { ticks: { callback: v => fmtNum(v,0)+' L' } } }, plugins: { datalabels: { display: false }, legend: { display: false } } })
   });
 
-  // Table
-  const sorted = [...prods].sort((a,b)=>b.fat-a.fat);
-  let html = '<table class="tbl" id="tbl-mix-table"><thead><tr><th>Produto</th><th>Categoria</th><th class="num">Qtd</th><th class="num">Faturamento</th><th class="num">Custo Total</th><th class="num">Margem R$</th><th class="num">Margem %</th><th class="num">R$/Litro</th></tr></thead><tbody>';
-  sorted.forEach(p => {
-    const mLabel = p.custoOk ? fmtPct(p.margemPct) : '<span style="color:var(--ink4);font-size:11px">s/ custo</span>';
-    html += `<tr><td>${p.nome}</td><td>${p.cat}</td><td class="num">${fmtNum(p.qtd,1)}</td><td class="num">${fmtBRL(p.fat)}</td><td class="num">${p.custoOk?fmtBRL(p.custo):'—'}</td><td class="num">${p.custoOk?fmtBRL(p.margem):'—'}</td><td class="num">${mLabel}</td><td class="num">${p.litros>0?fmtBRL(p.valLitro):'—'}</td></tr>`;
+  // Product detail table
+  const tbl = document.getElementById('tbl-mix');
+  let html = '<thead><tr><th>SKU</th><th>Produto</th><th>Categoria</th><th class="num">Qtd</th><th class="num">Faturamento</th><th class="num">Custo Total</th><th class="num">Margem R$</th><th class="num">Margem %</th><th class="num">R$/Litro</th></tr></thead><tbody>';
+  prods.forEach(p => {
+    const margem = p.hasCusto ? p.fat - p.custoTotal : 0;
+    const margemPct = p.hasCusto && p.fat ? (margem / p.fat * 100) : 0;
+    const rlitro = p.litros ? p.fat / p.litros : 0;
+    html += '<tr>'
+      +'<td>'+p.sku+'</td>'
+      +'<td>'+p.nome+'</td>'
+      +'<td>'+p.cat+'</td>'
+      +'<td class="num" data-v="'+p.qtd+'">'+fmtNum(p.qtd)+'</td>'
+      +'<td class="num" data-v="'+p.fat+'">'+fmtBRL(p.fat)+'</td>'
+      +(p.hasCusto
+        ? '<td class="num" data-v="'+p.custoTotal+'">'+fmtBRL(p.custoTotal)+'</td>'
+          +'<td class="num" data-v="'+margem+'" style="'+(margem>=0?'color:var(--g)':'color:var(--r)')+'">'+fmtBRL(margem)+'</td>'
+          +'<td class="num" data-v="'+margemPct+'" style="'+(margemPct>=0?'color:var(--g)':'color:var(--r)')+'">'+fmtPct(margemPct)+'</td>'
+        : '<td class="num no-cost">s/ custo</td><td class="num no-cost">s/ custo</td><td class="num no-cost">s/ custo</td>')
+      +'<td class="num" data-v="'+rlitro+'">'+fmtBRL(rlitro)+'</td>'
+      +'</tr>';
   });
-  html += '</tbody></table>';
-  document.getElementById('tbl-mix').innerHTML = html;
+  html += '</tbody>';
+  tbl.innerHTML = html;
+  makeTableSortable(tbl);
 }
 
-// ════════════════════════════════════════════════════════
-// ABA 5 — GESTÃO DE CLIENTES
-// ════════════════════════════════════════════════════════
+// ================================================================
+// TAB 5 — GESTAO DE CLIENTES
+// ================================================================
 function renderClientes() {
-  const d = FILTERED;
-  const fatTotal = d.reduce((s,v)=>s+v._valor,0);
-
-  // Aggregate by client
-  const byCli = {};
-  d.forEach(v => {
-    const k = v.cliente_id || v.cliente || 'SEM';
-    if(!byCli[k]) byCli[k] = {id:k, nome:v.cliente||'', canal:v._canal, cidade:CLI_MAP[k]?.cidade||'', fat:0, litros:0, pedidos:new Set(), ultimaData:null};
-    byCli[k].fat += v._valor;
-    byCli[k].litros += v._litros;
-    if(v.pedido) byCli[k].pedidos.add(pedidoKey(v));
-    const dt = v._date;
-    if(dt && (!byCli[k].ultimaData || dt > byCli[k].ultimaData)) byCli[k].ultimaData = dt;
+  const D = FILTERED;
+  const cliMap = {};
+  D.forEach(v => {
+    const id = v.cliente_id || 'SEM';
+    if (!cliMap[id]) cliMap[id] = { id, nome: clienteName(v), canal: v._canal, cidade: '', pedidos: new Set(), fat: 0, vol: 0, lastDate: null };
+    const c = cliMap[id];
+    c.fat += v._valor;
+    c.vol += v._litros;
+    c.pedidos.add(pedidoKey(v));
+    if (v._date && (!c.lastDate || v._date > c.lastDate)) c.lastDate = v._date;
+    // Get city from CLI_MAP
+    const cli = CLI_MAP[id];
+    if (cli && cli.cidade) c.cidade = cli.cidade;
   });
-  const clis = Object.values(byCli).map(c=>({...c,pedidos:c.pedidos.size,ticketMedio:c.pedidos.size?c.fat/c.pedidos.size:0}));
-  clis.sort((a,b)=>b.fat-a.fat);
 
-  const totalClis = clis.length;
-  const distClis = clis.filter(c=>c.canal==='Distribuidor').length;
-  const pdvClis = clis.filter(c=>c.canal==='PDV/Delivery').length;
-  const fatMedio = totalClis > 0 ? fatTotal/totalClis : 0;
+  const clientes = Object.values(cliMap).sort((a,b) => b.fat - a.fat);
+  const fatTotal = D.reduce((s,v)=>s+v._valor,0);
+  const nCli = clientes.length;
+  const nDist = clientes.filter(c => c.canal === 'Distribuidor').length;
+  const nPdv = clientes.filter(c => c.canal === 'PDV/Deliv').length;
+  const nQuio = clientes.filter(c => c.canal === 'Quiosque').length;
+  const fatMedioCli = nCli ? fatTotal / nCli : 0;
 
   document.getElementById('kpi-cli').innerHTML = [
-    kpiCard('Clientes Ativos', fmtNum(totalClis)),
-    kpiCard('Distribuidores', fmtNum(distClis)),
-    kpiCard('PDV', fmtNum(pdvClis)),
-    kpiCard('Fat. Médio/Cliente', fmtBRL(fatMedio)),
+    kpiCard('Clientes Ativos', fmtNum(nCli)),
+    kpiCard('Distribuidores', fmtNum(nDist)),
+    kpiCard('PDV/Deliv', fmtNum(nPdv)),
+    kpiCard('Quiosques', fmtNum(nQuio)),
+    kpiCard('Fat. Medio/Cliente', fmtBRL(fatMedioCli)),
   ].join('');
 
-  // Top 20
-  const top20 = clis.slice(0,20);
-  createChart('ch-cli-top', {
-    type:'bar',
-    data:{
-      labels:top20.map(c=>c.nome),
-      datasets:[{data:top20.map(c=>Math.round(c.fat)),backgroundColor:top20.map(c=>CANAL_COLORS[c.canal]||'#999'),borderRadius:4,maxBarThickness:22}]
+  // Chart: Top 10 Clientes Fat (horizontal bar)
+  const top10 = clientes.slice(0,10);
+  destroyChart('cliTop');
+  CHARTS.cliTop = new Chart(document.getElementById('ch-cli-top'), {
+    type: 'bar',
+    data: {
+      labels: top10.map(c => c.nome.length > 25 ? c.nome.slice(0,25)+'...' : c.nome),
+      datasets: [{ label: 'Faturamento', data: top10.map(c => c.fat), backgroundColor: top10.map(c => CANAL_COLORS[c.canal] || 'var(--g)') }]
     },
-    options:{indexAxis:'y',responsive:true,plugins:{legend:{display:false},datalabels:{anchor:'end',align:'right',formatter:v=>fmtBRL(v),font:{size:10,weight:600},color:'#374151'}},scales:{x:{ticks:{callback:v=>fmtBRL(v)}}}}
+    options: chartOpts({ indexAxis: 'y', scales: { x: { ticks: { callback: v => fmtBRL(v) } } }, plugins: { datalabels: { display: false }, legend: { display: false } } })
   });
 
-  // Top 10 Distribuidores
-  const topDist = clis.filter(c=>c.canal==='Distribuidor').slice(0,10);
-  createChart('ch-cli-dist', {
-    type:'bar',
-    data:{
-      labels:topDist.map(c=>c.nome),
-      datasets:[{data:topDist.map(c=>Math.round(c.fat)),backgroundColor:'#0F6E56',borderRadius:4,maxBarThickness:22}]
-    },
-    options:{indexAxis:'y',responsive:true,plugins:{legend:{display:false},datalabels:{anchor:'end',align:'right',formatter:v=>fmtBRL(v),font:{size:10,weight:600},color:'#374151'}},scales:{x:{ticks:{callback:v=>fmtBRL(v)}}}}
-  });
-
-  // Pareto
-  const cumData = [];
+  // Chart: Pareto Concentracao
   let cumSum = 0;
-  clis.forEach(c => { cumSum += c.fat; cumData.push(fatTotal>0 ? cumSum/fatTotal*100 : 0); });
-
-  createChart('ch-cli-pareto', {
-    type:'bar',
-    data:{
-      labels:clis.slice(0,30).map((c,i)=>(i+1)+'º'),
-      datasets:[
-        {type:'bar',label:'Faturamento',data:clis.slice(0,30).map(c=>Math.round(c.fat)),backgroundColor:'rgba(15,110,86,.6)',borderRadius:4,yAxisID:'y'},
-        {type:'line',label:'% Acumulado',data:cumData.slice(0,30),borderColor:'#D97706',backgroundColor:'#D97706',pointRadius:2,yAxisID:'y1',tension:.3}
+  const paretoData = clientes.slice(0,30).map(c => { cumSum += c.fat; return { name: c.nome, fat: c.fat, cum: fatTotal ? cumSum / fatTotal * 100 : 0 }; });
+  destroyChart('cliPareto');
+  CHARTS.cliPareto = new Chart(document.getElementById('ch-cli-pareto'), {
+    type: 'bar',
+    data: {
+      labels: paretoData.map(p => p.name.length > 15 ? p.name.slice(0,15)+'..' : p.name),
+      datasets: [
+        { label: 'Faturamento', data: paretoData.map(p => p.fat), backgroundColor: 'var(--g)', order: 2, yAxisID: 'y' },
+        { label: '% Acumulado', data: paretoData.map(p => p.cum), type: 'line', borderColor: 'var(--r)', backgroundColor: 'transparent', tension: .3, pointRadius: 2, order: 1, yAxisID: 'y1' }
       ]
     },
-    options:{responsive:true,plugins:{legend:{position:'bottom'},datalabels:{display:false}},scales:{y:{position:'left',ticks:{callback:v=>fmtBRL(v)}},y1:{position:'right',grid:{drawOnChartArea:false},ticks:{callback:v=>v+'%'},max:100}}}
+    options: chartOpts({
+      scales: {
+        x: { ticks: { display: false } },
+        y: { position: 'left', ticks: { callback: v => fmtBRL(v) } },
+        y1: { position: 'right', grid: { drawOnChartArea: false }, ticks: { callback: v => v+'%' }, max: 100 }
+      },
+      plugins: { datalabels: { display: false }, legend: { position: 'bottom' } }
+    })
   });
 
-  // Table
-  let html = '<table class="tbl"><thead><tr><th>Cliente</th><th>Canal</th><th>Cidade</th><th class="num">Pedidos</th><th class="num">Faturamento</th><th class="num">Volume L</th><th class="num">Ticket Médio</th><th>Última Compra</th></tr></thead><tbody>';
-  clis.slice(0,50).forEach(c => {
-    const ultima = c.ultimaData ? c.ultimaData.toLocaleDateString('pt-BR') : '—';
-    html += `<tr><td>${c.nome}</td><td>${c.canal}</td><td>${c.cidade}</td><td class="num">${c.pedidos}</td><td class="num">${fmtBRL(c.fat)}</td><td class="num">${fmtNum(c.litros)}</td><td class="num">${fmtBRL(c.ticketMedio)}</td><td>${ultima}</td></tr>`;
+  // Client table
+  const tbl = document.getElementById('tbl-cli');
+  let html = '<thead><tr><th>Cliente</th><th>Canal</th><th>Cidade</th><th class="num">Pedidos</th><th class="num">Faturamento</th><th class="num">Volume L</th><th class="num">Ticket Medio</th><th class="num">Ticket/Litro</th><th>Ultima Compra</th></tr></thead><tbody>';
+  clientes.forEach(c => {
+    const nPed = c.pedidos.size;
+    const tm = nPed ? c.fat / nPed : 0;
+    // Ticket/Litro for this client (barrel items)
+    const bItems = D.filter(v => v.cliente_id === c.id && v._litBarril > 0);
+    const bFat = bItems.reduce((s,v)=>s+v._valor,0);
+    const bLit = bItems.reduce((s,v)=>s+v._litros,0);
+    const tl = bLit ? bFat / bLit : 0;
+    const lastDt = c.lastDate ? c.lastDate.toLocaleDateString('pt-BR') : '-';
+    html += '<tr>'
+      +'<td>'+c.nome+'</td>'
+      +'<td>'+c.canal+'</td>'
+      +'<td>'+c.cidade+'</td>'
+      +'<td class="num" data-v="'+nPed+'">'+fmtNum(nPed)+'</td>'
+      +'<td class="num" data-v="'+c.fat+'">'+fmtBRL(c.fat)+'</td>'
+      +'<td class="num" data-v="'+c.vol+'">'+fmtNum(c.vol,1)+'</td>'
+      +'<td class="num" data-v="'+tm+'">'+fmtBRL(tm)+'</td>'
+      +'<td class="num" data-v="'+tl+'">'+fmtBRL(tl)+'</td>'
+      +'<td>'+ lastDt+'</td>'
+      +'</tr>';
   });
-  html += '</tbody></table>';
-  document.getElementById('tbl-cli').innerHTML = html;
+  html += '</tbody>';
+  tbl.innerHTML = html;
+  makeTableSortable(tbl);
 }
 
-// ════════════════════════════════════════════════════════
-// TABS
-// ════════════════════════════════════════════════════════
-document.getElementById('tabBar').addEventListener('click', e => {
-  const btn = e.target.closest('.tab-btn');
-  if (!btn) return;
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
-});
+// ================================================================
+// TAB 6 — RESULTADO FINANCEIRO
+// ================================================================
+function renderFinanceiro() {
+  const D = FILTERED;
+  const fatTotal = D.reduce((s,v) => s + v._valor, 0);
+  const custoTotal = D.reduce((s,v) => s + v._custoTotal, 0);
+  const margemBruta = fatTotal - custoTotal;
+  const margemPct = fatTotal ? (margemBruta / fatTotal * 100) : 0;
 
-// ════════════════════════════════════════════════════════
-// SIDEBAR TOGGLE (mobile)
-// ════════════════════════════════════════════════════════
-function toggleSidebar() {
-  document.getElementById('sidebar').classList.toggle('open');
-  document.getElementById('sidebarOverlay').classList.toggle('open');
+  const withCost = D.filter(v => v._custoMedio > 0);
+  const withoutCost = D.filter(v => !v._custoMedio || v._custoMedio === 0);
+  const pedidosComCusto = new Set(withCost.map(pedidoKey));
+  const margemMediaPedido = pedidosComCusto.size ? withCost.reduce((s,v)=>s+v._margemTotal,0) / pedidosComCusto.size : 0;
+
+  const skusSemCusto = new Set(withoutCost.map(v => v.sku || v.produto));
+  const fatSemCusto = withoutCost.reduce((s,v) => s + v._valor, 0);
+  const litrosComCusto = withCost.reduce((s,v) => s + v._litros, 0);
+  const custoMedioLitro = litrosComCusto ? custoTotal / litrosComCusto : 0;
+
+  document.getElementById('kpi-fin1').innerHTML = [
+    kpiCard('Faturamento Total', fmtBRL(fatTotal)),
+    kpiCard('Custo Total', fmtBRL(custoTotal)),
+    kpiCard('Margem Bruta R$', fmtBRL(margemBruta), '', margemBruta >= 0),
+    kpiCard('Margem Bruta %', fmtPct(margemPct), '', margemPct >= 0),
+  ].join('');
+
+  document.getElementById('kpi-fin2').innerHTML = [
+    kpiCard('Margem Media/Pedido', fmtBRL(margemMediaPedido)),
+    kpiCard('Produtos sem Custo', fmtNum(skusSemCusto.size)),
+    kpiCard('Fat. sem Custo Cad.', fmtBRL(fatSemCusto)),
+    kpiCard('Custo Medio/Litro', fmtBRL(custoMedioLitro)),
+  ].join('');
+
+  // Chart: Margem por Canal (grouped bar: fat vs custo vs margem)
+  const canalStats = {};
+  CANAIS.forEach(c => canalStats[c] = { fat: 0, custo: 0, margem: 0 });
+  D.forEach(v => {
+    const c = v._canal;
+    if (!canalStats[c]) return;
+    canalStats[c].fat += v._valor;
+    canalStats[c].custo += v._custoTotal;
+    canalStats[c].margem += v._margemTotal;
+  });
+
+  destroyChart('finCanal');
+  CHARTS.finCanal = new Chart(document.getElementById('ch-fin-canal'), {
+    type: 'bar',
+    data: {
+      labels: CANAIS,
+      datasets: [
+        { label: 'Faturamento', data: CANAIS.map(c => canalStats[c].fat), backgroundColor: '#0F6E56' },
+        { label: 'Custo', data: CANAIS.map(c => canalStats[c].custo), backgroundColor: '#DC2626' },
+        { label: 'Margem', data: CANAIS.map(c => canalStats[c].margem), backgroundColor: '#D97706' },
+      ]
+    },
+    options: chartOpts({ scales: { y: { ticks: { callback: v => fmtBRL(v) } } }, plugins: { datalabels: { display: false }, legend: { position: 'bottom' } } })
+  });
+
+  // Chart: Margem Mensal (combo: bar margem R$ + line margem %)
+  const meses = sortMesKeys([...new Set(D.map(getMesKey))]);
+  const mesFat = {}, mesCusto = {}, mesMargem = {};
+  meses.forEach(m => { mesFat[m]=0; mesCusto[m]=0; mesMargem[m]=0; });
+  D.forEach(v => { const m = getMesKey(v); mesFat[m]=(mesFat[m]||0)+v._valor; mesCusto[m]=(mesCusto[m]||0)+v._custoTotal; mesMargem[m]=(mesMargem[m]||0)+v._margemTotal; });
+  const mesMargemPct = meses.map(m => mesFat[m] ? (mesMargem[m] / mesFat[m]) * 100 : 0);
+
+  destroyChart('finMensal');
+  CHARTS.finMensal = new Chart(document.getElementById('ch-fin-mensal'), {
+    type: 'bar',
+    data: {
+      labels: meses,
+      datasets: [
+        { label: 'Margem R$', data: meses.map(m => mesMargem[m]||0), backgroundColor: 'var(--g)', order: 2, yAxisID: 'y' },
+        { label: 'Margem %', data: mesMargemPct, type: 'line', borderColor: 'var(--a)', backgroundColor: 'transparent', tension: .3, pointRadius: 3, order: 1, yAxisID: 'y1' }
+      ]
+    },
+    options: chartOpts({
+      scales: {
+        y: { position: 'left', ticks: { callback: v => fmtBRL(v) } },
+        y1: { position: 'right', grid: { drawOnChartArea: false }, ticks: { callback: v => v+'%' } }
+      },
+      plugins: { datalabels: { display: false }, legend: { position: 'bottom' } }
+    })
+  });
+
+  // Top 15 Clientes por Margem table
+  const cliMargem = {};
+  D.forEach(v => {
+    const id = v.cliente_id || 'SEM';
+    if (!cliMargem[id]) cliMargem[id] = { nome: clienteName(v), canal: v._canal, fat: 0, custo: 0, margem: 0, vol: 0 };
+    const c = cliMargem[id];
+    c.fat += v._valor;
+    c.custo += v._custoTotal;
+    c.margem += v._margemTotal;
+    c.vol += v._litros;
+  });
+  const topCliMargem = Object.values(cliMargem).sort((a,b) => b.margem - a.margem).slice(0,15);
+
+  const tblCli = document.getElementById('tbl-fin-cli');
+  let htmlCli = '<thead><tr><th>Cliente</th><th>Canal</th><th class="num">Faturamento</th><th class="num">Custo</th><th class="num">Margem R$</th><th class="num">Margem %</th><th class="num">Volume L</th><th class="num">Margem/Litro</th></tr></thead><tbody>';
+  topCliMargem.forEach(c => {
+    const mPct = c.fat ? (c.margem / c.fat * 100) : 0;
+    const mLitro = c.vol ? c.margem / c.vol : 0;
+    htmlCli += '<tr>'
+      +'<td>'+c.nome+'</td>'
+      +'<td>'+c.canal+'</td>'
+      +'<td class="num" data-v="'+c.fat+'">'+fmtBRL(c.fat)+'</td>'
+      +'<td class="num" data-v="'+c.custo+'">'+fmtBRL(c.custo)+'</td>'
+      +'<td class="num" data-v="'+c.margem+'" style="'+(c.margem>=0?'color:var(--g)':'color:var(--r)')+'">'+fmtBRL(c.margem)+'</td>'
+      +'<td class="num" data-v="'+mPct+'">'+fmtPct(mPct)+'</td>'
+      +'<td class="num" data-v="'+c.vol+'">'+fmtNum(c.vol,1)+'</td>'
+      +'<td class="num" data-v="'+mLitro+'">'+fmtBRL(mLitro)+'</td>'
+      +'</tr>';
+  });
+  htmlCli += '</tbody>';
+  tblCli.innerHTML = htmlCli;
+  makeTableSortable(tblCli);
+
+  // Top 15 Produtos por Margem table
+  const prodMargem = {};
+  D.forEach(v => {
+    const key = v.sku || v.produto || 'SEM';
+    if (!prodMargem[key]) prodMargem[key] = { nome: v.produto||'', cat: v.categoria||'', fat: 0, custo: 0, margem: 0, qtd: 0, litros: 0 };
+    const p = prodMargem[key];
+    p.fat += v._valor;
+    p.custo += v._custoTotal;
+    p.margem += v._margemTotal;
+    p.qtd += v._qtd;
+    p.litros += v._litros;
+    if (!p.nome && v.produto) p.nome = v.produto;
+  });
+  const topProdMargem = Object.values(prodMargem).sort((a,b) => b.margem - a.margem).slice(0,15);
+
+  const tblProd = document.getElementById('tbl-fin-prod');
+  let htmlProd = '<thead><tr><th>Produto</th><th>Categoria</th><th class="num">Faturamento</th><th class="num">Custo</th><th class="num">Margem R$</th><th class="num">Margem %</th><th class="num">Qtd</th><th class="num">R$/Litro</th></tr></thead><tbody>';
+  topProdMargem.forEach(p => {
+    const mPct = p.fat ? (p.margem / p.fat * 100) : 0;
+    const rl = p.litros ? p.fat / p.litros : 0;
+    htmlProd += '<tr>'
+      +'<td>'+p.nome+'</td>'
+      +'<td>'+p.cat+'</td>'
+      +'<td class="num" data-v="'+p.fat+'">'+fmtBRL(p.fat)+'</td>'
+      +'<td class="num" data-v="'+p.custo+'">'+fmtBRL(p.custo)+'</td>'
+      +'<td class="num" data-v="'+p.margem+'" style="'+(p.margem>=0?'color:var(--g)':'color:var(--r)')+'">'+fmtBRL(p.margem)+'</td>'
+      +'<td class="num" data-v="'+mPct+'">'+fmtPct(mPct)+'</td>'
+      +'<td class="num" data-v="'+p.qtd+'">'+fmtNum(p.qtd)+'</td>'
+      +'<td class="num" data-v="'+rl+'">'+fmtBRL(rl)+'</td>'
+      +'</tr>';
+  });
+  htmlProd += '</tbody>';
+  tblProd.innerHTML = htmlProd;
+  makeTableSortable(tblProd);
+
+  // Produtos sem Custo table
+  const noCostMap = {};
+  withoutCost.forEach(v => {
+    const key = v.sku || v.produto || 'SEM';
+    if (!noCostMap[key]) noCostMap[key] = { nome: v.produto||'', sku: v.sku||'', qtd: 0, fat: 0 };
+    noCostMap[key].qtd += v._qtd;
+    noCostMap[key].fat += v._valor;
+    if (!noCostMap[key].nome && v.produto) noCostMap[key].nome = v.produto;
+  });
+  const noCostProds = Object.values(noCostMap).sort((a,b) => b.fat - a.fat);
+
+  const tblNc = document.getElementById('tbl-fin-nocost');
+  let htmlNc = '<thead><tr><th>Produto</th><th>SKU</th><th class="num">Qtd Vendida</th><th class="num">Faturamento</th></tr></thead><tbody>';
+  if (noCostProds.length === 0) {
+    htmlNc += '<tr><td colspan="4" style="text-align:center;color:var(--ink4);padding:20px">Todos os produtos possuem custo cadastrado</td></tr>';
+  } else {
+    noCostProds.forEach(p => {
+      htmlNc += '<tr>'
+        +'<td>'+p.nome+'</td>'
+        +'<td>'+p.sku+'</td>'
+        +'<td class="num" data-v="'+p.qtd+'">'+fmtNum(p.qtd)+'</td>'
+        +'<td class="num" data-v="'+p.fat+'">'+fmtBRL(p.fat)+'</td>'
+        +'</tr>';
+    });
+  }
+  htmlNc += '</tbody>';
+  tblNc.innerHTML = htmlNc;
+  makeTableSortable(tblNc);
 }
 
-// ════════════════════════════════════════════════════════
+// ================================================================
+// KPI CARD HELPER
+// ================================================================
+function kpiCard(label, value, sub, isUp) {
+  let deltaClass = '';
+  if (sub === 'up') { deltaClass = ' up'; sub = ''; }
+  else if (sub === 'down') { deltaClass = ' down'; sub = ''; }
+  return '<div class="kpi">'
+    +'<div class="kpi-label">'+label+'</div>'
+    +'<div class="kpi-value">'+value+'</div>'
+    +(sub ? '<div class="kpi-sub">'+sub+'</div>' : '')
+    +'</div>';
+}
+
+// ================================================================
 // INIT
-// ════════════════════════════════════════════════════════
+// ================================================================
 carregarDados();
 </script>
 </body>
