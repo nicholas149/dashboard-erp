@@ -25,7 +25,7 @@
 html{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);font-size:15px}
 body{min-height:100dvh;display:flex;flex-direction:column}
 
-/* ── Topbar */
+/* -- Topbar */
 .topbar{background:var(--g);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;box-shadow:0 2px 8px rgba(15,110,86,.3)}
 .logo{font-weight:700;font-size:17px;letter-spacing:-.3px}
 .logo-sub{opacity:.55;font-weight:400;font-size:12px;margin-left:5px}
@@ -34,14 +34,14 @@ body{min-height:100dvh;display:flex;flex-direction:column}
 .btn-portal{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.22);border-radius:99px;padding:4px 11px;font-size:12px;font-weight:500;color:#fff;text-decoration:none;transition:background .15s}
 .btn-portal:hover{background:rgba(255,255,255,.25)}
 
-/* ── Layout */
+/* -- Layout */
 .dash-wrap{display:flex;flex:1;overflow:hidden}
 .sidebar{width:var(--sidebar-w);background:var(--bg2);border-right:1px solid var(--bd);padding:16px;overflow-y:auto;flex-shrink:0;display:flex;flex-direction:column;gap:16px}
 .dash-main{flex:1;overflow-y:auto;padding:16px 20px;display:flex;flex-direction:column;gap:14px}
 #dashContent{display:none;flex-direction:column;gap:14px;flex:1}
 #dashContent.show{display:flex;flex-direction:column}
 
-/* ── Sidebar */
+/* -- Sidebar */
 .sb-title{font-size:11px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:var(--ink3)}
 .sb-group{display:flex;flex-direction:column;gap:6px}
 .sb-label{font-size:12px;font-weight:500;color:var(--ink2)}
@@ -57,7 +57,7 @@ body{min-height:100dvh;display:flex;flex-direction:column}
 .sb-btn-clear{background:transparent;color:var(--ink3);border:1px solid var(--bd)}
 .sb-btn-clear:hover{background:var(--bg);color:var(--ink2)}
 
-/* ── Dropdown search */
+/* -- Dropdown search */
 .sb-dd{position:relative}
 .sb-dd-list{position:absolute;top:calc(100% + 2px);left:0;right:0;background:var(--bg2);border:1.5px solid var(--g);border-radius:var(--rad3);box-shadow:var(--sh2);z-index:300;max-height:180px;overflow-y:auto;display:none}
 .sb-dd-list.open{display:block}
@@ -65,7 +65,7 @@ body{min-height:100dvh;display:flex;flex-direction:column}
 .sb-dd-item:last-child{border-bottom:none}
 .sb-dd-item:hover{background:var(--g2)}
 
-/* ── Tabs */
+/* -- Tabs */
 .tab-bar{display:flex;gap:0;border-bottom:2px solid var(--bd);overflow-x:auto;flex-shrink:0}
 .tab-btn{padding:10px 16px;font-size:13px;font-weight:500;color:var(--ink3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap;transition:all .15s}
 .tab-btn:hover{color:var(--ink)}
@@ -74,7 +74,7 @@ body{min-height:100dvh;display:flex;flex-direction:column}
 .tab-panel.active{display:flex;flex-direction:column;width:100%}
 @keyframes fi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
 
-/* ── KPI Cards */
+/* -- KPI Cards */
 .kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
 .kpi-row-4{grid-template-columns:repeat(4,1fr)}
 .kpi-row-3{grid-template-columns:repeat(3,1fr)}
@@ -86,14 +86,14 @@ body{min-height:100dvh;display:flex;flex-direction:column}
 .kpi-delta.up{color:var(--g)}
 .kpi-delta.down{color:var(--r)}
 
-/* ── Chart containers */
+/* -- Chart containers */
 .chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .chart-card{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--rad);padding:16px;box-shadow:var(--sh)}
 .chart-title{font-size:13px;font-weight:600;color:var(--ink2);margin-bottom:10px}
 .chart-wrap{position:relative;width:100%;max-height:280px}
 .chart-wrap canvas{max-height:250px}
 
-/* ── Canal compare cards */
+/* -- Canal compare cards */
 .canal-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
 .canal-card{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--rad);padding:16px;box-shadow:var(--sh)}
 .canal-head{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;display:flex;align-items:center;gap:6px}
@@ -103,7 +103,7 @@ body{min-height:100dvh;display:flex;flex-direction:column}
 .canal-row-label{color:var(--ink3)}
 .canal-row-val{font-weight:600}
 
-/* ── Tables */
+/* -- Tables */
 .tbl-card{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--rad);padding:16px;box-shadow:var(--sh)}
 .tbl-card-title{font-size:13px;font-weight:600;color:var(--ink2);margin-bottom:10px}
 .tbl-search{width:100%;max-width:360px;border:1.5px solid var(--bd);border-radius:var(--rad3);padding:8px 12px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink);background:var(--bg);outline:none;margin-bottom:10px}
@@ -119,13 +119,65 @@ body{min-height:100dvh;display:flex;flex-direction:column}
 .tbl .num{text-align:right;font-variant-numeric:tabular-nums;font-family:'DM Mono',monospace;font-size:12px}
 .tbl .no-cost{color:var(--ink4);font-style:italic}
 
-/* ── Loading */
+/* -- Alert Panel (NEW) */
+.alert-panel{display:flex;flex-direction:column;gap:8px}
+.alert-item{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--rad2);padding:12px 16px;display:flex;align-items:center;gap:12px;box-shadow:var(--sh);cursor:pointer}
+.alert-item.red{border-left:4px solid var(--r)}
+.alert-item.amber{border-left:4px solid var(--a)}
+.alert-item.green{border-left:4px solid var(--g)}
+.alert-badge{min-width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff}
+.alert-badge.red{background:var(--r)}
+.alert-badge.amber{background:var(--a)}
+.alert-badge.green{background:var(--g)}
+.alert-text{font-size:13px;font-weight:500}
+.alert-sub{font-size:11px;color:var(--ink3)}
+.alert-detail{display:none;padding:8px 0 0 40px;font-size:12px;color:var(--ink2)}
+.alert-item.open .alert-detail{display:block}
+
+/* -- Compare Panel (NEW) */
+.compare-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.compare-card{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--rad);padding:12px 14px;box-shadow:var(--sh);text-align:center}
+.compare-label{font-size:10px;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:.4px}
+.compare-current{font-size:20px;font-weight:700;margin:4px 0}
+.compare-prev{font-size:11px;color:var(--ink4)}
+.compare-delta{font-size:12px;font-weight:600;margin-top:2px}
+.compare-delta.up{color:var(--g)}
+.compare-delta.down{color:var(--r)}
+
+/* -- Section Headers (NEW) */
+.section-title{font-size:14px;font-weight:700;color:var(--ink);margin:8px 0 4px;padding-bottom:6px;border-bottom:2px solid var(--bd)}
+
+/* -- Weekday cards (NEW) */
+.weekday-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
+.weekday-card{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--rad2);padding:10px;box-shadow:var(--sh);text-align:center}
+.weekday-card.best{border:2px solid var(--g)}
+.weekday-card.worst{border:2px solid var(--r);opacity:.85}
+.weekday-day{font-size:11px;font-weight:700;text-transform:uppercase;color:var(--ink3);letter-spacing:.3px}
+.weekday-val{font-size:15px;font-weight:700;margin:4px 0 2px}
+.weekday-sub{font-size:10px;color:var(--ink4)}
+
+/* -- ABC Badge (NEW) */
+.abc-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;color:#fff;min-width:24px;text-align:center}
+.abc-badge.a{background:var(--g)}
+.abc-badge.b{background:var(--a)}
+.abc-badge.c{background:var(--ink4)}
+
+/* -- Status dot (NEW) */
+.status-dot{display:inline-block;width:10px;height:10px;border-radius:50%;vertical-align:middle;margin-right:4px}
+.status-dot.green{background:var(--g)}
+.status-dot.amber{background:var(--a)}
+.status-dot.red{background:var(--r)}
+
+/* -- Row highlight (NEW) */
+.tbl tr.row-warn td{background:var(--r2)}
+
+/* -- Loading */
 .loading{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;gap:12px;color:var(--ink3)}
 .loading-spinner{width:32px;height:32px;border:3px solid var(--bd);border-top-color:var(--g);border-radius:50%;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .empty-msg{text-align:center;padding:40px 20px;color:var(--ink4);font-size:14px}
 
-/* ── Responsive */
+/* -- Responsive */
 @media(max-width:768px){
   .sidebar{display:none;position:fixed;top:0;left:0;bottom:0;width:280px;z-index:500;box-shadow:var(--sh2)}
   .sidebar.open{display:flex}
@@ -137,6 +189,8 @@ body{min-height:100dvh;display:flex;flex-direction:column}
   .kpi-row-3{grid-template-columns:1fr 1fr}
   .chart-grid{grid-template-columns:1fr}
   .canal-grid{grid-template-columns:1fr 1fr}
+  .compare-grid{grid-template-columns:1fr 1fr}
+  .weekday-grid{grid-template-columns:repeat(4,1fr)}
   .dash-main{padding:12px}
   .tab-btn{padding:8px 12px;font-size:12px}
   .kpi-value{font-size:18px}
@@ -144,6 +198,8 @@ body{min-height:100dvh;display:flex;flex-direction:column}
 @media(max-width:480px){
   .kpi-row,.kpi-row-4,.kpi-row-3{grid-template-columns:1fr}
   .canal-grid{grid-template-columns:1fr}
+  .compare-grid{grid-template-columns:1fr}
+  .weekday-grid{grid-template-columns:repeat(2,1fr)}
 }
 </style>
 </head>
@@ -154,7 +210,7 @@ body{min-height:100dvh;display:flex;flex-direction:column}
   <div><span class="logo">Harden</span><span class="logo-sub">Dashboard BI</span></div>
   <div class="topbar-right">
     <button class="btn-sidebar-toggle" onclick="toggleSidebar()">&#9776; Filtros</button>
-    <a href="index.html" class="btn-portal">Operações &rarr;</a>
+    <a href="index.html" class="btn-portal">Operacoes &rarr;</a>
   </div>
 </div>
 
@@ -230,8 +286,10 @@ body{min-height:100dvh;display:flex;flex-direction:column}
 
       <!-- TAB 1: Visao Geral -->
       <div class="tab-panel active" id="tab-visao">
+        <div id="alerts-panel"></div>
         <div class="kpi-row" id="kpi-visao1"></div>
         <div class="kpi-row kpi-row-4" id="kpi-visao2"></div>
+        <div id="compare-panel"></div>
         <div class="chart-grid">
           <div class="chart-card"><div class="chart-title">Faturamento Mensal por Canal</div><div class="chart-wrap"><canvas id="ch-fat-mensal"></canvas></div></div>
           <div class="chart-card"><div class="chart-title">Distribuicao por Canal</div><div class="chart-wrap"><canvas id="ch-canal-donut"></canvas></div></div>
@@ -267,15 +325,18 @@ body{min-height:100dvh;display:flex;flex-direction:column}
           <div class="tbl-card-title">Crescimento Mensal</div>
           <div class="tbl-wrap" id="tbl-growth-wrap"><table class="tbl" id="tbl-growth"></table></div>
         </div>
+        <div id="tempo-weekday-section"></div>
       </div>
 
       <!-- TAB 4: Mix de Produtos -->
       <div class="tab-panel" id="tab-mix">
         <div class="kpi-row" id="kpi-mix"></div>
+        <div id="mix-abc-section"></div>
         <div class="chart-grid">
           <div class="chart-card"><div class="chart-title">Top 10 Produtos Fat.</div><div class="chart-wrap"><canvas id="ch-prod-fat"></canvas></div></div>
           <div class="chart-card"><div class="chart-title">Top 10 Produtos Volume</div><div class="chart-wrap"><canvas id="ch-prod-vol"></canvas></div></div>
         </div>
+        <div id="mix-price-section"></div>
         <div class="tbl-card">
           <div class="tbl-card-title">Detalhamento por Produto</div>
           <div class="tbl-wrap" id="tbl-mix-wrap"><table class="tbl" id="tbl-mix"></table></div>
@@ -285,10 +346,13 @@ body{min-height:100dvh;display:flex;flex-direction:column}
       <!-- TAB 5: Gestao de Clientes -->
       <div class="tab-panel" id="tab-clientes">
         <div class="kpi-row" id="kpi-cli"></div>
+        <div id="cli-inactive-section"></div>
+        <div id="cli-abc-section"></div>
         <div class="chart-grid">
           <div class="chart-card"><div class="chart-title">Top 10 Clientes Fat.</div><div class="chart-wrap"><canvas id="ch-cli-top"></canvas></div></div>
           <div class="chart-card"><div class="chart-title">Pareto Concentracao</div><div class="chart-wrap"><canvas id="ch-cli-pareto"></canvas></div></div>
         </div>
+        <div id="cli-crosssell-section"></div>
         <div class="tbl-card">
           <div class="tbl-card-title">Tabela de Clientes</div>
           <div class="tbl-wrap" id="tbl-cli-wrap"><table class="tbl" id="tbl-cli"></table></div>
@@ -375,7 +439,6 @@ function getCanal(v) {
   if (tipo === 'Distribuidor') return 'Distribuidor';
   if (tipo === 'PDV' || tipo === 'DELV.') return 'PDV/Deliv';
   if (tipo === 'Quiosque') return 'Quiosque';
-  // Fallback by empresa
   const emp = (v.empresa||'').toLowerCase();
   if (emp.includes('master') || emp.includes('wine')) return 'Distribuidor';
   if (emp.includes('pdv')) return 'PDV/Deliv';
@@ -428,6 +491,11 @@ function buscaSemelhanca(texto, query) {
 function clienteName(v) {
   const c = CLI_MAP[v.cliente_id];
   return c ? (c.nome_canonico || c.nome_master_bling || c.nome_wine_bling || v.cliente || '') : (v.cliente || '');
+}
+
+function clienteNameById(id) {
+  const c = CLI_MAP[id];
+  return c ? (c.nome_canonico || c.nome_master_bling || c.nome_wine_bling || '') : '';
 }
 
 // ================================================================
@@ -499,6 +567,7 @@ async function carregarDados() {
       v._preco = parseBR(v.preco_unitario) || 0;
       v._litBarril = parseBR(v.litros_barril) || (PROD_MAP[v.sku] ? parseBR(PROD_MAP[v.sku].litros_barril) : 0);
       v._custoMedio = PROD_MAP[v.sku] ? parseBR(PROD_MAP[v.sku].custo_medio) : 0;
+      v._precoVenda = PROD_MAP[v.sku] ? parseBR(PROD_MAP[v.sku].preco_venda) : 0;
       v._canal = getCanal(v);
       v._date = parseDateBR(v.data);
       v._margemUnit = v._custoMedio > 0 ? (v._preco - v._custoMedio) : 0;
@@ -529,18 +598,15 @@ async function carregarDados() {
 // SIDEBAR
 // ================================================================
 function populateSidebar() {
-  // Categorias
   const cats = [...new Set(RAW_VENDAS.map(v => v.categoria).filter(Boolean))].sort();
   const sel = document.getElementById('f-cat');
   sel.innerHTML = '<option value="">Todas</option>';
   cats.forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = c; sel.appendChild(o); });
 
-  // Client dropdown
   setupDropdown('f-cli-input','f-cli-dd','f-cli-chips', selectedClients,
     () => RAW_CLIENTES.map(c => ({ id: c.id, label: c.nome_canonico || c.nome_master_bling || '' })).filter(x=>x.label)
   );
 
-  // Product dropdown
   setupDropdown('f-prod-input','f-prod-dd','f-prod-chips', selectedProducts,
     () => RAW_PRODUTOS.map(p => ({ id: p.sku, label: (p.nome_canonico || p.nome || '') + (p.sku ? ' ('+p.sku+')' : '') })).filter(x=>x.label)
   );
@@ -629,7 +695,6 @@ function aplicarFiltros() {
 
   renderAll();
 
-  // Close sidebar on mobile
   if (window.innerWidth <= 768) {
     document.getElementById('sidebar').classList.remove('open');
     document.getElementById('sidebarOverlay').classList.remove('open');
@@ -661,7 +726,7 @@ function renderAll() {
 }
 
 // ================================================================
-// TAB 1 — VISAO GERAL
+// TAB 1 -- VISAO GERAL
 // ================================================================
 function renderVisaoGeral() {
   const D = FILTERED;
@@ -670,7 +735,6 @@ function renderVisaoGeral() {
   const pedidos = new Set(D.map(pedidoKey));
   const nPedidos = pedidos.size;
   const ticketMedio = nPedidos ? fatTotal / nPedidos : 0;
-  // Ticket/Litro for barrels only (items with litros_barril > 0)
   const barrelItems = D.filter(v => v._litBarril > 0);
   const barrelFat = barrelItems.reduce((s,v) => s + v._valor, 0);
   const barrelLitros = barrelItems.reduce((s,v) => s + v._litros, 0);
@@ -682,6 +746,9 @@ function renderVisaoGeral() {
   const custoTotal = D.reduce((s,v) => s + v._custoTotal, 0);
   const margemPct = fatTotal ? (margemTotal / fatTotal) * 100 : 0;
   const pedidoMedioCli = cliAtivos ? fatTotal / cliAtivos : 0;
+
+  // ---- ALERTS PANEL (NEW) ----
+  renderAlerts();
 
   document.getElementById('kpi-visao1').innerHTML = [
     kpiCard('Faturamento Total', fmtBRL(fatTotal)),
@@ -697,6 +764,9 @@ function renderVisaoGeral() {
     kpiCard('Margem Media %', fmtPct(margemPct), custoTotal > 0 ? 'c/ custo' : ''),
     kpiCard('Pedido Medio/Cliente', fmtBRL(pedidoMedioCli)),
   ].join('');
+
+  // ---- COMPARE PANEL (NEW) ----
+  renderCompare();
 
   // Chart: Faturamento Mensal por Canal (stacked bar)
   const meses = sortMesKeys([...new Set(D.map(getMesKey))]);
@@ -740,10 +810,195 @@ function renderVisaoGeral() {
     })
   });
 
-  // Sales listing table
   renderVendasTable();
 }
 
+// ================================================================
+// A. ALERT PANEL
+// ================================================================
+function renderAlerts() {
+  const panel = document.getElementById('alerts-panel');
+  const alerts = [];
+  const hoje = new Date();
+
+  // 1) Clients who usually buy weekly but stopped (last purchase > 15 days, historical fat > R$ 1000)
+  const cliAll = {};
+  RAW_VENDAS.forEach(v => {
+    const id = v.cliente_id;
+    if (!id) return;
+    if (!cliAll[id]) cliAll[id] = { dates: [], fat: 0 };
+    cliAll[id].fat += v._valor;
+    if (v._date) cliAll[id].dates.push(v._date);
+  });
+
+  const stoppedClients = [];
+  Object.keys(cliAll).forEach(id => {
+    const c = cliAll[id];
+    if (c.fat < 1000 || c.dates.length < 2) return;
+    c.dates.sort((a,b) => a - b);
+    const last = c.dates[c.dates.length - 1];
+    const daysSince = Math.floor((hoje - last) / 86400000);
+    // Check if they had weekly frequency (avg gap < 10 days)
+    let totalGap = 0;
+    for (let i = 1; i < c.dates.length; i++) totalGap += (c.dates[i] - c.dates[i-1]) / 86400000;
+    const avgGap = totalGap / (c.dates.length - 1);
+    if (avgGap <= 10 && daysSince > 15) {
+      stoppedClients.push({ nome: clienteNameById(id), dias: daysSince, fat: c.fat });
+    }
+  });
+
+  if (stoppedClients.length > 0) {
+    stoppedClients.sort((a,b) => b.fat - a.fat);
+    const details = stoppedClients.slice(0, 10).map(c =>
+      '<div>' + c.nome + ' - ' + c.dias + ' dias sem compra - Fat. hist: ' + fmtBRL(c.fat) + '</div>'
+    ).join('');
+    alerts.push({ color: 'red', count: stoppedClients.length, text: 'Clientes que pararam de comprar (freq. semanal, >15 dias sem pedido)', detail: details });
+  }
+
+  // 2) Products with negative margin (preco_unitario < custo_medio)
+  const negMarginItems = FILTERED.filter(v => v._custoMedio > 0 && v._preco > 0 && v._preco < v._custoMedio);
+  if (negMarginItems.length > 0) {
+    const prodSet = {};
+    negMarginItems.forEach(v => {
+      const k = v.sku || v.produto || '';
+      if (!prodSet[k]) prodSet[k] = { nome: v.produto || '', count: 0, loss: 0 };
+      prodSet[k].count += v._qtd;
+      prodSet[k].loss += (v._custoMedio - v._preco) * v._qtd;
+    });
+    const prodList = Object.values(prodSet).sort((a,b) => b.loss - a.loss);
+    const details = prodList.slice(0, 10).map(p =>
+      '<div>' + p.nome + ' - ' + fmtNum(p.count) + ' unid. - Prejuizo: ' + fmtBRL(p.loss) + '</div>'
+    ).join('');
+    alerts.push({ color: 'red', count: prodList.length, text: 'Produtos vendidos com margem negativa (preco < custo)', detail: details });
+  }
+
+  // 3) Sales with discount > 30% vs tabela
+  const highDiscount = FILTERED.filter(v => v._precoVenda > 0 && v._preco > 0 && (v._preco / v._precoVenda) < 0.7);
+  if (highDiscount.length > 0) {
+    const byClient = {};
+    highDiscount.forEach(v => {
+      const nome = clienteName(v);
+      if (!byClient[nome]) byClient[nome] = { count: 0, totalDesc: 0 };
+      byClient[nome].count++;
+      byClient[nome].totalDesc += (1 - v._preco / v._precoVenda) * 100;
+    });
+    const cliList = Object.entries(byClient).sort((a,b) => b[1].count - a[1].count);
+    const details = cliList.slice(0, 10).map(([nome, d]) =>
+      '<div>' + nome + ' - ' + d.count + ' vendas com desc >30%</div>'
+    ).join('');
+    alerts.push({ color: 'amber', count: highDiscount.length, text: 'Vendas com desconto superior a 30% sobre tabela', detail: details });
+  }
+
+  // 4) Volume drop > 20% vs previous month
+  const meses = sortMesKeys([...new Set(FILTERED.map(getMesKey))]);
+  if (meses.length >= 2) {
+    const lastM = meses[meses.length - 1];
+    const prevM = meses[meses.length - 2];
+    const volLast = FILTERED.filter(v => getMesKey(v) === lastM).reduce((s,v) => s + v._litros, 0);
+    const volPrev = FILTERED.filter(v => getMesKey(v) === prevM).reduce((s,v) => s + v._litros, 0);
+    if (volPrev > 0) {
+      const dropPct = ((volLast - volPrev) / volPrev) * 100;
+      if (dropPct < -20) {
+        alerts.push({ color: 'red', count: '!', text: 'Queda de volume >20% vs mes anterior: ' + fmtPct(dropPct), detail: '<div>Volume ' + prevM + ': ' + fmtNum(volPrev,1) + ' L &rarr; ' + lastM + ': ' + fmtNum(volLast,1) + ' L</div>' });
+      } else if (dropPct > 10) {
+        alerts.push({ color: 'green', count: '+', text: 'Volume cresceu ' + fmtPct(dropPct) + ' vs mes anterior', detail: '<div>Volume ' + prevM + ': ' + fmtNum(volPrev,1) + ' L &rarr; ' + lastM + ': ' + fmtNum(volLast,1) + ' L</div>' });
+      }
+    }
+  }
+
+  if (alerts.length === 0) {
+    panel.innerHTML = '<div class="alert-panel"><div class="alert-item green"><div class="alert-badge green">&#10003;</div><div><div class="alert-text">Nenhum alerta no periodo selecionado</div></div></div></div>';
+    return;
+  }
+
+  let html = '<div class="section-title">Painel de Alertas</div><div class="alert-panel">';
+  alerts.forEach((a, idx) => {
+    html += '<div class="alert-item ' + a.color + '" onclick="this.classList.toggle(\'open\')">'
+      + '<div class="alert-badge ' + a.color + '">' + a.count + '</div>'
+      + '<div style="flex:1"><div class="alert-text">' + a.text + '</div>'
+      + '<div class="alert-detail">' + a.detail + '</div></div></div>';
+  });
+  html += '</div>';
+  panel.innerHTML = html;
+}
+
+// ================================================================
+// B. COMPARE PANEL
+// ================================================================
+function renderCompare() {
+  const panel = document.getElementById('compare-panel');
+  const dtIniStr = document.getElementById('f-dt-ini').value;
+  const dtFimStr = document.getElementById('f-dt-fim').value;
+  const dtIni = parseDateBR(dtIniStr);
+  const dtFim = parseDateBR(dtFimStr);
+
+  if (!dtIni || !dtFim) { panel.innerHTML = ''; return; }
+
+  const durationMs = dtFim - dtIni;
+  const prevEnd = new Date(dtIni.getTime() - 1);
+  const prevStart = new Date(prevEnd.getTime() - durationMs);
+  prevEnd.setHours(23,59,59,999);
+
+  const prevFiltered = RAW_VENDAS.filter(v => {
+    if (!v._date) return false;
+    if (v._date < prevStart || v._date > prevEnd) return false;
+    const canal = v._canal;
+    const cDist = document.getElementById('f-canal-dist').checked;
+    const cPdv  = document.getElementById('f-canal-pdv').checked;
+    const cQuio = document.getElementById('f-canal-quio').checked;
+    if (canal === 'Distribuidor' && !cDist) return false;
+    if (canal === 'PDV/Deliv' && !cPdv) return false;
+    if (canal === 'Quiosque' && !cQuio) return false;
+    const cat = document.getElementById('f-cat').value;
+    if (cat && v.categoria !== cat) return false;
+    const cliIds = selectedClients.map(c=>c.id);
+    const prodIds = selectedProducts.map(p=>p.id);
+    if (cliIds.length && !cliIds.includes(v.cliente_id)) return false;
+    if (prodIds.length && !prodIds.includes(v.sku)) return false;
+    return true;
+  });
+
+  const D = FILTERED;
+  const curFat = D.reduce((s,v) => s + v._valor, 0);
+  const curVol = D.reduce((s,v) => s + v._litros, 0);
+  const curPed = new Set(D.map(pedidoKey)).size;
+  const curTicket = curPed ? curFat / curPed : 0;
+  const curMargem = D.reduce((s,v) => s + v._margemTotal, 0);
+  const curMargemPct = curFat ? (curMargem / curFat) * 100 : 0;
+
+  const prevFat = prevFiltered.reduce((s,v) => s + v._valor, 0);
+  const prevVol = prevFiltered.reduce((s,v) => s + v._litros, 0);
+  const prevPed = new Set(prevFiltered.map(pedidoKey)).size;
+  const prevTicket = prevPed ? prevFat / prevPed : 0;
+  const prevMargem = prevFiltered.reduce((s,v) => s + v._margemTotal, 0);
+  const prevMargemPct = prevFat ? (prevMargem / prevFat) * 100 : 0;
+
+  function compareCard(label, cur, prev, isCurrency, isPct) {
+    const delta = prev ? ((cur - prev) / Math.abs(prev)) * 100 : 0;
+    const isUp = delta >= 0;
+    const fmtVal = isPct ? fmtPct(cur) : (isCurrency ? fmtBRL(cur) : fmtNum(cur));
+    const fmtPrev2 = isPct ? fmtPct(prev) : (isCurrency ? fmtBRL(prev) : fmtNum(prev));
+    return '<div class="compare-card">'
+      + '<div class="compare-label">' + label + '</div>'
+      + '<div class="compare-current">' + fmtVal + '</div>'
+      + '<div class="compare-prev">Anterior: ' + fmtPrev2 + '</div>'
+      + '<div class="compare-delta ' + (isUp ? 'up' : 'down') + '">' + (isUp ? '+' : '') + fmtPct(delta) + '</div>'
+      + '</div>';
+  }
+
+  panel.innerHTML = '<div class="section-title">Comparativo de Periodos</div>'
+    + '<div class="compare-grid">'
+    + compareCard('Faturamento', curFat, prevFat, true, false)
+    + compareCard('Volume L', curVol, prevVol, false, false)
+    + compareCard('Pedidos', curPed, prevPed, false, false)
+    + compareCard('Ticket Medio', curTicket, prevTicket, true, false)
+    + compareCard('Margem %', curMargemPct, prevMargemPct, false, true)
+    + '</div>';
+}
+
+// ================================================================
+// VENDAS TABLE
+// ================================================================
 function renderVendasTable() {
   const D = FILTERED.slice().sort((a,b) => (b._date||0) - (a._date||0));
   const show = D.slice(0, 200);
@@ -753,7 +1008,7 @@ function renderVendasTable() {
     const dt = v._date ? v._date.toLocaleDateString('pt-BR') : (v.data||'');
     html += '<tr data-search="'+(v.pedido+' '+clienteName(v)+' '+(v.produto||'')).toLowerCase()+'">'
       +'<td>'+dt+'</td>'
-      +'<td>'+( v.pedido||'')+'</td>'
+      +'<td>'+(v.pedido||'')+'</td>'
       +'<td>'+clienteName(v)+'</td>'
       +'<td>'+v._canal+'</td>'
       +'<td>'+(v.produto||'')+'</td>'
@@ -767,7 +1022,6 @@ function renderVendasTable() {
   tbl.innerHTML = html;
   makeTableSortable(tbl);
 
-  // Search
   const searchEl = document.getElementById('search-vendas');
   searchEl.value = '';
   searchEl.oninput = () => {
@@ -779,13 +1033,12 @@ function renderVendasTable() {
 }
 
 // ================================================================
-// TAB 2 — ANALISE POR CANAL
+// TAB 2 -- ANALISE POR CANAL
 // ================================================================
 function renderCanal() {
   const D = FILTERED;
   const fatTotal = D.reduce((s,v) => s + v._valor, 0);
 
-  // Canal stats
   const stats = {};
   CANAIS.forEach(c => stats[c] = { fat: 0, vol: 0, barris: 0, clis: new Set(), peds: new Set() });
   D.forEach(v => {
@@ -798,7 +1051,6 @@ function renderCanal() {
     stats[c].peds.add(pedidoKey(v));
   });
 
-  // Total card stats
   const totalStats = { fat: fatTotal, vol: D.reduce((s,v)=>s+v._litros,0), barris: D.filter(v=>v._litBarril>0).reduce((s,v)=>s+v._qtd,0), clis: new Set(D.map(v=>v.cliente_id)).size, peds: new Set(D.map(pedidoKey)).size };
 
   let cardsHtml = '';
@@ -807,7 +1059,6 @@ function renderCanal() {
     const nPed = s.peds.size;
     const nCli = s.clis.size;
     const tm = nPed ? s.fat / nPed : 0;
-    // Ticket/Litro: barrel items only in this canal
     const bItems = D.filter(v => v._canal === c && v._litBarril > 0);
     const bFat = bItems.reduce((s2,v)=>s2+v._valor,0);
     const bLit = bItems.reduce((s2,v)=>s2+v._litros,0);
@@ -827,7 +1078,6 @@ function renderCanal() {
       +'</div>';
   });
 
-  // Total card
   const totalTm = totalStats.peds ? totalStats.fat / totalStats.peds : 0;
   const bAll = D.filter(v=>v._litBarril>0);
   const bAllFat = bAll.reduce((s,v)=>s+v._valor,0);
@@ -847,7 +1097,6 @@ function renderCanal() {
 
   document.getElementById('canal-cards').innerHTML = cardsHtml;
 
-  // Chart: Fat Mensal por Canal (grouped bar)
   const meses = sortMesKeys([...new Set(D.map(getMesKey))]);
   const canalMes = {};
   CANAIS.forEach(c => { canalMes[c] = {}; meses.forEach(m => canalMes[c][m] = 0); });
@@ -866,7 +1115,6 @@ function renderCanal() {
     options: chartOpts({ scales: { y: { ticks: { callback: v => fmtBRL(v) } } }, plugins: { datalabels: { display: false }, legend: { position: 'bottom' } } })
   });
 
-  // Chart: Participacao Canal % (line over months)
   destroyChart('canalShare');
   const totalMes = {};
   meses.forEach(m => { totalMes[m] = CANAIS.reduce((s,c)=>s+(canalMes[c][m]||0),0); });
@@ -882,7 +1130,6 @@ function renderCanal() {
     options: chartOpts({ scales: { y: { ticks: { callback: v => v+'%' }, max: 100 } }, plugins: { datalabels: { display: false }, legend: { position: 'bottom' } } })
   });
 
-  // Canal breakdown table
   const tbl = document.getElementById('tbl-canal');
   let html = '<thead><tr><th>Canal</th><th class="num">Faturamento</th><th class="num">% Fat</th><th class="num">Volume L</th><th class="num">Barris</th><th class="num">Pedidos</th><th class="num">Clientes</th><th class="num">Ticket Medio</th><th class="num">Ticket/Litro</th></tr></thead><tbody>';
   CANAIS.forEach(c => {
@@ -917,24 +1164,21 @@ function canalRow(label, val) {
 }
 
 // ================================================================
-// TAB 3 — EVOLUCAO TEMPORAL
+// TAB 3 -- EVOLUCAO TEMPORAL
 // ================================================================
 function renderTempo() {
   const D = FILTERED;
   const meses = sortMesKeys([...new Set(D.map(getMesKey))]);
 
-  // Monthly aggregation
   const mesFat = {}, mesVol = {}, mesPed = {};
   meses.forEach(m => { mesFat[m]=0; mesVol[m]=0; mesPed[m]=new Set(); });
   D.forEach(v => { const m = getMesKey(v); mesFat[m]=(mesFat[m]||0)+v._valor; mesVol[m]=(mesVol[m]||0)+v._litros; if(mesPed[m]) mesPed[m].add(pedidoKey(v)); });
 
-  // MoM
   const lastM = meses.length >= 1 ? meses[meses.length-1] : null;
   const prevM = meses.length >= 2 ? meses[meses.length-2] : null;
   const momFat = (prevM && mesFat[prevM]) ? ((mesFat[lastM]||0) / mesFat[prevM] - 1) * 100 : 0;
   const momVol = (prevM && mesVol[prevM]) ? ((mesVol[lastM]||0) / mesVol[prevM] - 1) * 100 : 0;
 
-  // Weekly
   const weeks = sortWeekKeys([...new Set(D.map(v => getWeekKey(v.data)))].filter(w=>w!=='SEM'));
   const weekFat = {};
   weeks.forEach(w => weekFat[w] = 0);
@@ -952,7 +1196,6 @@ function renderTempo() {
     kpiCard('Media Semanal', fmtBRL(avgWeek)),
   ].join('');
 
-  // Chart: Faturamento Semanal (line)
   const showWeeks = weeks.slice(-20);
   destroyChart('fatSemanal');
   CHARTS.fatSemanal = new Chart(document.getElementById('ch-fat-semanal'), {
@@ -964,7 +1207,6 @@ function renderTempo() {
     options: chartOpts({ scales: { y: { ticks: { callback: v => fmtBRL(v) } } }, plugins: { datalabels: { display: false }, legend: { display: false } } })
   });
 
-  // Chart: Fat Mensal + Crescimento % (combo)
   const growthPct = meses.map((m,i) => i === 0 ? 0 : (mesFat[meses[i-1]] ? ((mesFat[m]||0)/mesFat[meses[i-1]]-1)*100 : 0));
 
   destroyChart('fatGrowth');
@@ -1014,10 +1256,98 @@ function renderTempo() {
   html += '</tbody>';
   tbl.innerHTML = html;
   makeTableSortable(tbl);
+
+  // ---- F. SAZONALIDADE DIA DA SEMANA (NEW) ----
+  renderWeekday();
 }
 
 // ================================================================
-// TAB 4 — MIX DE PRODUTOS
+// F. SAZONALIDADE DIA DA SEMANA
+// ================================================================
+function renderWeekday() {
+  const section = document.getElementById('tempo-weekday-section');
+  const D = FILTERED;
+  const dayNames = ['Domingo','Segunda','Terca','Quarta','Quinta','Sexta','Sabado'];
+
+  // Group by day of week
+  const dayData = Array.from({length:7}, () => ({ fat: 0, vol: 0, pedidos: new Set(), dates: new Set() }));
+
+  D.forEach(v => {
+    if (!v._date) return;
+    const dow = v._date.getDay();
+    dayData[dow].fat += v._valor;
+    dayData[dow].vol += v._litros;
+    dayData[dow].pedidos.add(pedidoKey(v));
+    // Track distinct dates to calculate averages properly
+    dayData[dow].dates.add(v._date.toISOString().slice(0,10));
+  });
+
+  // Calculate averages
+  const dayAvg = dayData.map((d, i) => {
+    const nDays = d.dates.size || 1;
+    return {
+      day: dayNames[i],
+      avgFat: d.fat / nDays,
+      avgVol: d.vol / nDays,
+      avgPed: d.pedidos.size / nDays,
+      totalFat: d.fat,
+      totalVol: d.vol,
+      totalPed: d.pedidos.size,
+      nDays: d.dates.size
+    };
+  });
+
+  const fatTotal = dayAvg.reduce((s, d) => s + d.totalFat, 0);
+
+  // Find best/worst by avg fat (among days that have data)
+  const activeDays = dayAvg.filter(d => d.nDays > 0);
+  let bestIdx = -1, worstIdx = -1, bestFat = -1, worstFat = Infinity;
+  dayAvg.forEach((d, i) => {
+    if (d.nDays === 0) return;
+    if (d.avgFat > bestFat) { bestFat = d.avgFat; bestIdx = i; }
+    if (d.avgFat < worstFat) { worstFat = d.avgFat; worstIdx = i; }
+  });
+
+  let html = '<div class="section-title">Sazonalidade - Dia da Semana</div>';
+  html += '<div class="weekday-grid">';
+  dayAvg.forEach((d, i) => {
+    let cls = 'weekday-card';
+    if (i === bestIdx) cls += ' best';
+    if (i === worstIdx) cls += ' worst';
+    html += '<div class="' + cls + '">'
+      + '<div class="weekday-day">' + d.day + '</div>'
+      + '<div class="weekday-val">' + fmtBRL(d.avgFat) + '</div>'
+      + '<div class="weekday-sub">Vol: ' + fmtNum(d.avgVol,0) + ' L</div>'
+      + '<div class="weekday-sub">Ped: ' + fmtNum(d.avgPed,1) + '</div>'
+      + '</div>';
+  });
+  html += '</div>';
+
+  // Table
+  html += '<div class="tbl-card" style="margin-top:10px"><div class="tbl-card-title">Vendas por Dia da Semana</div><div class="tbl-wrap"><table class="tbl" id="tbl-weekday">';
+  html += '<thead><tr><th>Dia</th><th class="num">Fat. Total</th><th class="num">Fat. Medio/Dia</th><th class="num">Volume L</th><th class="num">Pedidos</th><th class="num">Ticket Medio</th><th class="num">% do Total</th></tr></thead><tbody>';
+  dayAvg.forEach(d => {
+    const tm = d.totalPed ? d.totalFat / d.totalPed : 0;
+    const pct = fatTotal ? (d.totalFat / fatTotal) * 100 : 0;
+    html += '<tr>'
+      + '<td>' + d.day + '</td>'
+      + '<td class="num" data-v="' + d.totalFat + '">' + fmtBRL(d.totalFat) + '</td>'
+      + '<td class="num" data-v="' + d.avgFat + '">' + fmtBRL(d.avgFat) + '</td>'
+      + '<td class="num" data-v="' + d.totalVol + '">' + fmtNum(d.totalVol, 1) + '</td>'
+      + '<td class="num" data-v="' + d.totalPed + '">' + fmtNum(d.totalPed) + '</td>'
+      + '<td class="num" data-v="' + tm + '">' + fmtBRL(tm) + '</td>'
+      + '<td class="num" data-v="' + pct + '">' + fmtPct(pct) + '</td>'
+      + '</tr>';
+  });
+  html += '</tbody></table></div></div>';
+
+  section.innerHTML = html;
+  const tblWd = document.getElementById('tbl-weekday');
+  if (tblWd) makeTableSortable(tblWd);
+}
+
+// ================================================================
+// TAB 4 -- MIX DE PRODUTOS
 // ================================================================
 function renderMix() {
   const D = FILTERED;
@@ -1049,6 +1379,9 @@ function renderMix() {
     kpiCard('Produto Top', topProd.length > 20 ? topProd.slice(0,20)+'...' : topProd),
   ].join('');
 
+  // ---- D. PRODUCT ABC (NEW) ----
+  renderProductABC(prods, fatTotal);
+
   // Chart: Top 10 Produtos Fat (horizontal bar)
   const top10Fat = prods.slice(0,10);
   destroyChart('prodFat');
@@ -1072,6 +1405,9 @@ function renderMix() {
     },
     options: chartOpts({ indexAxis: 'y', scales: { x: { ticks: { callback: v => fmtNum(v,0)+' L' } } }, plugins: { datalabels: { display: false }, legend: { display: false } } })
   });
+
+  // ---- E. PRICE ANALYSIS (NEW) ----
+  renderPriceAnalysis();
 
   // Product detail table
   const tbl = document.getElementById('tbl-mix');
@@ -1100,7 +1436,168 @@ function renderMix() {
 }
 
 // ================================================================
-// TAB 5 — GESTAO DE CLIENTES
+// D. PRODUCT ABC (in Mix tab)
+// ================================================================
+function renderProductABC(prods, fatTotal) {
+  const section = document.getElementById('mix-abc-section');
+  if (!prods.length) { section.innerHTML = ''; return; }
+
+  const sorted = prods.slice().sort((a,b) => b.fat - a.fat);
+  let cumFat = 0;
+  const classified = sorted.map(p => {
+    cumFat += p.fat;
+    const cumPct = fatTotal ? (cumFat / fatTotal) * 100 : 0;
+    let abc = 'C';
+    if (cumPct <= 80) abc = 'A';
+    else if (cumPct <= 95) abc = 'B';
+    return { ...p, abc, cumPct };
+  });
+
+  const countA = classified.filter(p => p.abc === 'A').length;
+  const countB = classified.filter(p => p.abc === 'B').length;
+  const countC = classified.filter(p => p.abc === 'C').length;
+  const fatA = classified.filter(p => p.abc === 'A').reduce((s,p) => s + p.fat, 0);
+  const fatB = classified.filter(p => p.abc === 'B').reduce((s,p) => s + p.fat, 0);
+  const fatC = classified.filter(p => p.abc === 'C').reduce((s,p) => s + p.fat, 0);
+  const pctA = fatTotal ? (fatA / fatTotal * 100) : 0;
+  const pctB = fatTotal ? (fatB / fatTotal * 100) : 0;
+  const pctC = fatTotal ? (fatC / fatTotal * 100) : 0;
+
+  let html = '<div class="section-title">Curva ABC - Produtos</div>';
+  html += '<div class="kpi-row kpi-row-3">'
+    + '<div class="kpi"><div class="kpi-label">Classe A</div><div class="kpi-value" style="color:var(--g)">' + countA + ' produtos</div><div class="kpi-sub">' + fmtPct(pctA) + ' do faturamento</div></div>'
+    + '<div class="kpi"><div class="kpi-label">Classe B</div><div class="kpi-value" style="color:var(--a)">' + countB + ' produtos</div><div class="kpi-sub">' + fmtPct(pctB) + ' do faturamento</div></div>'
+    + '<div class="kpi"><div class="kpi-label">Classe C</div><div class="kpi-value" style="color:var(--ink4)">' + countC + ' produtos</div><div class="kpi-sub">' + fmtPct(pctC) + ' do faturamento</div></div>'
+    + '</div>';
+
+  html += '<div class="tbl-card" style="margin-top:10px"><div class="tbl-card-title">Classificacao ABC - Produtos</div><div class="tbl-wrap"><table class="tbl" id="tbl-prod-abc">';
+  html += '<thead><tr><th>Classe</th><th>Produto</th><th>Categoria</th><th class="num">Faturamento</th><th class="num">% Acum.</th><th class="num">Volume L</th><th class="num">Qtd</th><th class="num">Margem %</th></tr></thead><tbody>';
+  classified.forEach(p => {
+    const badgeCls = p.abc === 'A' ? 'a' : (p.abc === 'B' ? 'b' : 'c');
+    const margem = p.hasCusto ? p.fat - p.custoTotal : 0;
+    const margemPct = p.hasCusto && p.fat ? (margem / p.fat * 100) : 0;
+    html += '<tr>'
+      + '<td><span class="abc-badge ' + badgeCls + '">' + p.abc + '</span></td>'
+      + '<td>' + p.nome + '</td>'
+      + '<td>' + p.cat + '</td>'
+      + '<td class="num" data-v="' + p.fat + '">' + fmtBRL(p.fat) + '</td>'
+      + '<td class="num" data-v="' + p.cumPct + '">' + fmtPct(p.cumPct) + '</td>'
+      + '<td class="num" data-v="' + p.litros + '">' + fmtNum(p.litros, 1) + '</td>'
+      + '<td class="num" data-v="' + p.qtd + '">' + fmtNum(p.qtd) + '</td>'
+      + '<td class="num" data-v="' + margemPct + '">' + (p.hasCusto ? fmtPct(margemPct) : 's/custo') + '</td>'
+      + '</tr>';
+  });
+  html += '</tbody></table></div></div>';
+
+  section.innerHTML = html;
+  const tblAbc = document.getElementById('tbl-prod-abc');
+  if (tblAbc) makeTableSortable(tblAbc);
+}
+
+// ================================================================
+// E. PRICE ANALYSIS (in Mix tab)
+// ================================================================
+function renderPriceAnalysis() {
+  const section = document.getElementById('mix-price-section');
+  const D = FILTERED;
+
+  // Gather items with valid preco_venda
+  const withPV = D.filter(v => v._precoVenda > 0 && v._preco > 0);
+
+  if (withPV.length === 0) {
+    section.innerHTML = '<div class="section-title">Analise de Preco Praticado</div><div class="empty-msg">Sem dados de preco tabela para analise</div>';
+    return;
+  }
+
+  // KPIs
+  const avgDiscount = withPV.reduce((s,v) => s + (1 - v._preco / v._precoVenda), 0) / withPV.length * 100;
+  const belowTable = withPV.filter(v => v._preco < v._precoVenda * 0.95).length;
+  const aboveTable = withPV.filter(v => v._preco > v._precoVenda * 1.05).length;
+
+  // Dispersao: for the most sold product
+  const prodQtd = {};
+  withPV.forEach(v => {
+    const k = v.sku || v.produto || '';
+    if (!prodQtd[k]) prodQtd[k] = { nome: v.produto || '', prices: [], qty: 0 };
+    prodQtd[k].prices.push(v._preco);
+    prodQtd[k].qty += v._qtd;
+  });
+  const topSold = Object.values(prodQtd).sort((a,b) => b.qty - a.qty)[0];
+  const dispersao = topSold ? (Math.max(...topSold.prices) - Math.min(...topSold.prices)) : 0;
+
+  let html = '<div class="section-title">Analise de Preco Praticado</div>';
+  html += '<div class="kpi-row kpi-row-4">'
+    + kpiCard('Desconto Medio %', fmtPct(avgDiscount))
+    + kpiCard('Vendas Abaixo Tabela', fmtNum(belowTable), 'preco < 95% tabela')
+    + kpiCard('Vendas Acima Tabela', fmtNum(aboveTable), 'preco > 105% tabela')
+    + kpiCard('Dispersao Preco', fmtBRL(dispersao), topSold ? topSold.nome.slice(0,20) : '')
+    + '</div>';
+
+  // Table: Price by product
+  const prodPrice = {};
+  withPV.forEach(v => {
+    const k = v.sku || v.produto || '';
+    if (!prodPrice[k]) prodPrice[k] = { nome: v.produto || '', precoVenda: v._precoVenda, prices: [], count: 0 };
+    prodPrice[k].prices.push(v._preco);
+    prodPrice[k].count++;
+  });
+  const prodPriceList = Object.values(prodPrice).sort((a,b) => b.count - a.count);
+
+  html += '<div class="tbl-card" style="margin-top:10px"><div class="tbl-card-title">Analise de Preco por Produto</div><div class="tbl-wrap"><table class="tbl" id="tbl-price-prod">';
+  html += '<thead><tr><th>Produto</th><th class="num">Preco Tabela</th><th class="num">Preco Min</th><th class="num">Preco Medio</th><th class="num">Preco Max</th><th class="num">Desc. Medio %</th><th class="num">Vendas</th></tr></thead><tbody>';
+  prodPriceList.forEach(p => {
+    const minP = Math.min(...p.prices);
+    const maxP = Math.max(...p.prices);
+    const avgP = p.prices.reduce((s,x) => s + x, 0) / p.prices.length;
+    const descMedio = (1 - avgP / p.precoVenda) * 100;
+    const rowCls = descMedio > 20 ? ' class="row-warn"' : '';
+    html += '<tr' + rowCls + '>'
+      + '<td>' + p.nome + '</td>'
+      + '<td class="num" data-v="' + p.precoVenda + '">' + fmtBRL(p.precoVenda) + '</td>'
+      + '<td class="num" data-v="' + minP + '">' + fmtBRL(minP) + '</td>'
+      + '<td class="num" data-v="' + avgP + '">' + fmtBRL(avgP) + '</td>'
+      + '<td class="num" data-v="' + maxP + '">' + fmtBRL(maxP) + '</td>'
+      + '<td class="num" data-v="' + descMedio + '" style="' + (descMedio > 20 ? 'color:var(--r);font-weight:700' : '') + '">' + fmtPct(descMedio) + '</td>'
+      + '<td class="num" data-v="' + p.count + '">' + fmtNum(p.count) + '</td>'
+      + '</tr>';
+  });
+  html += '</tbody></table></div></div>';
+
+  // Table: Top discounts by client
+  const discountSales = withPV.map(v => ({
+    cliente: clienteName(v),
+    canal: v._canal,
+    produto: v.produto || '',
+    precoVenda: v._precoVenda,
+    preco: v._preco,
+    descPct: (1 - v._preco / v._precoVenda) * 100,
+    qtd: v._qtd
+  })).filter(x => x.descPct > 0).sort((a,b) => b.descPct - a.descPct).slice(0, 30);
+
+  html += '<div class="tbl-card" style="margin-top:10px"><div class="tbl-card-title">Maiores Descontos por Cliente</div><div class="tbl-wrap"><table class="tbl" id="tbl-price-desc">';
+  html += '<thead><tr><th>Cliente</th><th>Canal</th><th>Produto</th><th class="num">Preco Tabela</th><th class="num">Preco Praticado</th><th class="num">Desconto %</th><th class="num">Qtd</th></tr></thead><tbody>';
+  discountSales.forEach(s => {
+    html += '<tr' + (s.descPct > 30 ? ' class="row-warn"' : '') + '>'
+      + '<td>' + s.cliente + '</td>'
+      + '<td>' + s.canal + '</td>'
+      + '<td>' + s.produto + '</td>'
+      + '<td class="num" data-v="' + s.precoVenda + '">' + fmtBRL(s.precoVenda) + '</td>'
+      + '<td class="num" data-v="' + s.preco + '">' + fmtBRL(s.preco) + '</td>'
+      + '<td class="num" data-v="' + s.descPct + '" style="color:var(--r);font-weight:700">' + fmtPct(s.descPct) + '</td>'
+      + '<td class="num" data-v="' + s.qtd + '">' + fmtNum(s.qtd) + '</td>'
+      + '</tr>';
+  });
+  html += '</tbody></table></div></div>';
+
+  section.innerHTML = html;
+  const t1 = document.getElementById('tbl-price-prod');
+  const t2 = document.getElementById('tbl-price-desc');
+  if (t1) makeTableSortable(t1);
+  if (t2) makeTableSortable(t2);
+}
+
+// ================================================================
+// TAB 5 -- GESTAO DE CLIENTES
 // ================================================================
 function renderClientes() {
   const D = FILTERED;
@@ -1113,7 +1610,6 @@ function renderClientes() {
     c.vol += v._litros;
     c.pedidos.add(pedidoKey(v));
     if (v._date && (!c.lastDate || v._date > c.lastDate)) c.lastDate = v._date;
-    // Get city from CLI_MAP
     const cli = CLI_MAP[id];
     if (cli && cli.cidade) c.cidade = cli.cidade;
   });
@@ -1133,6 +1629,12 @@ function renderClientes() {
     kpiCard('Quiosques', fmtNum(nQuio)),
     kpiCard('Fat. Medio/Cliente', fmtBRL(fatMedioCli)),
   ].join('');
+
+  // ---- C. CLIENTES INATIVOS (NEW) ----
+  renderClientInactivity(cliMap);
+
+  // ---- D. CLIENT ABC (NEW) ----
+  renderClientABC(clientes, fatTotal);
 
   // Chart: Top 10 Clientes Fat (horizontal bar)
   const top10 = clientes.slice(0,10);
@@ -1169,13 +1671,15 @@ function renderClientes() {
     })
   });
 
+  // ---- G. CROSS-SELL (NEW) ----
+  renderCrossSell();
+
   // Client table
   const tbl = document.getElementById('tbl-cli');
   let html = '<thead><tr><th>Cliente</th><th>Canal</th><th>Cidade</th><th class="num">Pedidos</th><th class="num">Faturamento</th><th class="num">Volume L</th><th class="num">Ticket Medio</th><th class="num">Ticket/Litro</th><th>Ultima Compra</th></tr></thead><tbody>';
   clientes.forEach(c => {
     const nPed = c.pedidos.size;
     const tm = nPed ? c.fat / nPed : 0;
-    // Ticket/Litro for this client (barrel items)
     const bItems = D.filter(v => v.cliente_id === c.id && v._litBarril > 0);
     const bFat = bItems.reduce((s,v)=>s+v._valor,0);
     const bLit = bItems.reduce((s,v)=>s+v._litros,0);
@@ -1190,7 +1694,7 @@ function renderClientes() {
       +'<td class="num" data-v="'+c.vol+'">'+fmtNum(c.vol,1)+'</td>'
       +'<td class="num" data-v="'+tm+'">'+fmtBRL(tm)+'</td>'
       +'<td class="num" data-v="'+tl+'">'+fmtBRL(tl)+'</td>'
-      +'<td>'+ lastDt+'</td>'
+      +'<td>'+lastDt+'</td>'
       +'</tr>';
   });
   html += '</tbody>';
@@ -1199,7 +1703,256 @@ function renderClientes() {
 }
 
 // ================================================================
-// TAB 6 — RESULTADO FINANCEIRO
+// C. CLIENT INACTIVITY
+// ================================================================
+function renderClientInactivity(filteredCliMap) {
+  const section = document.getElementById('cli-inactive-section');
+  const hoje = new Date();
+
+  // Use ALL vendas for frequency calculation
+  const cliAllDates = {};
+  RAW_VENDAS.forEach(v => {
+    const id = v.cliente_id;
+    if (!id) return;
+    if (!cliAllDates[id]) cliAllDates[id] = { dates: [], totalFat: 0 };
+    cliAllDates[id].totalFat += v._valor;
+    if (v._date) cliAllDates[id].dates.push(v._date);
+  });
+
+  // Only show clients that appear in FILTERED
+  const filteredIds = new Set(Object.keys(filteredCliMap));
+
+  const clientStatus = [];
+  filteredIds.forEach(id => {
+    const all = cliAllDates[id];
+    if (!all || all.dates.length === 0) return;
+
+    all.dates.sort((a,b) => a - b);
+    const lastPurchase = all.dates[all.dates.length - 1];
+    const daysSinceLast = Math.floor((hoje - lastPurchase) / 86400000);
+
+    let avgFrequency = 0;
+    if (all.dates.length >= 2) {
+      let totalGap = 0;
+      for (let i = 1; i < all.dates.length; i++) {
+        totalGap += (all.dates[i] - all.dates[i-1]) / 86400000;
+      }
+      avgFrequency = totalGap / (all.dates.length - 1);
+    }
+
+    // Determine months span for monthly avg
+    const firstDate = all.dates[0];
+    const monthsSpan = Math.max(1, (hoje - firstDate) / (30 * 86400000));
+    const avgMonthlyFat = all.totalFat / monthsSpan;
+
+    let status;
+    if (avgFrequency > 0) {
+      if (daysSinceLast <= avgFrequency * 1.3) status = 'ativo';
+      else if (daysSinceLast <= avgFrequency * 2) status = 'atencao';
+      else status = 'inativo';
+    } else {
+      // Only 1 purchase or no frequency calc
+      status = daysSinceLast > 30 ? 'inativo' : 'ativo';
+    }
+
+    if (status !== 'ativo') {
+      const fc = filteredCliMap[id];
+      clientStatus.push({
+        nome: fc ? fc.nome : clienteNameById(id),
+        canal: fc ? fc.canal : '',
+        lastDate: lastPurchase,
+        daysSince: daysSinceLast,
+        avgFrequency: avgFrequency,
+        avgMonthlyFat: avgMonthlyFat,
+        totalFat: fc ? fc.fat : 0,
+        status: status
+      });
+    }
+  });
+
+  // Sort: inativo first, then atencao, then by fat desc
+  const statusOrder = { 'inativo': 0, 'atencao': 1 };
+  clientStatus.sort((a,b) => {
+    const so = (statusOrder[a.status] || 9) - (statusOrder[b.status] || 9);
+    if (so !== 0) return so;
+    return b.totalFat - a.totalFat;
+  });
+
+  const emRisco = clientStatus.filter(c => c.status === 'atencao');
+  const inativos = clientStatus.filter(c => c.status === 'inativo');
+  const receitaRisco = clientStatus.reduce((s,c) => s + c.avgMonthlyFat, 0);
+
+  let html = '<div class="section-title">Clientes Inativos / Em Risco</div>';
+  html += '<div class="kpi-row kpi-row-3">'
+    + '<div class="kpi"><div class="kpi-label">Clientes em Risco</div><div class="kpi-value" style="color:var(--a)">' + fmtNum(emRisco.length) + '</div></div>'
+    + '<div class="kpi"><div class="kpi-label">Clientes Inativos</div><div class="kpi-value" style="color:var(--r)">' + fmtNum(inativos.length) + '</div></div>'
+    + '<div class="kpi"><div class="kpi-label">Receita em Risco (mensal)</div><div class="kpi-value" style="color:var(--r)">' + fmtBRL(receitaRisco) + '</div></div>'
+    + '</div>';
+
+  if (clientStatus.length > 0) {
+    html += '<div class="tbl-card" style="margin-top:10px"><div class="tbl-card-title">Clientes que Precisam de Atencao</div><div class="tbl-wrap"><table class="tbl" id="tbl-cli-inactive">';
+    html += '<thead><tr><th>Status</th><th>Cliente</th><th>Canal</th><th>Ultimo Pedido</th><th class="num">Dias Sem Compra</th><th class="num">Freq. Media (dias)</th><th class="num">Fat. Mensal Medio</th><th class="num">Fat. Total</th></tr></thead><tbody>';
+    clientStatus.forEach(c => {
+      const dotCls = c.status === 'inativo' ? 'red' : 'amber';
+      const statusLabel = c.status === 'inativo' ? 'Inativo' : 'Atencao';
+      html += '<tr>'
+        + '<td><span class="status-dot ' + dotCls + '"></span>' + statusLabel + '</td>'
+        + '<td>' + c.nome + '</td>'
+        + '<td>' + c.canal + '</td>'
+        + '<td>' + (c.lastDate ? c.lastDate.toLocaleDateString('pt-BR') : '-') + '</td>'
+        + '<td class="num" data-v="' + c.daysSince + '">' + fmtNum(c.daysSince) + '</td>'
+        + '<td class="num" data-v="' + c.avgFrequency + '">' + (c.avgFrequency > 0 ? fmtNum(c.avgFrequency, 0) : '-') + '</td>'
+        + '<td class="num" data-v="' + c.avgMonthlyFat + '">' + fmtBRL(c.avgMonthlyFat) + '</td>'
+        + '<td class="num" data-v="' + c.totalFat + '">' + fmtBRL(c.totalFat) + '</td>'
+        + '</tr>';
+    });
+    html += '</tbody></table></div></div>';
+  }
+
+  section.innerHTML = html;
+  const tblInactive = document.getElementById('tbl-cli-inactive');
+  if (tblInactive) makeTableSortable(tblInactive);
+}
+
+// ================================================================
+// D. CLIENT ABC
+// ================================================================
+function renderClientABC(clientes, fatTotal) {
+  const section = document.getElementById('cli-abc-section');
+  if (!clientes.length) { section.innerHTML = ''; return; }
+
+  const sorted = clientes.slice().sort((a,b) => b.fat - a.fat);
+  let cumFat = 0;
+  const classified = sorted.map(c => {
+    cumFat += c.fat;
+    const cumPct = fatTotal ? (cumFat / fatTotal) * 100 : 0;
+    let abc = 'C';
+    if (cumPct <= 80) abc = 'A';
+    else if (cumPct <= 95) abc = 'B';
+    return { ...c, abc, cumPct };
+  });
+
+  const countA = classified.filter(c => c.abc === 'A').length;
+  const countB = classified.filter(c => c.abc === 'B').length;
+  const countC = classified.filter(c => c.abc === 'C').length;
+  const fatA = classified.filter(c => c.abc === 'A').reduce((s,c) => s + c.fat, 0);
+  const fatB = classified.filter(c => c.abc === 'B').reduce((s,c) => s + c.fat, 0);
+  const fatC = classified.filter(c => c.abc === 'C').reduce((s,c) => s + c.fat, 0);
+  const pctA = fatTotal ? (fatA / fatTotal * 100) : 0;
+  const pctB = fatTotal ? (fatB / fatTotal * 100) : 0;
+  const pctC = fatTotal ? (fatC / fatTotal * 100) : 0;
+
+  let html = '<div class="section-title">Curva ABC - Clientes</div>';
+  html += '<div class="kpi-row kpi-row-3">'
+    + '<div class="kpi"><div class="kpi-label">Classe A</div><div class="kpi-value" style="color:var(--g)">' + countA + ' clientes</div><div class="kpi-sub">' + fmtPct(pctA) + ' do faturamento</div></div>'
+    + '<div class="kpi"><div class="kpi-label">Classe B</div><div class="kpi-value" style="color:var(--a)">' + countB + ' clientes</div><div class="kpi-sub">' + fmtPct(pctB) + ' do faturamento</div></div>'
+    + '<div class="kpi"><div class="kpi-label">Classe C</div><div class="kpi-value" style="color:var(--ink4)">' + countC + ' clientes</div><div class="kpi-sub">' + fmtPct(pctC) + ' do faturamento</div></div>'
+    + '</div>';
+
+  html += '<div class="tbl-card" style="margin-top:10px"><div class="tbl-card-title">Classificacao ABC - Clientes</div><div class="tbl-wrap"><table class="tbl" id="tbl-cli-abc">';
+  html += '<thead><tr><th>Classe</th><th>Cliente</th><th>Canal</th><th class="num">Faturamento</th><th class="num">% Acum.</th><th class="num">Volume L</th><th class="num">Pedidos</th><th class="num">Margem %</th></tr></thead><tbody>';
+
+  // Need margem per client from FILTERED
+  const cliMargemMap = {};
+  FILTERED.forEach(v => {
+    const id = v.cliente_id || 'SEM';
+    if (!cliMargemMap[id]) cliMargemMap[id] = { fat: 0, margem: 0 };
+    cliMargemMap[id].fat += v._valor;
+    cliMargemMap[id].margem += v._margemTotal;
+  });
+
+  classified.forEach(c => {
+    const badgeCls = c.abc === 'A' ? 'a' : (c.abc === 'B' ? 'b' : 'c');
+    const cm = cliMargemMap[c.id];
+    const margemPct = cm && cm.fat ? (cm.margem / cm.fat * 100) : 0;
+    html += '<tr>'
+      + '<td><span class="abc-badge ' + badgeCls + '">' + c.abc + '</span></td>'
+      + '<td>' + c.nome + '</td>'
+      + '<td>' + c.canal + '</td>'
+      + '<td class="num" data-v="' + c.fat + '">' + fmtBRL(c.fat) + '</td>'
+      + '<td class="num" data-v="' + c.cumPct + '">' + fmtPct(c.cumPct) + '</td>'
+      + '<td class="num" data-v="' + c.vol + '">' + fmtNum(c.vol, 1) + '</td>'
+      + '<td class="num" data-v="' + c.pedidos.size + '">' + fmtNum(c.pedidos.size) + '</td>'
+      + '<td class="num" data-v="' + margemPct + '">' + fmtPct(margemPct) + '</td>'
+      + '</tr>';
+  });
+  html += '</tbody></table></div></div>';
+
+  section.innerHTML = html;
+  const tblAbc = document.getElementById('tbl-cli-abc');
+  if (tblAbc) makeTableSortable(tblAbc);
+}
+
+// ================================================================
+// G. CROSS-SELL / MIX POR CLIENTE
+// ================================================================
+function renderCrossSell() {
+  const section = document.getElementById('cli-crosssell-section');
+  const D = FILTERED;
+
+  const cliMix = {};
+  D.forEach(v => {
+    const id = v.cliente_id || 'SEM';
+    if (!cliMix[id]) cliMix[id] = { nome: clienteName(v), canal: v._canal, skus: new Set(), fat: 0, prodQtd: {} };
+    const c = cliMix[id];
+    const sku = v.sku || v.produto || '';
+    c.skus.add(sku);
+    c.fat += v._valor;
+    c.prodQtd[sku] = (c.prodQtd[sku] || 0) + v._qtd;
+  });
+
+  const cliList = Object.values(cliMix).map(c => {
+    const topSku = Object.entries(c.prodQtd).sort((a,b) => b[1] - a[1])[0];
+    return {
+      nome: c.nome,
+      canal: c.canal,
+      skuCount: c.skus.size,
+      topProd: topSku ? topSku[0] : '-',
+      fat: c.fat
+    };
+  }).sort((a,b) => b.skuCount - a.skuCount);
+
+  const avgSkus = cliList.length ? cliList.reduce((s,c) => s + c.skuCount, 0) / cliList.length : 0;
+  const mostDiverse = cliList.length ? cliList[0].nome : '-';
+  const singleSku = cliList.filter(c => c.skuCount === 1).length;
+
+  let html = '<div class="section-title">Cross-Sell / Mix por Cliente</div>';
+  html += '<div class="kpi-row kpi-row-3">'
+    + kpiCard('SKUs Medio/Cliente', fmtNum(avgSkus, 1))
+    + kpiCard('Cliente Mais Diverso', mostDiverse.length > 22 ? mostDiverse.slice(0,22)+'...' : mostDiverse)
+    + kpiCard('Clientes com 1 SKU', fmtNum(singleSku), 'oportunidade cross-sell')
+    + '</div>';
+
+  html += '<div class="tbl-card" style="margin-top:10px"><div class="tbl-card-title">Mix de Produtos por Cliente</div><div class="tbl-wrap"><table class="tbl" id="tbl-crosssell">';
+  html += '<thead><tr><th>Cliente</th><th>Canal</th><th class="num">SKUs Diferentes</th><th>Top Produto</th><th class="num">Fat. Total</th></tr></thead><tbody>';
+
+  // Resolve product name from sku
+  function prodName(sku) {
+    if (PROD_MAP[sku]) return PROD_MAP[sku].nome_canonico || PROD_MAP[sku].nome || sku;
+    // Try to find in FILTERED
+    const v = FILTERED.find(x => (x.sku || x.produto) === sku);
+    return v ? (v.produto || sku) : sku;
+  }
+
+  cliList.forEach(c => {
+    const topNome = prodName(c.topProd);
+    html += '<tr>'
+      + '<td>' + c.nome + '</td>'
+      + '<td>' + c.canal + '</td>'
+      + '<td class="num" data-v="' + c.skuCount + '">' + fmtNum(c.skuCount) + '</td>'
+      + '<td>' + (topNome.length > 30 ? topNome.slice(0,30) + '...' : topNome) + '</td>'
+      + '<td class="num" data-v="' + c.fat + '">' + fmtBRL(c.fat) + '</td>'
+      + '</tr>';
+  });
+  html += '</tbody></table></div></div>';
+
+  section.innerHTML = html;
+  const tblCS = document.getElementById('tbl-crosssell');
+  if (tblCS) makeTableSortable(tblCS);
+}
+
+// ================================================================
+// TAB 6 -- RESULTADO FINANCEIRO
 // ================================================================
 function renderFinanceiro() {
   const D = FILTERED;
@@ -1232,7 +1985,7 @@ function renderFinanceiro() {
     kpiCard('Custo Medio/Litro', fmtBRL(custoMedioLitro)),
   ].join('');
 
-  // Chart: Margem por Canal (grouped bar: fat vs custo vs margem)
+  // Chart: Margem por Canal
   const canalStats = {};
   CANAIS.forEach(c => canalStats[c] = { fat: 0, custo: 0, margem: 0 });
   D.forEach(v => {
@@ -1257,7 +2010,7 @@ function renderFinanceiro() {
     options: chartOpts({ scales: { y: { ticks: { callback: v => fmtBRL(v) } } }, plugins: { datalabels: { display: false }, legend: { position: 'bottom' } } })
   });
 
-  // Chart: Margem Mensal (combo: bar margem R$ + line margem %)
+  // Chart: Margem Mensal
   const meses = sortMesKeys([...new Set(D.map(getMesKey))]);
   const mesFat = {}, mesCusto = {}, mesMargem = {};
   meses.forEach(m => { mesFat[m]=0; mesCusto[m]=0; mesMargem[m]=0; });
@@ -1283,7 +2036,7 @@ function renderFinanceiro() {
     })
   });
 
-  // Top 15 Clientes por Margem table
+  // Top 15 Clientes por Margem
   const cliMargem = {};
   D.forEach(v => {
     const id = v.cliente_id || 'SEM';
@@ -1316,7 +2069,7 @@ function renderFinanceiro() {
   tblCli.innerHTML = htmlCli;
   makeTableSortable(tblCli);
 
-  // Top 15 Produtos por Margem table
+  // Top 15 Produtos por Margem
   const prodMargem = {};
   D.forEach(v => {
     const key = v.sku || v.produto || 'SEM';
@@ -1351,7 +2104,7 @@ function renderFinanceiro() {
   tblProd.innerHTML = htmlProd;
   makeTableSortable(tblProd);
 
-  // Produtos sem Custo table
+  // Produtos sem Custo
   const noCostMap = {};
   withoutCost.forEach(v => {
     const key = v.sku || v.produto || 'SEM';
