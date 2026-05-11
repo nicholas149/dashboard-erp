@@ -163,15 +163,6 @@ input[type="date"].df:focus{border-color:var(--gold)}
 .alert-ico{font-size:.9rem;flex-shrink:0}
 .alert-txt{flex:1;line-height:1.4}
 
-/* Status dots */
-.st-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px;vertical-align:middle}
-.st-dot.g{background:#059669}.st-dot.y{background:#d97706}.st-dot.r{background:#dc2626}
-
-/* Checkbox filters */
-.ck-group{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-.ck-group label{display:flex;align-items:center;gap:4px;font-size:.7rem;color:var(--t2);cursor:pointer}
-.ck-group input[type=checkbox]{accent-color:var(--gold);width:13px;height:13px}
-
 /* CSV button */
 .btn-csv{background:var(--green-bg);border:1px solid var(--green-bd);color:var(--green);padding:4px 10px;border-radius:var(--rs);cursor:pointer;font-size:.64rem;font-weight:600;transition:.12s;display:inline-flex;align-items:center;gap:3px}
 .btn-csv:hover{background:var(--green);color:#fff}
@@ -208,9 +199,7 @@ input[type="date"].df:focus{border-color:var(--gold)}
 <aside class="sb" id="sb">
   <div class="sb-logo"><div class="ico">H</div><span>HARDEN</span></div>
   <div class="sb-nav">
-    <div class="ni a" data-s="overview"><span class="ni-i">◎</span>Visão Geral</div>
-    <div class="ni" data-s="vendas"><span class="ni-i">◈</span>Vendas</div>
-    <div class="ni" data-s="estoque"><span class="ni-i">▦</span>Estoque</div>
+    <div class="ni a" data-s="estoque"><span class="ni-i">▦</span>Estoque</div>
     <div class="ni" data-s="ret"><span class="ni-i">⟳</span>Retornáveis</div>
     <div class="ni" data-s="frota"><span class="ni-i">◬</span>Frota & Combustível</div>
   </div>
@@ -234,96 +223,18 @@ input[type="date"].df:focus{border-color:var(--gold)}
 
 <main class="mn">
 
-<!-- ===== VISÃO GERAL ===== -->
-<section class="sec a" id="sec-overview">
-  <div class="sec-t">Visão Geral</div>
-  <div id="ovAlerts"></div>
-  <div class="kr c6" id="kO"></div>
-  <div class="g2">
-    <div class="pn"><div class="pn-h">Faturamento por Operação</div><div class="cw sm"><canvas id="chOO"></canvas></div></div>
-    <div class="pn"><div class="pn-h">Top 10 Clientes <span class="bdg">litros</span></div><div class="cw"><canvas id="chOC"></canvas></div></div>
-  </div>
-  <div class="g2">
-    <div class="pn"><div class="pn-h">Mix de Produtos <span class="bdg">litros Chopp</span></div><div class="cw sm"><canvas id="chOM"></canvas></div></div>
-    <div class="pn"><div class="pn-h">Vendas por Origem</div><div class="cw sm"><canvas id="chOI"></canvas></div></div>
-  </div>
-  <div class="g2">
-    <div class="pn"><div class="pn-h">Faturamento Diário <span class="bdg">últimos 30 dias</span></div><div class="cw"><canvas id="chOTrend"></canvas></div></div>
-    <div class="pn"><div class="pn-h">Resumo Cross-Module</div><div class="tw" id="tOCross"></div></div>
-  </div>
-</section>
-
-<!-- ===== VENDAS ===== -->
-<section class="sec" id="sec-vendas">
-  <div class="sec-t">Vendas</div>
-  <div class="sb-f" style="margin-bottom:8px">
-    <span class="df-l">De:</span><input type="date" class="df" id="vDtI" onchange="rVendas()">
-    <span class="df-l" style="margin-left:6px">Até:</span><input type="date" class="df" id="vDtF" onchange="rVendas()">
-    <div class="ck-group" style="margin-left:10px">
-      <label><input type="checkbox" id="ckDist" checked onchange="rVendas()"> Distribuidor</label>
-      <label><input type="checkbox" id="ckPdv" checked onchange="rVendas()"> PDV/Delivery</label>
-    </div>
-    <button class="btn-r" style="margin-left:6px" onclick="document.getElementById('vDtI').value='';document.getElementById('vDtF').value='';document.getElementById('ckDist').checked=true;document.getElementById('ckPdv').checked=true;rVendas()">Limpar</button>
-    <span id="vPeriodInfo" style="font-size:.62rem;color:var(--t3);margin-left:8px"></span>
-  </div>
-  <div class="kr c6" id="kV"></div>
-  <div class="st">
-    <div class="stb a" data-sub="v-all">Todas as Vendas</div>
-    <div class="stb" data-sub="v-prod">Por Produto</div>
-    <div class="stb" data-sub="v-cli">Ranking Clientes</div>
-    <div class="stb" data-sub="v-op">Por Operação</div>
-    <div class="stb" data-sub="v-temp">Evolução</div>
-    <div class="stb" data-sub="v-margem">Margem</div>
-  </div>
-  <div class="sc a" id="v-all">
-    <div class="sb-f"><input class="si" placeholder="Buscar por cliente, produto, pedido…" oninput="ft('tVA',this.value,'cVA')"><select class="sf" id="fVP" onchange="ft('tVA',this.closest('.sc').querySelector('.si').value,'cVA')"><option value="">Todos Produtos</option></select><button class="btn-csv" onclick="csvExport('tVA','vendas')">⬇ CSV</button></div>
-    <div class="pn"><div class="pn-h">Todas as Vendas <span class="bdg" id="cVA"></span></div><div class="tw tall" id="tVA"></div></div>
-  </div>
-  <div class="sc" id="v-prod">
-    <div class="pn"><div class="pn-h">Detalhamento por Produto <button class="btn-csv" onclick="csvExport('tVP','vendas_produto')">⬇ CSV</button></div><div class="tw" id="tVP"></div></div>
-    <div class="pn"><div class="pn-h">Top Produtos por Volume (L)</div><div class="cw"><canvas id="chVP"></canvas></div></div>
-  </div>
-  <div class="sc" id="v-cli">
-    <div class="g2">
-      <div class="pn"><div class="pn-h">Distribuidores</div><div class="tw" id="tVD"></div></div>
-      <div class="pn"><div class="pn-h">PDV / Delivery</div><div class="tw" id="tVPdv"></div></div>
-    </div>
-    <div class="g2">
-      <div class="pn"><div class="pn-h">Ranking por Volume (L)</div><div class="cw"><canvas id="chVCL"></canvas></div></div>
-      <div class="pn"><div class="pn-h">Ranking por Faturamento (R$)</div><div class="cw"><canvas id="chVCR"></canvas></div></div>
-    </div>
-  </div>
-  <div class="sc" id="v-op">
-    <div class="g2" id="opC"></div>
-    <div class="pn"><div class="pn-h">Comparativo Distribuidor vs PDV/DELIV</div><div class="cw"><canvas id="chVO"></canvas></div></div>
-  </div>
-  <div class="sc" id="v-temp">
-    <div class="kr c4" id="kVGrowth"></div>
-    <div class="pn"><div class="pn-h">Vendas por Dia — Detalhado</div><div class="tw" id="tVT"></div></div>
-    <div class="pn"><div class="pn-h">Vendas por Dia</div><div class="cw"><canvas id="chVT"></canvas></div></div>
-    <div class="pn"><div class="pn-h">Faturamento Mensal + Crescimento</div><div class="cw lg"><canvas id="chVMoM"></canvas></div></div>
-  </div>
-  <div class="sc" id="v-margem">
-    <div class="kr c4" id="kVMargem"></div>
-    <div class="pn"><div class="pn-h">Margem por Produto <button class="btn-csv" onclick="csvExport('tVMarg','margem_produto')">⬇ CSV</button></div><div class="tw tall" id="tVMarg"></div></div>
-    <div class="g2">
-      <div class="pn"><div class="pn-h">Top 15 — Margem Total (R$)</div><div class="cw"><canvas id="chMargR"></canvas></div></div>
-      <div class="pn"><div class="pn-h">Margem % por Produto</div><div class="cw"><canvas id="chMargP"></canvas></div></div>
-    </div>
-  </div>
-</section>
-
 <!-- ===== ESTOQUE ===== -->
-<section class="sec" id="sec-estoque">
+<section class="sec a" id="sec-estoque">
   <div class="sec-t">Estoque</div>
-  <div class="kr c6" id="kE"></div>
+  <div id="estAlerts"></div>
+  <div class="kr c5" id="kE"></div>
   <div class="pn"><div class="pn-h">Produtos Principais — Chopp Barril</div><div class="pg" id="gE"></div></div>
   <div class="st">
     <div class="stb a" data-sub="e-pos">Posição Atual</div>
     <div class="stb" data-sub="e-mov">Movimentações</div>
     <div class="stb" data-sub="e-cat">Por Categoria</div>
     <div class="stb" data-sub="e-comp">Compostos</div>
-    <div class="stb" data-sub="e-abc">Curva ABC</div>
+    <div class="stb" data-sub="e-cob">Cobertura</div>
   </div>
   <div class="sc a" id="e-pos">
     <div class="sb-f"><input class="si" placeholder="Filtrar produto…" oninput="ft('tEP',this.value,'cEP')"><select class="sf" id="fEC" onchange="ft('tEP',this.closest('.sc').querySelector('.si').value,'cEP')"><option value="">Todas Categorias</option></select><button class="btn-csv" onclick="csvExport('tEP','estoque_posicao')">⬇ CSV</button></div>
@@ -338,18 +249,18 @@ input[type="date"].df:focus{border-color:var(--gold)}
       <div class="pn"><div class="pn-h">Estoque por Categoria</div><div class="cw"><canvas id="chEC"></canvas></div></div>
       <div class="pn"><div class="pn-h">Top 10 Produtos <span class="bdg">saldo</span></div><div class="cw"><canvas id="chET"></canvas></div></div>
     </div>
-    <div class="pn"><div class="pn-h">Estoque Valorizado por Categoria</div><div class="cw"><canvas id="chEVal"></canvas></div></div>
   </div>
   <div class="sc" id="e-comp"><div class="pn"><div class="pn-h">Produtos Compostos</div><div class="tw tall" id="tECo"></div></div></div>
-  <div class="sc" id="e-abc">
-    <div class="pn"><div class="pn-h">Curva ABC — Classificação por Faturamento <span class="bdg">vendas do período</span></div><div class="tw tall" id="tEAbc"></div></div>
-    <div class="pn"><div class="pn-h">Curva ABC — Pareto</div><div class="cw lg"><canvas id="chABC"></canvas></div></div>
+  <div class="sc" id="e-cob">
+    <div class="pn"><div class="pn-h">Dias de Cobertura <span class="bdg">estoque ÷ venda média diária</span> <button class="btn-csv" onclick="csvExport('tECob','cobertura')">⬇ CSV</button></div><div class="tw tall" id="tECob"></div></div>
+    <div class="pn"><div class="pn-h">Cobertura por Produto (Chopp Barril)</div><div class="cw lg"><canvas id="chCob"></canvas></div></div>
   </div>
 </section>
 
 <!-- ===== RETORNÁVEIS ===== -->
 <section class="sec" id="sec-ret">
   <div class="sec-t">Retornáveis</div>
+  <div id="retAlerts"></div>
   <div class="kr c5" id="kR"></div>
   <div class="st">
     <div class="stb a" data-sub="r-barril">Barril</div>
@@ -470,8 +381,6 @@ function fR(n){return'R$ '+n.toLocaleString('pt-BR',{minimumFractionDigits:2,max
 function dK(d){if(!d)return'';const pts=d.split('/');return pts.length===3?(pts[2]+pts[1]+pts[0]):d}
 function parseDateBR(s){if(!s)return null;const pts=s.split('/');if(pts.length!==3)return null;return new Date(+pts[2],+pts[1]-1,+pts[0])}
 function diffDays(a,b){return Math.round((a-b)/86400000)}
-function getWeekKey(d){const dt=typeof d==='string'?parseDateBR(d):d;if(!dt)return'';const jan1=new Date(dt.getFullYear(),0,1);const w=Math.ceil(((dt-jan1)/86400000+jan1.getDay()+1)/7);return'Sem '+String(w).padStart(2,'0')+'/'+dt.getFullYear()}
-function getMonthKey(d){const dt=typeof d==='string'?parseDateBR(d):d;if(!dt)return'';return String(dt.getMonth()+1).padStart(2,'0')+'/'+dt.getFullYear()}
 
 function tick(){document.getElementById('hTime').textContent=new Date().toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'})}
 tick();setInterval(tick,30000);
@@ -522,13 +431,11 @@ async function loadData(){
 async function doRefresh(){const b=document.getElementById('btnR');b.classList.add('ld');localStorage.removeItem(CACHE_KEY);const r=await loadData();if(r){D=r;buildMaps();renderAll()}b.classList.remove('ld')}
 
 function buildMaps(){
-  D.cm={};(D.clientes||[]).forEach(c=>{const t=(c.tipo||'').trim();D.cm[c.id]={nome:c.nome_canonico,tipo:t,grp:t==='Distribuidor'?'Distribuidor':'PDV/DELIV',cidade:c.cidade||'',estado:c.estado||''}});
-  D.pm={};(D.produtos||[]).forEach(pr=>{D.pm[pr.sku]={nome:pr.nome_canonico,cat:pr.categoria,custo:p(pr.custo_medio),preco:p(pr.preco_venda),litros:p(pr.litros_barril)}});
+  D.cm={};(D.clientes||[]).forEach(c=>{const t=(c.tipo||'').trim();D.cm[c.id]={nome:c.nome_canonico,tipo:t,grp:t==='Distribuidor'?'Distribuidor':'PDV/DELIV'}});
 }
 function opT(r){return D.cm[r.cliente_id]?.grp||'PDV/DELIV'}
 function normRetType(t){const l=t.toLowerCase();if(l.includes('barril'))return'Barril';if(l==='chopeira')return'Chopeira';return'Outros'}
 function barrelSize(prod){const m=(prod||'').match(/(\d+)L/);return m?m[1]+'L':null}
-function barrelSizeNum(prod){const m=(prod||'').match(/(\d+)L/);return m?parseInt(m[1]):0}
 
 /* ── Chart ── */
 function mk(id,cfg){
@@ -541,15 +448,14 @@ function mk(id,cfg){
   CH[id]=new Chart(el.getContext('2d'),cfg);
 }
 
-/* ── Table ── */
-function mt(cid,cols,rows,sortable){
+/* ── Table (sortable) ── */
+function mt(cid,cols,rows){
   const w=document.getElementById(cid);if(!w)return;
   let h='<table><thead><tr>';cols.forEach((c,i)=>{h+=`<th${c.t==='n'?' class="r"':''}${c.mh?' data-mh="1"':''} data-ci="${i}">${c.l}</th>`});
   h+='</tr></thead><tbody>';
   rows.forEach(row=>{h+='<tr>';row.forEach((v,i)=>{const c=cols[i];if(!c)return;const isN=c.t==='n';let d;if(c.f==='r')d=fR(v);else if(c.f==='n')d=fN(v);else if(c.f==='n1')d=fN(v,1);else if(c.f==='n2')d=fN(v,2);else if(c.f==='p')d=fN(v,1)+'%';else d=v;let cls=isN?'r':'';if(c.mh)cls+=' mh';if(c.color&&typeof v==='number'){if(v>0)cls+=' vp';else if(v<0)cls+=' vn';else cls+=' vz'}h+=`<td class="${cls}" data-v="${typeof v==='number'?v:''}">${d}</td>`});h+='</tr>'});
   if(!rows.length)h+=`<tr><td colspan="${cols.length}" style="text-align:center;color:var(--t3);padding:16px">Nenhum registro</td></tr>`;
   h+='</tbody></table>';w.innerHTML=h;
-  // sortable headers
   w.querySelectorAll('th').forEach(th=>{th.addEventListener('click',()=>{
     const ci=+th.dataset.ci;const tbl=th.closest('table');const tbody=tbl.querySelector('tbody');
     const trs=[...tbody.querySelectorAll('tr')];const asc=th.dataset.sort!=='asc';
@@ -560,25 +466,20 @@ function mt(cid,cols,rows,sortable){
 function ft(cid,q,cntId){
   const w=document.getElementById(cid);if(!w)return;const lq=q.toLowerCase().trim();
   const catSel=document.getElementById('fEC');const cat=catSel?catSel.value.toLowerCase():'';
-  const prodSel=document.getElementById('fVP');const prod=prodSel?prodSel.value.toLowerCase():'';
   let vis=0;
   w.querySelectorAll('tbody tr').forEach(tr=>{const txt=tr.textContent.toLowerCase();
-    const ok=(!lq||txt.includes(lq))&&(!cat||txt.includes(cat))&&(!prod||txt.includes(prod));
+    const ok=(!lq||txt.includes(lq))&&(!cat||txt.includes(cat));
     tr.style.display=ok?'':'none';if(ok)vis++});
   if(cntId){const el=document.getElementById(cntId);if(el)el.textContent=vis+' registros'}
 }
 function kpi(cid,items){const el=document.getElementById(cid);if(!el)return;el.innerHTML=items.map(k=>`<div class="kp ${k.c||''}"><div class="kp-l">${k.l}</div><div class="kp-v ${k.c||''}">${k.v}</div>${k.s?'<div class="kp-s">'+k.s+'</div>':''}</div>`).join('')}
-
-/* ── Alerts ── */
 function alertHTML(type,icon,text){return`<div class="alert-bar ${type}"><span class="alert-ico">${icon}</span><span class="alert-txt">${text}</span></div>`}
 
 /* ── Global Search ── */
 function gsSearch(q){
   const box=document.getElementById('gsR');if(!q||q.length<2){box.classList.remove('open');return}
   const lq=q.toLowerCase();const res=[];
-  (D.clientes||[]).forEach(c=>{if((c.nome_canonico||'').toLowerCase().includes(lq))res.push({cat:'Clientes',lb:c.nome_canonico,m:c.tipo,s:'vendas',sub:'v-cli'})});
   (D.produtos||[]).forEach(pr=>{if((pr.nome_canonico||'').toLowerCase().includes(lq))res.push({cat:'Produtos',lb:pr.nome_canonico,m:pr.categoria,s:'estoque',sub:'e-pos'})});
-  (D.vendas||[]).forEach(v=>{if((v.cliente||'').toLowerCase().includes(lq)||(v.produto||'').toLowerCase().includes(lq)||(v.pedido||'').includes(lq))res.push({cat:'Vendas',lb:'#'+v.pedido+' — '+v.cliente,m:v.produto,s:'vendas',sub:'v-all'})});
   (D.backlog||[]).forEach(b=>{if((b.terceiro||'').toLowerCase().includes(lq))res.push({cat:'Retornáveis',lb:b.terceiro,m:b.produto,s:'ret',sub:'r-barril'})});
   (D.frota||[]).forEach(f=>{if((f.placa||'').toLowerCase().includes(lq)||(f.modelo||'').toLowerCase().includes(lq))res.push({cat:'Frota',lb:f.placa+' — '+f.modelo,m:f.motorista_fixo,s:'frota',sub:'f-ab'})});
   const seen=new Set();const uniq=[];res.forEach(r=>{const k=r.cat+r.lb;if(!seen.has(k)){seen.add(k);uniq.push(r)}});
@@ -599,243 +500,11 @@ function gsGo(s,sub,q){
 /* ================================================================
    RENDER
    ================================================================ */
-function renderAll(){rOv();rVendas();rEstoque();rRet();rFrota()}
-
-/* ──── VISÃO GERAL ──── */
-function rOv(){
-  const v=D.vendas||[],bl=D.backlog||[],est=D.estoque||[],fr=D.frota||[];
-  const tL=v.reduce((s,r)=>s+p(r.qtd_litros),0);const tF=v.reduce((s,r)=>s+p(r.valor_total),0);
-  const peds=[...new Set(v.map(r=>r.pedido))].length;const cliA=[...new Set(v.map(r=>r.cliente))].length;
-  const tmL=tL>0?tF/tL:0;
-
-  // Margem total
-  let margTot=0,fatComCusto=0;
-  v.forEach(r=>{const pr=D.pm[(r.sku||'').trim()];if(pr&&pr.custo>0){const m=(p(r.preco_unitario)-pr.custo)*p(r.qtd);margTot+=m;fatComCusto+=p(r.valor_total)}});
-  const margPct=fatComCusto>0?margTot/fatComCusto*100:0;
-
-  // Estoque valorizado
-  const pm={};est.forEach(r=>{const s=(r.sku||'').trim();if(!pm[s])pm[s]=0;pm[s]+=p(r.qtd_entrada)-p(r.qtd_saida)});
-  let estVal=0;Object.entries(pm).forEach(([sku,saldo])=>{const pr=D.pm[sku];if(pr&&pr.custo>0)estVal+=saldo*pr.custo});
-
-  kpi('kO',[
-    {l:'Volume Total (L)',v:fN(tL),c:'go'},
-    {l:'Faturamento',v:fR(tF),c:'gr'},
-    {l:'Ticket Médio / L',v:fR(tmL),c:'bl'},
-    {l:'Margem Bruta',v:fN(margPct,1)+'%',c:'pu',s:fR(margTot)+' total'},
-    {l:'Clientes Ativos',v:fN(cliA),c:'or'},
-    {l:'Estoque Valorizado',v:fR(estVal),c:'cy'}
-  ]);
-
-  // Alerts panel
-  let alerts='';
-  // Estoque — ruptura
-  const choppProds={};est.forEach(r=>{if((r.categoria||'').trim()==='Chopp Barril'){const pr=r.produto;if(!choppProds[pr])choppProds[pr]=0;choppProds[pr]+=p(r.qtd_entrada)-p(r.qtd_saida)}});
-  const rupturas=Object.entries(choppProds).filter(([,s])=>s<=2);
-  if(rupturas.length>0)alerts+=alertHTML('danger','⚠️','<b>Estoque Crítico:</b> '+rupturas.map(([n,s])=>n+' ('+fN(s)+')').join(', '));
-
-  // Retornáveis — clientes com taxa baixa
-  const isSI=r=>(r.tipo_mov||'').trim()==='Saldo Inicial';
-  const bMov=(bl||[]).filter(r=>normRetType((r.tipo_retornavel||'').trim())==='Barril'&&!isSI(r)&&(r.terceiro||'').trim()!=='');
-  const now=new Date();const w3ago=new Date(now.getTime()-21*86400000);
-  const recentMov=bMov.filter(r=>{const dt=parseDateBR(r.data);return dt&&dt>=w3ago});
-  const cliRet={};recentMov.forEach(r=>{const t=r.terceiro;if(!cliRet[t])cliRet[t]={s:0,e:0};cliRet[t].s+=p(r.qtd_saida_CD);cliRet[t].e+=p(r.qtd_entrada_CD)});
-  const bloqueio=Object.entries(cliRet).filter(([,d])=>{const taxa=d.s>0?d.e/d.s*100:0;const saldo=d.s-d.e;return taxa<40&&saldo>3});
-  if(bloqueio.length>0)alerts+=alertHTML('warn','🔴','<b>Bloqueio Sugerido:</b> '+bloqueio.length+' clientes com taxa de retorno <40% e saldo alto');
-
-  // Frota — abnormal
-  const ab=D.abastecimento||[];
-  const saiT=ab.filter(r=>(r.tipo_mov||'').toLowerCase().includes('sa'));
-  const frRef={};fr.forEach(v=>{frRef[(v.placa||'').trim()]=p(v.consumo_medio_ref)});
-  const kmlM={};saiT.forEach(r=>{const pl=(r.placa||'').trim();const kml=p(r.kml);if(pl&&kml>0){if(!kmlM[pl])kmlM[pl]={sum:0,cnt:0};kmlM[pl].sum+=kml;kmlM[pl].cnt++}});
-  const lowEff=[];Object.entries(kmlM).forEach(([pl,d])=>{const avg=d.sum/d.cnt;const ref=frRef[pl];if(ref>0&&avg<ref*0.7)lowEff.push(pl+' ('+fN(avg,1)+' vs ref '+fN(ref,1)+')')});
-  if(lowEff.length>0)alerts+=alertHTML('warn','⛽','<b>Consumo Anormal:</b> '+lowEff.join(', '));
-
-  document.getElementById('ovAlerts').innerHTML=alerts;
-
-  // Charts
-  const opM={};v.forEach(r=>{const t=opT(r);opM[t]=(opM[t]||0)+p(r.valor_total)});
-  mk('chOO',{type:'doughnut',data:{labels:Object.keys(opM),datasets:[{data:Object.values(opM),backgroundColor:['#B8942E','#2563eb']}]},options:{cutout:'65%',plugins:{legend:{position:'bottom'}}}});
-  const cliM={};v.forEach(r=>{cliM[r.cliente]=(cliM[r.cliente]||0)+p(r.qtd_litros)});
-  const topC=Object.entries(cliM).sort((a,b)=>b[1]-a[1]).slice(0,10);
-  mk('chOC',{type:'bar',data:{labels:topC.map(c=>c[0].length>22?c[0].slice(0,22)+'…':c[0]),datasets:[{data:topC.map(c=>c[1]),backgroundColor:'#B8942E',borderRadius:3,barPercentage:.7,categoryPercentage:.8}]},options:{indexAxis:'y',scales:{x:{},y:{}},plugins:{legend:{display:false}}}});
-  const pMix={};v.filter(r=>r.categoria==='Chopp Barril').forEach(r=>{const n=(r.produto||'').replace(/\s\d+L$/,'');pMix[n]=(pMix[n]||0)+p(r.qtd_litros)});
-  mk('chOM',{type:'doughnut',data:{labels:Object.keys(pMix),datasets:[{data:Object.values(pMix),backgroundColor:COL}]},options:{cutout:'55%',plugins:{legend:{position:'bottom'}}}});
-  const oM={};v.forEach(r=>{const o=r.origem||'N/A';oM[o]=(oM[o]||0)+p(r.valor_total)});
-  mk('chOI',{type:'doughnut',data:{labels:Object.keys(oM),datasets:[{data:Object.values(oM),backgroundColor:['#059669','#dc2626','#2563eb']}]},options:{cutout:'55%',plugins:{legend:{position:'bottom'}}}});
-
-  // Trend chart — daily last 30 days
-  const dayM={};v.forEach(r=>{const d=r.data;if(!dayM[d])dayM[d]=0;dayM[d]+=p(r.valor_total)});
-  const days=Object.keys(dayM).sort((a,b)=>dK(a).localeCompare(dK(b))).slice(-30);
-  mk('chOTrend',{type:'bar',data:{labels:days,datasets:[{label:'Faturamento',data:days.map(d=>dayM[d]||0),backgroundColor:'#B8942E',borderRadius:2,barPercentage:.7}]},options:{scales:{x:{},y:{}},plugins:{legend:{display:false}}}});
-
-  // Cross-module table
-  const crossRows=[];
-  // Dias de cobertura por chopp
-  const cv=v.filter(r=>r.categoria==='Chopp Barril');
-  const datesV=[...new Set(cv.map(r=>r.data))];
-  const nDias=datesV.length>1?diffDays(parseDateBR(datesV.sort((a,b)=>dK(b).localeCompare(dK(a)))[0]),parseDateBR(datesV.sort((a,b)=>dK(a).localeCompare(dK(b)))[0]))+1:1;
-  Object.entries(choppProds).forEach(([prod,saldo])=>{
-    const vendaDia=cv.filter(r=>r.produto===prod).reduce((s,r)=>s+p(r.qtd),0)/Math.max(nDias,1);
-    const diasCob=vendaDia>0?Math.round(saldo/vendaDia):999;
-    crossRows.push([prod,fN(saldo),fN(vendaDia,1)+'/dia',diasCob<=0?'⚠ Esgotado':diasCob>90?'90+ dias':diasCob+' dias',diasCob<=3?'🔴':diasCob<=7?'🟡':'🟢']);
-  });
-  mt('tOCross',[{l:'Produto'},{l:'Estoque'},{l:'Venda Média'},{l:'Cobertura'},{l:'Status'}],crossRows.sort((a,b)=>{const pa=parseInt(a[3])||999,pb=parseInt(b[3])||999;return pa-pb}));
-}
-
-/* ──── VENDAS ──── */
-function rVendas(){
-  const allV=D.vendas||[];
-  const dtI=document.getElementById('vDtI')?.value;
-  const dtF=document.getElementById('vDtF')?.value;
-  const ckDist=document.getElementById('ckDist')?.checked!==false;
-  const ckPdv=document.getElementById('ckPdv')?.checked!==false;
-  let v=allV;
-  if(dtI||dtF){
-    const di=dtI?dtI.replace(/-/g,''):'00000000';
-    const df=dtF?dtF.replace(/-/g,''):'99999999';
-    v=allV.filter(r=>{const dk=dK(r.data);const iso=dk.slice(0,4)+dk.slice(4,6)+dk.slice(6,8);return iso>=di&&iso<=df});
-    const info=document.getElementById('vPeriodInfo');
-    if(info)info.textContent=`${v.length} de ${allV.length} registros no período`;
-  } else {
-    const info=document.getElementById('vPeriodInfo');if(info)info.textContent='';
-  }
-  // Canal filter
-  if(!ckDist||!ckPdv){
-    v=v.filter(r=>{const t=opT(r);if(t==='Distribuidor')return ckDist;return ckPdv});
-  }
-
-  const cv=v.filter(r=>r.categoria==='Chopp Barril');
-  const tL=cv.reduce((s,r)=>s+p(r.qtd_litros),0);const tB=cv.reduce((s,r)=>s+p(r.qtd_barris),0);
-  const tF=cv.reduce((s,r)=>s+p(r.valor_total),0);
-  const tmL=tL>0?tF/tL:0;const peds=[...new Set(v.map(r=>r.pedido))].length;
-  const tmPed=peds>0?tF/peds:0;
-
-  // Margem bruta
-  let margTot=0,fatMarg=0;
-  cv.forEach(r=>{const pr=D.pm[(r.sku||'').trim()];if(pr&&pr.custo>0){margTot+=(p(r.preco_unitario)-pr.custo)*p(r.qtd);fatMarg+=p(r.valor_total)}});
-  const margPct=fatMarg>0?margTot/fatMarg*100:0;
-
-  kpi('kV',[
-    {l:'Volume Chopp (L)',v:fN(tL),c:'go'},
-    {l:'Barris Vendidos',v:fN(tB),c:'bl'},
-    {l:'Faturamento Chopp',v:fR(tF),c:'gr'},
-    {l:'Ticket Médio / L',v:fR(tmL),c:'pu'},
-    {l:'Ticket Médio / Pedido',v:fR(tmPed),c:'or',s:fN(peds)+' pedidos'},
-    {l:'Margem Bruta',v:fN(margPct,1)+'%',c:'cy',s:fR(margTot)}
-  ]);
-
-  const prods=[...new Set(v.map(r=>r.produto).filter(Boolean))].sort();
-  document.getElementById('fVP').innerHTML='<option value="">Todos Produtos</option>'+prods.map(pr=>`<option value="${pr}">${pr}</option>`).join('');
-
-  const vSorted=v.slice().sort((a,b)=>dK(b.data).localeCompare(dK(a.data)));
-  mt('tVA',[{l:'Data'},{l:'Pedido'},{l:'Origem'},{l:'Cliente'},{l:'Produto'},{l:'Cat.'},{l:'Litros',t:'n',f:'n'},{l:'Barris',t:'n',f:'n'},{l:'Valor',t:'n',f:'r'}],vSorted.map(r=>[r.data,r.pedido,r.origem,r.cliente,r.produto,r.categoria,p(r.qtd_litros),p(r.qtd_barris),p(r.valor_total)]));
-  document.getElementById('cVA').textContent=v.length+' registros';
-
-  const prodM={};cv.forEach(r=>{const pr=r.produto;if(!prodM[pr])prodM[pr]={l:0,b:0,v:0};prodM[pr].l+=p(r.qtd_litros);prodM[pr].b+=p(r.qtd_barris);prodM[pr].v+=p(r.valor_total)});
-  const pArr=Object.entries(prodM).sort((a,b)=>b[1].l-a[1].l);
-  mt('tVP',[{l:'Produto'},{l:'Litros',t:'n',f:'n'},{l:'Barris',t:'n',f:'n'},{l:'Valor (R$)',t:'n',f:'r'},{l:'Ticket/L',t:'n',f:'r'},{l:'% Vol',t:'n',f:'p'},{l:'% Fat',t:'n',f:'p'}],pArr.map(([pr,d])=>[pr,d.l,d.b,d.v,d.l>0?d.v/d.l:0,tL>0?d.l/tL*100:0,tF>0?d.v/tF*100:0]));
-  mk('chVP',{type:'bar',data:{labels:pArr.map(x=>x[0].length>20?x[0].slice(0,20)+'…':x[0]),datasets:[{label:'Litros',data:pArr.map(x=>x[1].l),backgroundColor:'#B8942E',borderRadius:3,barPercentage:.7,categoryPercentage:.8}]},options:{indexAxis:'y',scales:{x:{},y:{}},plugins:{legend:{display:false}}}});
-
-  const cliM={};v.forEach(r=>{const c=r.cliente;const t=opT(r);if(!cliM[c])cliM[c]={t,l:0,b:0,v:0,peds:new Set(),lastDate:''};cliM[c].l+=p(r.qtd_litros);cliM[c].b+=p(r.qtd_barris);cliM[c].v+=p(r.valor_total);cliM[c].peds.add(r.pedido);if(dK(r.data)>dK(cliM[c].lastDate))cliM[c].lastDate=r.data});
-  const dCols=[{l:'Cliente'},{l:'Tipo'},{l:'Litros',t:'n',f:'n'},{l:'Barris',t:'n',f:'n'},{l:'Valor',t:'n',f:'r'},{l:'Pedidos',t:'n',f:'n'},{l:'Ticket Médio',t:'n',f:'r'},{l:'Última Compra'}];
-  const dR=[],pR=[];
-  Object.entries(cliM).forEach(([c,d])=>{const row=[c,d.t,d.l,d.b,d.v,d.peds.size,d.peds.size>0?d.v/d.peds.size:0,d.lastDate];d.t==='Distribuidor'?dR.push(row):pR.push(row)});
-  mt('tVD',dCols,dR.sort((a,b)=>b[4]-a[4]));mt('tVPdv',dCols,pR.sort((a,b)=>b[4]-a[4]));
-
-  const cliByL=Object.entries(cliM).sort((a,b)=>b[1].l-a[1].l).slice(0,15);
-  const cliByR=Object.entries(cliM).sort((a,b)=>b[1].v-a[1].v).slice(0,15);
-  mk('chVCL',{type:'bar',data:{labels:cliByL.map(c=>c[0].length>18?c[0].slice(0,18)+'…':c[0]),datasets:[{data:cliByL.map(c=>c[1].l),backgroundColor:'#2563eb',borderRadius:3,barPercentage:.7,categoryPercentage:.8}]},options:{indexAxis:'y',scales:{x:{},y:{}},plugins:{legend:{display:false}}}});
-  mk('chVCR',{type:'bar',data:{labels:cliByR.map(c=>c[0].length>18?c[0].slice(0,18)+'…':c[0]),datasets:[{data:cliByR.map(c=>c[1].v),backgroundColor:'#059669',borderRadius:3,barPercentage:.7,categoryPercentage:.8}]},options:{indexAxis:'y',scales:{x:{},y:{}},plugins:{legend:{display:false}}}});
-
-  const opD={'Distribuidor':{l:0,v:0,cli:new Set(),ped:new Set()},'PDV/DELIV':{l:0,v:0,cli:new Set(),ped:new Set()}};
-  v.forEach(r=>{const t=opT(r);opD[t].l+=p(r.qtd_litros);opD[t].v+=p(r.valor_total);opD[t].cli.add(r.cliente);opD[t].ped.add(r.pedido)});
-  document.getElementById('opC').innerHTML=Object.entries(opD).map(([t,d])=>`<div class="pn"><div class="pn-h"><span class="tg ${t==='Distribuidor'?'di':'pv'}">${t}</span></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><div><span style="font-size:.6rem;color:var(--t3);display:block">Volume (L)</span><b style="font-size:1rem">${fN(d.l)}</b></div><div><span style="font-size:.6rem;color:var(--t3);display:block">Faturamento</span><b style="font-size:1rem;color:var(--green)">${fR(d.v)}</b></div><div><span style="font-size:.6rem;color:var(--t3);display:block">Clientes</span><b>${d.cli.size}</b></div><div><span style="font-size:.6rem;color:var(--t3);display:block">Pedidos</span><b>${d.ped.size}</b></div></div></div>`).join('');
-  mk('chVO',{type:'bar',data:{labels:['Volume (L)','Faturamento (R$)'],datasets:[{label:'Distribuidor',data:[opD.Distribuidor.l,opD.Distribuidor.v],backgroundColor:'#B8942E',borderRadius:3,barPercentage:.6},{label:'PDV/DELIV',data:[opD['PDV/DELIV'].l,opD['PDV/DELIV'].v],backgroundColor:'#2563eb',borderRadius:3,barPercentage:.6}]},options:{scales:{x:{},y:{}},plugins:{legend:{position:'top'}}}});
-
-  // Evolução
-  const dayM={};v.forEach(r=>{const d=r.data;if(!dayM[d])dayM[d]={l:0,v:0,p:new Set()};dayM[d].l+=p(r.qtd_litros);dayM[d].v+=p(r.valor_total);dayM[d].p.add(r.pedido)});
-  const days=Object.keys(dayM).sort((a,b)=>dK(a).localeCompare(dK(b)));
-  mt('tVT',[{l:'Data'},{l:'Litros',t:'n',f:'n'},{l:'Faturamento',t:'n',f:'r'},{l:'Pedidos',t:'n',f:'n'}],days.map(d=>[d,dayM[d].l,dayM[d].v,dayM[d].p.size]));
-  mk('chVT',{type:'bar',data:{labels:days,datasets:[{label:'Litros',data:days.map(d=>dayM[d].l),backgroundColor:'#B8942E',borderRadius:3,barPercentage:.6,yAxisID:'y'},{label:'Faturamento',data:days.map(d=>dayM[d].v),type:'line',borderColor:'#059669',backgroundColor:'rgba(5,150,105,.1)',fill:true,tension:.3,yAxisID:'y1',pointRadius:3}]},options:{scales:{x:{},y:{position:'left'},y1:{position:'right',grid:{drawOnChartArea:false}}},plugins:{legend:{position:'top'}}}});
-
-  // MoM Growth
-  const monthM={};v.forEach(r=>{const mk2=getMonthKey(r.data);if(!mk2)return;if(!monthM[mk2])monthM[mk2]={l:0,v:0};monthM[mk2].l+=p(r.qtd_litros);monthM[mk2].v+=p(r.valor_total)});
-  const months=Object.keys(monthM).sort((a,b)=>{const[ma,ya]=a.split('/');const[mb,yb]=b.split('/');return(ya+ma).localeCompare(yb+mb)});
-  const momGrowth=months.map((m,i)=>{
-    const prev=i>0?monthM[months[i-1]]:null;
-    const cur=monthM[m];
-    const gV=prev&&prev.v>0?((cur.v-prev.v)/prev.v*100):null;
-    const gL=prev&&prev.l>0?((cur.l-prev.l)/prev.l*100):null;
-    return{m,v:cur.v,l:cur.l,gV,gL};
-  });
-
-  if(months.length>=2){
-    const last=momGrowth[momGrowth.length-1];
-    const prev=momGrowth[momGrowth.length-2];
-    // Week over week
-    const weekM={};v.forEach(r=>{const wk=getWeekKey(r.data);if(!wk)return;if(!weekM[wk])weekM[wk]=0;weekM[wk]+=p(r.valor_total)});
-    const weeks=Object.keys(weekM).sort();
-    const wowG=weeks.length>=2?((weekM[weeks[weeks.length-1]]-weekM[weeks[weeks.length-2]])/weekM[weeks[weeks.length-2]]*100):null;
-
-    // Projection: current month days passed vs total days
-    const today=new Date();const daysInMonth=new Date(today.getFullYear(),today.getMonth()+1,0).getDate();
-    const daysPassed=today.getDate();
-    const curMK=getMonthKey(today);
-    const curMonthFat=monthM[curMK]?.v||0;
-    const projected=daysPassed>0?curMonthFat/daysPassed*daysInMonth:0;
-
-    kpi('kVGrowth',[
-      {l:'Crescimento MoM Fat.',v:last.gV!==null?(last.gV>=0?'+':'')+fN(last.gV,1)+'%':'—',c:last.gV>=0?'gr':'re',s:months[months.length-1]},
-      {l:'Crescimento MoM Vol.',v:last.gL!==null?(last.gL>=0?'+':'')+fN(last.gL,1)+'%':'—',c:last.gL>=0?'gr':'re'},
-      {l:'WoW Faturamento',v:wowG!==null?(wowG>=0?'+':'')+fN(wowG,1)+'%':'—',c:wowG>=0?'gr':'re'},
-      {l:'Projeção Mês Atual',v:fR(projected),c:'bl',s:fN(daysPassed)+' de '+daysInMonth+' dias'}
-    ]);
-  } else {
-    kpi('kVGrowth',[{l:'Crescimento MoM',v:'—',c:'go',s:'Dados insuficientes'}]);
-  }
-
-  // MoM chart
-  mk('chVMoM',{type:'bar',data:{labels:months,datasets:[
-    {label:'Faturamento',data:months.map(m=>monthM[m].v),backgroundColor:'#B8942E',borderRadius:3,barPercentage:.6,yAxisID:'y'},
-    {label:'Crescimento %',data:momGrowth.map(g=>g.gV),type:'line',borderColor:'#059669',backgroundColor:'rgba(5,150,105,.15)',fill:true,tension:.3,yAxisID:'y1',pointRadius:4,spanGaps:true}
-  ]},options:{scales:{x:{},y:{position:'left'},y1:{position:'right',grid:{drawOnChartArea:false},ticks:{callback:v=>v+'%'}}},plugins:{legend:{position:'top'}}}});
-
-  // ── Margem tab ──
-  const margProds={};cv.forEach(r=>{
-    const sku=(r.sku||'').trim();const pr=D.pm[sku];const custo=pr?pr.custo:0;
-    const prod=r.produto||sku;
-    if(!margProds[prod])margProds[prod]={sku,qtd:0,fat:0,custo_total:0,hasCusto:custo>0};
-    margProds[prod].qtd+=p(r.qtd);
-    margProds[prod].fat+=p(r.valor_total);
-    if(custo>0)margProds[prod].custo_total+=custo*p(r.qtd);
-  });
-  let mTotR=0,mTotF=0,prodsComCusto=0;
-  const margArr=Object.entries(margProds).map(([prod,d])=>{
-    const margR=d.hasCusto?d.fat-d.custo_total:null;
-    const margP=d.hasCusto&&d.fat>0?(d.fat-d.custo_total)/d.fat*100:null;
-    if(d.hasCusto){mTotR+=margR;mTotF+=d.fat;prodsComCusto++}
-    return[prod,d.qtd,d.fat,d.custo_total,margR!==null?margR:'-',margP!==null?margP:'-',d.hasCusto?'':'⚠ Sem custo'];
-  }).sort((a,b)=>(typeof b[4]==='number'?b[4]:0)-(typeof a[4]==='number'?a[4]:0));
-
-  kpi('kVMargem',[
-    {l:'Margem Total',v:fR(mTotR),c:'gr'},
-    {l:'Margem Média %',v:mTotF>0?fN(mTotR/mTotF*100,1)+'%':'—',c:'pu'},
-    {l:'Produtos com Custo',v:fN(prodsComCusto)+'/'+fN(Object.keys(margProds).length),c:'bl'},
-    {l:'Custo Total',v:fR(Object.values(margProds).reduce((s,d)=>s+d.custo_total,0)),c:'re'}
-  ]);
-
-  mt('tVMarg',[{l:'Produto'},{l:'Qtd',t:'n',f:'n'},{l:'Faturamento',t:'n',f:'r'},{l:'Custo Total',t:'n',f:'r'},{l:'Margem R$',t:'n',f:'r',color:true},{l:'Margem %',t:'n',f:'p'},{l:'Obs'}],
-    margArr.map(r=>[r[0],r[1],r[2],r[3],typeof r[4]==='number'?r[4]:0,typeof r[5]==='number'?r[5]:0,r[6]]));
-
-  const margTop=margArr.filter(r=>typeof r[4]==='number').slice(0,15);
-  mk('chMargR',{type:'bar',data:{labels:margTop.map(r=>r[0].length>18?r[0].slice(0,18)+'…':r[0]),datasets:[{label:'Margem R$',data:margTop.map(r=>r[4]),backgroundColor:margTop.map(r=>r[4]>=0?'#059669':'#dc2626'),borderRadius:3,barPercentage:.7}]},options:{indexAxis:'y',scales:{x:{},y:{}},plugins:{legend:{display:false}}}});
-  const margPArr=margArr.filter(r=>typeof r[5]==='number'&&r[5]!==0).sort((a,b)=>b[5]-a[5]).slice(0,15);
-  mk('chMargP',{type:'bar',data:{labels:margPArr.map(r=>r[0].length>18?r[0].slice(0,18)+'…':r[0]),datasets:[{label:'Margem %',data:margPArr.map(r=>r[5]),backgroundColor:margPArr.map(r=>r[5]>=20?'#059669':r[5]>=10?'#d97706':'#dc2626'),borderRadius:3,barPercentage:.7}]},options:{indexAxis:'y',scales:{x:{},y:{ticks:{callback:v=>v+'%'}}},plugins:{legend:{display:false}}}});
-}
+function renderAll(){rEstoque();rRet();rFrota()}
 
 /* ──── ESTOQUE ──── */
 function rEstoque(){
-  const est=D.estoque||[],prod=D.produtos||[];
+  const est=D.estoque||[],prod=D.produtos||[],vendas=D.vendas||[];
   const pm={};est.forEach(r=>{const pr=r.produto||r.sku||'N/A';const sku=(r.sku||'').trim();const cat=(r.categoria||'').trim();if(!pm[pr])pm[pr]={cat,sku,e:0,s:0};pm[pr].e+=p(r.qtd_entrada);pm[pr].s+=p(r.qtd_saida)});
   const chopp=Object.entries(pm).filter(([,d])=>d.cat==='Chopp Barril');
   const posT=chopp.reduce((s,[,d])=>s+d.e-d.s,0);
@@ -843,49 +512,42 @@ function rEstoque(){
   const tE=est.reduce((s,r)=>s+p(r.qtd_entrada),0);
   const tS=est.reduce((s,r)=>s+p(r.qtd_saida),0);
 
-  // Estoque valorizado
-  let estVal=0;Object.entries(pm).forEach(([,d])=>{const pr=D.pm[d.sku];if(pr&&pr.custo>0)estVal+=(d.e-d.s)*pr.custo});
-  // Giro de estoque
-  const vendas=D.vendas||[];
+  // Giro: qtd vendida / estoque médio
   const tVendido=vendas.reduce((s,r)=>s+p(r.qtd),0);
   const estoqueTotal=Object.values(pm).reduce((s,d)=>s+Math.max(0,d.e-d.s),0);
   const giro=estoqueTotal>0?tVendido/estoqueTotal:0;
 
+  // Alertas estoque crítico
+  let alerts='';
+  const rupturas=chopp.filter(([,d])=>(d.e-d.s)<=2);
+  if(rupturas.length>0)alerts+=alertHTML('danger','⚠️','<b>Estoque Crítico:</b> '+rupturas.map(([n,d])=>n+' ('+fN(d.e-d.s)+')').join(', '));
+  document.getElementById('estAlerts').innerHTML=alerts;
+
   kpi('kE',[
     {l:'Posição Chopp (barris)',v:fN(posT),c:'go'},
-    {l:'Total SKUs',v:fN(tSKU),c:'bl'},
+    {l:'Total SKUs Ativos',v:fN(tSKU),c:'bl'},
     {l:'Total Entradas',v:fN(tE),c:'gr'},
     {l:'Total Saídas',v:fN(tS),c:'or'},
-    {l:'Estoque Valorizado',v:fR(estVal),c:'pu'},
-    {l:'Giro de Estoque',v:fN(giro,1)+'x',c:'cy',s:'vendido / estoque'}
+    {l:'Giro de Estoque',v:fN(giro,1)+'x',c:'pu',s:'vendido ÷ estoque'}
   ]);
 
+  // Cards Chopp
   document.getElementById('gE').innerHTML=chopp.map(([pr,d])=>({n:pr,saldo:d.e-d.s,e:d.e,s:d.s})).sort((a,b)=>{const aH=a.n.toLowerCase().includes('harden pilsen')?0:1;const bH=b.n.toLowerCase().includes('harden pilsen')?0:1;if(aH!==bH)return aH-bH;return a.n.localeCompare(b.n)}).map(x=>`<div class="pc"><div class="pc-n">${x.n}</div><div class="pc-v">${fN(x.saldo)}</div><div class="pc-r"><span>Entradas</span><span class="v g">+${fN(x.e)}</span></div><div class="pc-r"><span>Saídas</span><span class="v r">-${fN(x.s)}</span></div></div>`).join('');
 
+  // Categorias filter
   const cats=[...new Set(est.map(r=>(r.categoria||'').trim()).filter(Boolean))];
   document.getElementById('fEC').innerHTML='<option value="">Todas Categorias</option>'+cats.map(c=>`<option value="${c}">${c}</option>`).join('');
 
-  // Enhanced position table with custo_medio, valor estoque, dias cobertura
-  const cv=vendas.filter(r=>r.categoria==='Chopp Barril');
-  const datesV=[...new Set(cv.map(r=>r.data))];
-  const nDias=datesV.length>1?Math.max(1,diffDays(parseDateBR(datesV.sort((a,b)=>dK(b).localeCompare(dK(a)))[0]),parseDateBR(datesV.sort((a,b)=>dK(a).localeCompare(dK(b)))[0]))+1):1;
-  const vendaPorProd={};cv.forEach(r=>{const pr=r.produto;vendaPorProd[pr]=(vendaPorProd[pr]||0)+p(r.qtd)});
-
-  const eCols=[{l:'SKU',mh:1},{l:'Produto'},{l:'Categoria',mh:1},{l:'Saldo',t:'n',f:'n',color:true},{l:'Entradas',t:'n',f:'n'},{l:'Saídas',t:'n',f:'n'},{l:'Custo Médio',t:'n',f:'r',mh:1},{l:'Valor Estoque',t:'n',f:'r'},{l:'Venda/Dia',t:'n',f:'n1',mh:1},{l:'Cobertura'}];
-  mt('tEP',eCols,Object.entries(pm).map(([pr,d])=>{
-    const saldo=d.e-d.s;const custo=D.pm[d.sku]?.custo||0;
-    const valEst=custo>0?saldo*custo:0;
-    const vendaDia=vendaPorProd[pr]?vendaPorProd[pr]/nDias:0;
-    const diasCob=vendaDia>0?Math.round(saldo/vendaDia):saldo>0?999:0;
-    const cobTxt=diasCob<=0?'⚠ Esgotado':diasCob>90?'90+ dias':diasCob+' dias';
-    return[d.sku,pr,d.cat,saldo,d.e,d.s,custo,valEst,vendaDia,cobTxt]
-  }).sort((a,b)=>b[3]-a[3]));
+  // Posição completa — foco em quantidades
+  mt('tEP',[{l:'SKU',mh:1},{l:'Produto'},{l:'Categoria',mh:1},{l:'Saldo',t:'n',f:'n',color:true},{l:'Entradas',t:'n',f:'n'},{l:'Saídas',t:'n',f:'n'}],
+    Object.entries(pm).map(([pr,d])=>[d.sku,pr,d.cat,d.e-d.s,d.e,d.s]).sort((a,b)=>b[3]-a[3]));
   document.getElementById('cEP').textContent=Object.keys(pm).length+' registros';
 
   // Movimentações
-  const pedCli={};(D.vendas||[]).forEach(v=>{if(v.pedido&&v.cliente)pedCli[v.pedido.trim()]=v.cliente});
+  const pedCli={};vendas.forEach(v=>{if(v.pedido&&v.cliente)pedCli[v.pedido.trim()]=v.cliente});
   const estSorted=est.slice().sort((a,b)=>dK(b.data).localeCompare(dK(a.data)));
-  mt('tEM',[{l:'Data'},{l:'Produto'},{l:'SKU',mh:1},{l:'Categoria',mh:1},{l:'Tipo Mov.',mh:1},{l:'Cliente'},{l:'Entrada',t:'n',f:'n'},{l:'Saída',t:'n',f:'n'},{l:'Valor',t:'n',f:'r',mh:1}],estSorted.map(r=>[r.data,r.produto,r.sku,r.categoria,r.tipo_mov,pedCli[(r.ref||'').trim()]||'—',p(r.qtd_entrada),p(r.qtd_saida),p(r.valor_total)]));
+  mt('tEM',[{l:'Data'},{l:'Produto'},{l:'SKU',mh:1},{l:'Categoria',mh:1},{l:'Tipo Mov.',mh:1},{l:'Cliente'},{l:'Entrada',t:'n',f:'n'},{l:'Saída',t:'n',f:'n'}],
+    estSorted.map(r=>[r.data,r.produto,r.sku,r.categoria,r.tipo_mov,pedCli[(r.ref||'').trim()]||'—',p(r.qtd_entrada),p(r.qtd_saida)]));
   document.getElementById('cEM').textContent=est.length+' registros';
 
   // Charts
@@ -893,10 +555,6 @@ function rEstoque(){
   mk('chEC',{type:'bar',data:{labels:Object.keys(catM),datasets:[{data:Object.values(catM),backgroundColor:COL,borderRadius:3,barPercentage:.7,categoryPercentage:.8}]},options:{scales:{x:{},y:{}},plugins:{legend:{display:false}}}});
   const top10=Object.entries(pm).map(([pr,d])=>[pr,d.e-d.s]).sort((a,b)=>b[1]-a[1]).slice(0,10);
   mk('chET',{type:'bar',data:{labels:top10.map(x=>x[0].length>20?x[0].slice(0,20)+'…':x[0]),datasets:[{data:top10.map(x=>x[1]),backgroundColor:'#059669',borderRadius:3,barPercentage:.7,categoryPercentage:.8}]},options:{indexAxis:'y',scales:{x:{},y:{}},plugins:{legend:{display:false}}}});
-
-  // Estoque valorizado por categoria chart
-  const catVal={};Object.entries(pm).forEach(([,d])=>{const c=d.cat||'Outros';const custo=D.pm[d.sku]?.custo||0;catVal[c]=(catVal[c]||0)+(d.e-d.s)*custo});
-  mk('chEVal',{type:'bar',data:{labels:Object.keys(catVal),datasets:[{label:'Valor R$',data:Object.values(catVal),backgroundColor:COL,borderRadius:3,barPercentage:.7}]},options:{scales:{x:{},y:{ticks:{callback:v=>'R$ '+fN(v)}}},plugins:{legend:{display:false}}}});
 
   // Compostos
   const comp=prod.filter(x=>x.sku_pai&&x.sku_pai.trim()!=='');
@@ -909,22 +567,25 @@ function rEstoque(){
     return[x.nome_canonico,skuN[skuPai]||skuPai,f,qComp,qPai,qComp+qPai]
   }).sort((a,b)=>b[5]-a[5]));
 
-  // Curva ABC
-  const abcData=Object.entries(pm).map(([pr,d])=>{
-    const saldo=d.e-d.s;const custo=D.pm[d.sku]?.custo||0;
-    const vProd=vendas.filter(r=>r.produto===pr).reduce((s,r)=>s+p(r.valor_total),0);
-    return{pr,sku:d.sku,cat:d.cat,saldo,vProd};
-  }).filter(x=>x.vProd>0).sort((a,b)=>b.vProd-a.vProd);
-  const totalFatABC=abcData.reduce((s,x)=>s+x.vProd,0);
-  let acc=0;
-  abcData.forEach(x=>{acc+=x.vProd;x.pct=totalFatABC>0?x.vProd/totalFatABC*100:0;x.accPct=totalFatABC>0?acc/totalFatABC*100:0;x.cls=x.accPct<=80?'A':x.accPct<=95?'B':'C'});
-  mt('tEAbc',[{l:'Classe'},{l:'Produto'},{l:'Categoria',mh:1},{l:'Faturamento',t:'n',f:'r'},{l:'% Fat',t:'n',f:'p'},{l:'% Acum',t:'n',f:'p'},{l:'Estoque',t:'n',f:'n'}],
-    abcData.map(x=>[x.cls,x.pr,x.cat,x.vProd,x.pct,x.accPct,x.saldo]));
+  // Cobertura — dias de estoque baseado em venda média diária
+  const cv=vendas.filter(r=>r.categoria==='Chopp Barril');
+  const datesV=[...new Set(cv.map(r=>r.data))].sort((a,b)=>dK(a).localeCompare(dK(b)));
+  const nDias=datesV.length>1?Math.max(1,diffDays(parseDateBR(datesV[datesV.length-1]),parseDateBR(datesV[0]))+1):1;
+  const vendaPorProd={};cv.forEach(r=>{const pr=r.produto;vendaPorProd[pr]=(vendaPorProd[pr]||0)+p(r.qtd)});
 
-  mk('chABC',{type:'bar',data:{labels:abcData.map(x=>x.pr.length>15?x.pr.slice(0,15)+'…':x.pr),datasets:[
-    {label:'Faturamento',data:abcData.map(x=>x.vProd),backgroundColor:abcData.map(x=>x.cls==='A'?'#059669':x.cls==='B'?'#d97706':'#dc2626'),borderRadius:2,barPercentage:.7,yAxisID:'y'},
-    {label:'% Acumulado',data:abcData.map(x=>x.accPct),type:'line',borderColor:'#111827',backgroundColor:'transparent',tension:.3,pointRadius:2,yAxisID:'y1',borderWidth:2}
-  ]},options:{scales:{x:{},y:{position:'left'},y1:{position:'right',max:100,grid:{drawOnChartArea:false},ticks:{callback:v=>v+'%'}}},plugins:{legend:{position:'top'}}}});
+  const cobRows=chopp.map(([pr,d])=>{
+    const saldo=d.e-d.s;
+    const vendaDia=vendaPorProd[pr]?vendaPorProd[pr]/nDias:0;
+    const diasCob=vendaDia>0?Math.round(saldo/vendaDia):saldo>0?999:0;
+    const status=diasCob<=0?'🔴 Esgotado':diasCob<=3?'🔴 Crítico':diasCob<=7?'🟡 Atenção':diasCob<=14?'🟢 OK':'🟢 Confortável';
+    return[pr,saldo,fN(vendaDia,1)+'/dia',vendaPorProd[pr]||0,diasCob>90?'90+':diasCob,status];
+  }).sort((a,b)=>(typeof a[4]==='number'?a[4]:999)-(typeof b[4]==='number'?b[4]:999));
+
+  mt('tECob',[{l:'Produto'},{l:'Estoque Atual',t:'n',f:'n'},{l:'Venda Média'},{l:'Qtd Vendida Total',t:'n',f:'n'},{l:'Dias Cobertura'},{l:'Status'}],cobRows);
+
+  // Cobertura chart
+  const cobChart=cobRows.filter(r=>typeof r[4]==='number');
+  mk('chCob',{type:'bar',data:{labels:cobChart.map(r=>r[0].length>18?r[0].slice(0,18)+'…':r[0]),datasets:[{label:'Dias',data:cobChart.map(r=>r[4]),backgroundColor:cobChart.map(r=>r[4]<=3?'#dc2626':r[4]<=7?'#d97706':'#059669'),borderRadius:3,barPercentage:.7}]},options:{indexAxis:'y',scales:{x:{title:{display:true,text:'Dias de Cobertura'}},y:{}},plugins:{legend:{display:false}}}});
 }
 
 /* ──── RETORNÁVEIS ──── */
@@ -935,7 +596,7 @@ function rRet(){
   const byType={Barril:[],Chopeira:[],Outros:[]};
   bl.forEach(r=>{const t=normRetType((r.tipo_retornavel||'').trim());byType[t].push(r)});
 
-  const estBySize={};(est).forEach(r=>{if((r.categoria||'').trim()==='Chopp Barril'){const sz=barrelSize(r.produto);if(sz){estBySize[sz]=(estBySize[sz]||0)+(p(r.qtd_entrada)-p(r.qtd_saida))}}});
+  const estBySize={};est.forEach(r=>{if((r.categoria||'').trim()==='Chopp Barril'){const sz=barrelSize(r.produto);if(sz){estBySize[sz]=(estBySize[sz]||0)+(p(r.qtd_entrada)-p(r.qtd_saida))}}});
 
   const barris=byType.Barril;
   const siCD=barris.filter(isSI).reduce((s,r)=>s+p(r.qtd_entrada_CD),0);
@@ -952,6 +613,16 @@ function rRet(){
   const chopMov=byType.Chopeira.filter(r=>!isSI(r)&&(r.terceiro||'').trim()!=='');
   const chopTerc=chopMov.reduce((s,r)=>s+p(r.qtd_saida_CD)-p(r.qtd_entrada_CD),0);
   const chopCD=chopSI+chopMov.reduce((s,r)=>s+p(r.qtd_entrada_CD),0)-chopMov.reduce((s,r)=>s+p(r.qtd_saida_CD),0);
+
+  // Alertas
+  let alerts='';
+  const now=new Date();const w3ago=new Date(now.getTime()-21*86400000);
+  const recentMov=bMov.filter(r=>{const dt=parseDateBR(r.data);return dt&&dt>=w3ago});
+  const cliRet3s={};recentMov.forEach(r=>{const t=r.terceiro;if(!cliRet3s[t])cliRet3s[t]={s:0,e:0};cliRet3s[t].s+=p(r.qtd_saida_CD);cliRet3s[t].e+=p(r.qtd_entrada_CD)});
+  const bloqueioList=Object.entries(cliRet3s).filter(([,d])=>{const tx=d.s>0?d.e/d.s*100:0;const saldo=d.s-d.e;return tx<40&&saldo>3});
+  if(bloqueioList.length>0)alerts+=alertHTML('danger','🔴',`<b>${bloqueioList.length} clientes</b> com bloqueio sugerido — taxa retorno <40% e saldo >3 barris`);
+  if(bDisp<=5)alerts+=alertHTML('warn','⚠️',`<b>Barris Disponíveis Baixo:</b> apenas ${fN(Math.max(0,bDisp))} vazios no CD`);
+  document.getElementById('retAlerts').innerHTML=alerts;
 
   kpi('kR',[
     {l:'Barris Disponíveis (CD)',v:fN(Math.max(0,bDisp)),c:'gr',s:`${fN(bCD)} total — ${fN(choppInBarrels)} cheios`},
@@ -995,8 +666,8 @@ function rRet(){
   rRetSubCD(byType.Chopeira,'gRC','tRC','cRC',isSI);
   rRetSubCD(byType.Outros,'gRO','tRO','cRO',isSI);
 
-  // ── Taxa de Retorno por Cliente ──
-  rRetTaxas(bMov,isSI);
+  // Taxa de Retorno
+  rRetTaxas(bMov);
 }
 
 function rRetSubCD(items,gridId,tblId,cntId,isSI){
@@ -1018,12 +689,12 @@ function rRetSubCD(items,gridId,tblId,cntId,isSI){
 function rRetTaxas(bMov){
   const now=new Date();const w3ago=new Date(now.getTime()-21*86400000);
   const recentMov=bMov.filter(r=>{const dt=parseDateBR(r.data);return dt&&dt>=w3ago});
+  const gTT=id=>D.cm[id]?.grp||'PDV/DELIV';
 
   const cliData={};
   bMov.forEach(r=>{const t=r.terceiro;const id=r.terceiro_id||'';if(!cliData[t])cliData[t]={id,s:0,e:0,sRecent:0,eRecent:0};cliData[t].s+=p(r.qtd_saida_CD);cliData[t].e+=p(r.qtd_entrada_CD)});
   recentMov.forEach(r=>{const t=r.terceiro;if(cliData[t]){cliData[t].sRecent+=p(r.qtd_saida_CD);cliData[t].eRecent+=p(r.qtd_entrada_CD)}});
 
-  const gTT=id=>D.cm[id]?.grp||'PDV/DELIV';
   const rows=[];let nGreen=0,nYellow=0,nRed=0;
   let alerts='';
 
@@ -1031,26 +702,23 @@ function rRetTaxas(bMov){
     const saldo=d.s-d.e;
     const taxaGeral=d.s>0?d.e/d.s*100:0;
     const taxa3s=d.sRecent>0?d.eRecent/d.sRecent*100:(d.eRecent>0?100:0);
-    let status,statusClass;
-    if(taxa3s>=70||saldo<=2){status='🟢 Regular';statusClass='g';nGreen++}
-    else if(taxa3s>=40){status='🟡 Atenção';statusClass='y';nYellow++}
-    else{status='🔴 Crítico';statusClass='r';nRed++}
+    let status;
+    if(taxa3s>=70||saldo<=2){status='🟢 Regular';nGreen++}
+    else if(taxa3s>=40){status='🟡 Atenção';nYellow++}
+    else{status='🔴 Crítico';nRed++}
     const bloqueio=taxa3s<40&&saldo>3?'⚠ SUGERIDO':'—';
     rows.push([cli,gTT(d.id),d.s,d.e,saldo,taxaGeral,d.sRecent,d.eRecent,taxa3s,status,bloqueio]);
   });
 
-  rows.sort((a,b)=>a[8]-b[8]); // sort by taxa 3 semanas asc (worst first)
+  rows.sort((a,b)=>a[8]-b[8]);
 
-  const totalCli=rows.length;
   const bloqueioCount=rows.filter(r=>r[10]!=='—').length;
-
-  if(bloqueioCount>0) alerts+=alertHTML('danger','🔴',`<b>${bloqueioCount} clientes</b> com bloqueio sugerido — taxa de retorno < 40% e saldo > 3 barris`);
-  if(nYellow>0) alerts+=alertHTML('warn','🟡',`<b>${nYellow} clientes</b> em atenção — taxa de retorno entre 40% e 70%`);
-
+  if(bloqueioCount>0)alerts+=alertHTML('danger','🔴',`<b>${bloqueioCount} clientes</b> com bloqueio sugerido — taxa de retorno < 40% e saldo > 3 barris`);
+  if(nYellow>0)alerts+=alertHTML('warn','🟡',`<b>${nYellow} clientes</b> em atenção — taxa de retorno entre 40% e 70%`);
   document.getElementById('rTaxaAlerts').innerHTML=alerts;
 
   kpi('kRTaxa',[
-    {l:'Clientes Analisados',v:fN(totalCli),c:'bl'},
+    {l:'Clientes Analisados',v:fN(rows.length),c:'bl'},
     {l:'Regular (🟢)',v:fN(nGreen),c:'gr'},
     {l:'Atenção (🟡)',v:fN(nYellow),c:'or'},
     {l:'Crítico (🔴)',v:fN(nRed),c:'re',s:bloqueioCount+' bloqueio sugerido'}
@@ -1063,11 +731,9 @@ function rRetTaxas(bMov){
     {l:'Taxa 3S %',t:'n',f:'p'},{l:'Status'},{l:'Bloqueio'}
   ],rows);
 
-  // Chart — worst 15 return rates
   const worst=rows.filter(r=>r[2]>0).slice(0,15);
   mk('chRTaxa',{type:'bar',data:{labels:worst.map(r=>r[0].length>18?r[0].slice(0,18)+'…':r[0]),datasets:[{label:'Taxa Retorno 3S %',data:worst.map(r=>r[8]),backgroundColor:worst.map(r=>r[8]<40?'#dc2626':r[8]<70?'#d97706':'#059669'),borderRadius:3,barPercentage:.7}]},options:{indexAxis:'y',scales:{x:{max:100,ticks:{callback:v=>v+'%'}},y:{}},plugins:{legend:{display:false}}}});
 
-  // Status distribution
   mk('chRStatus',{type:'doughnut',data:{labels:['Regular','Atenção','Crítico'],datasets:[{data:[nGreen,nYellow,nRed],backgroundColor:['#059669','#d97706','#dc2626']}]},options:{cutout:'60%',plugins:{legend:{position:'bottom'}}}});
 }
 
@@ -1165,13 +831,8 @@ function rFrotaAnal(){
     recs.forEach((r,i)=>{
       const lit=p(r.litros);const km=p(r.km_atual);const cost=p(r.valor_total);
       let kmPerc=p(r.km_percorridos);
-      if(kmPerc<=0&&i>0){
-        const prevKm=p(recs[i-1].km_atual);
-        if(km>0&&prevKm>0)kmPerc=km-prevKm;
-      }
-      if(kmPerc<=0&&i===0&&frKm[pl]>0&&km>0&&km>frKm[pl]){
-        kmPerc=km-frKm[pl];
-      }
+      if(kmPerc<=0&&i>0){const prevKm=p(recs[i-1].km_atual);if(km>0&&prevKm>0)kmPerc=km-prevKm}
+      if(kmPerc<=0&&i===0&&frKm[pl]>0&&km>0&&km>frKm[pl])kmPerc=km-frKm[pl];
       const litPrev=i>0?p(recs[i-1].litros):0;
       const kml=kmPerc>0&&litPrev>0?kmPerc/litPrev:0;
       const custoKm=kmPerc>0&&cost>0?cost/kmPerc:0;
@@ -1200,11 +861,8 @@ function rFrotaAnal(){
     if(r.kml>0){v.kmlS+=r.kml;v.kmlC++}
   });
   Object.entries(vAgg).forEach(([pl,d])=>{
-    const kml=d.kmlC>0?d.kmlS/d.kmlC:0;
-    const ref=frRef[pl]||0;
-    if(kml>0&&ref>0&&kml<ref*0.7){
-      fAlerts+=alertHTML('warn','⛽',`<b>${pl}</b>: KM/L médio ${fN(kml,1)} — ${fN((1-kml/ref)*100,0)}% abaixo da referência (${fN(ref,1)})`);
-    }
+    const kml=d.kmlC>0?d.kmlS/d.kmlC:0;const ref=frRef[pl]||0;
+    if(kml>0&&ref>0&&kml<ref*0.7)fAlerts+=alertHTML('warn','⛽',`<b>${pl}</b>: KM/L médio ${fN(kml,1)} — ${fN((1-kml/ref)*100,0)}% abaixo da referência (${fN(ref,1)})`);
   });
   document.getElementById('frotaAlerts').innerHTML=fAlerts;
 
@@ -1215,10 +873,8 @@ function rFrotaAnal(){
     {l:'Custo Total',t:'n',f:'r'},{l:'Custo/KM',t:'n',f:'r'},
     {l:'Ref. Fábrica',t:'n',f:'n1'},{l:'Eficiência'}
   ],Object.entries(vAgg).map(([pl,d])=>{
-    const avgL=d.cnt>0?d.lit/d.cnt:0;
-    const kml=d.kmlC>0?d.kmlS/d.kmlC:0;
-    const ckm=d.km>0?d.cost/d.km:0;
-    const ref=frRef[pl]||0;
+    const avgL=d.cnt>0?d.lit/d.cnt:0;const kml=d.kmlC>0?d.kmlS/d.kmlC:0;
+    const ckm=d.km>0?d.cost/d.km:0;const ref=frRef[pl]||0;
     const eff=kml>0&&ref>0?(kml/ref*100):0;
     const effTxt=eff>0?(fN(eff,0)+'%'+(eff>=90?' ✓':eff>=70?' ⚠':' ✗')):'—';
     return[pl,frMod[pl]||'—',d.cnt,d.lit,avgL,d.km,kml,d.cost,ckm,ref,effTxt];
@@ -1249,22 +905,22 @@ function rFrotaAnal(){
   }
 
   // Weekly summary
-  const weekM2={};enriched.forEach(r=>{
+  const weekM={};enriched.forEach(r=>{
     const pts=r.data.split('/');if(pts.length!==3)return;
     const dt=new Date(+pts[2],+pts[1]-1,+pts[0]);
     const day=dt.getDay();const mon=new Date(dt);mon.setDate(dt.getDate()-((day+6)%7));
     const wk=mon.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'});
-    if(!weekM2[wk])weekM2[wk]={lit:0,km:0,cost:0,cnt:0,kmlS:0,kmlC:0};
-    const w=weekM2[wk];w.lit+=r.lit;w.km+=r.kmPerc;w.cost+=r.cost;w.cnt++;
+    if(!weekM[wk])weekM[wk]={lit:0,km:0,cost:0,cnt:0,kmlS:0,kmlC:0};
+    const w=weekM[wk];w.lit+=r.lit;w.km+=r.kmPerc;w.cost+=r.cost;w.cnt++;
     if(r.kml>0){w.kmlS+=r.kml;w.kmlC++}
   });
-  const weeks=Object.keys(weekM2).sort((a,b)=>dK(a).localeCompare(dK(b)));
+  const weeks=Object.keys(weekM).sort((a,b)=>dK(a).localeCompare(dK(b)));
   mt('tFSem',[
     {l:'Semana (início)'},{l:'Abast.',t:'n',f:'n'},
     {l:'Litros',t:'n',f:'n1'},{l:'KM',t:'n',f:'n'},
     {l:'KM/L Médio',t:'n',f:'n1'},{l:'Custo',t:'n',f:'r'},
     {l:'Custo/KM',t:'n',f:'r'}
-  ],weeks.map(w=>{const d=weekM2[w];const kml=d.kmlC>0?d.kmlS/d.kmlC:0;const ckm=d.km>0?d.cost/d.km:0;return[w,d.cnt,d.lit,d.km,kml,d.cost,ckm]}));
+  ],weeks.map(w=>{const d=weekM[w];const kml=d.kmlC>0?d.kmlS/d.kmlC:0;const ckm=d.km>0?d.cost/d.km:0;return[w,d.cnt,d.lit,d.km,kml,d.cost,ckm]}));
 
   // Monthly summary
   const monthM={};enriched.forEach(r=>{
