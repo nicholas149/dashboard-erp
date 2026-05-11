@@ -380,10 +380,10 @@ body{min-height:100dvh;display:flex;flex-direction:column}
         <div class="kpi-row kpi-row-4" id="kpi-barris2"></div>
         <div class="chart-grid">
           <div class="chart-card"><div class="chart-title">Saidas vs Entradas Semanal</div><div class="chart-wrap"><canvas id="ch-barris-semana"></canvas></div></div>
-          <div class="chart-card"><div class="chart-title">Saldo em Campo por Cliente</div><div class="chart-wrap"><canvas id="ch-barris-clientes"></canvas></div></div>
+          <div class="chart-card"><div class="chart-title">Saldo em Campo por Cliente (Top 10)</div><div class="chart-wrap"><canvas id="ch-barris-clientes"></canvas></div></div>
         </div>
         <div class="tbl-card">
-          <div class="tbl-card-title">Saldo de Barris por Cliente</div>
+          <div class="tbl-card-title">Saldo de Barris por Cliente (por Tamanho)</div>
           <div class="tbl-wrap" id="tbl-barris-saldo-wrap"><table class="tbl" id="tbl-barris-saldo"></table></div>
         </div>
         <div class="tbl-card" id="tbl-barris-bloqueio-section">
@@ -391,7 +391,7 @@ body{min-height:100dvh;display:flex;flex-direction:column}
           <div class="tbl-wrap" id="tbl-barris-bloqueio-wrap"><table class="tbl" id="tbl-barris-bloqueio"></table></div>
         </div>
         <div class="tbl-card">
-          <div class="tbl-card-title">Movimentacoes Recentes</div>
+          <div class="tbl-card-title">Movimentacoes Recentes (Backlog)</div>
           <div class="tbl-wrap" id="tbl-barris-mov-wrap"><table class="tbl" id="tbl-barris-mov"></table></div>
         </div>
       </div>
@@ -442,7 +442,7 @@ const CANAIS = ['Distribuidor','PDV/Deliv','Quiosque'];
 // STATE
 // ================================================================
 let RAW_VENDAS = [], RAW_PRODUTOS = [], RAW_CLIENTES = [];
-let RAW_RETORNAVEIS = [], RAW_SALDO_RET = [];
+let RAW_RETORNAVEIS = [], RAW_SALDO_RET = [], RAW_BACKLOG = [];
 let PROD_MAP = {}, CLI_MAP = {};
 let FILTERED = [];
 let CHARTS = {};
@@ -583,18 +583,20 @@ function makeTableSortable(tableEl) {
 // ================================================================
 async function carregarDados() {
   try {
-    const [rv, rp, rc, rret, rretsaldo] = await Promise.all([
+    const [rv, rp, rc, rret, rretsaldo, rbacklog] = await Promise.all([
       fetch(API+'?endpoint=vendas').then(r=>r.json()),
       fetch(API+'?endpoint=produtos').then(r=>r.json()),
       fetch(API+'?endpoint=clientes').then(r=>r.json()),
       fetch(API+'?endpoint=retornaveis').then(r=>r.json()),
       fetch(API+'?endpoint=retornaveis_saldo').then(r=>r.json()),
+      fetch(API+'?app=harden_dashboard&action=backlog').then(r=>r.json()).catch(()=>({})),
     ]);
     RAW_VENDAS   = rv.dados || rv || [];
     RAW_PRODUTOS = rp.dados || rp || [];
     RAW_CLIENTES = rc.dados || rc || [];
     RAW_RETORNAVEIS = rret.dados || rret || [];
     RAW_SALDO_RET = rretsaldo.dados || rretsaldo || [];
+    RAW_BACKLOG = rbacklog.backlog || rbacklog.dados || [];
 
     // Build maps
     PROD_MAP = {};
@@ -2102,175 +2104,253 @@ function renderCrossSell() {
 }
 
 // ================================================================
-// TAB 6 -- CONTROLE DE BARRIS
+// TAB 6 -- CONTROLE DE BARRIS (usa backlog_retornavel + retornaveis)
 // ================================================================
+const BARREL_SIZES = ['10','20','30','50'];
+
+function _barrelSizeFromProduct(prod) {
+  const s = String(prod||'').toLowerCase();
+  for (let i = BARREL_SIZES.length-1; i>=0; i--) {
+    if (s.includes(BARREL_SIZES[i]+'l') || s.includes(BARREL_SIZES[i]+' l') || s.includes(BARREL_SIZES[i]+' litro')) return BARREL_SIZES[i];
+  }
+  // Try to extract number
+  const m = s.match(/(\d+)\s*l/);
+  if (m) { const n = m[1]; if (BARREL_SIZES.includes(n)) return n; }
+  return '';
+}
+
 function renderBarris() {
   const hoje = new Date();
   const d21 = new Date(); d21.setDate(d21.getDate() - 21);
-
-  // --- KPI ROW 1 (5 cards) ---
-  const barrisEmCampo = RAW_SALDO_RET.filter(s => !s.no_cd && parseBR(s.saldo) > 0).reduce((sum, s) => sum + parseBR(s.saldo), 0);
-  const clientesComBarris = new Set(RAW_SALDO_RET.filter(s => parseBR(s.saldo) > 0 && !s.no_cd).map(s => s.destino)).size;
-
-  // Taxa retorno last 21 days
-  const ret21 = RAW_RETORNAVEIS.filter(r => {
-    const d = parseDateBR(r.data);
-    return d && d >= d21;
-  });
-  const totalSaidas21 = ret21.filter(r => (r.tipo_mov || '').includes('Sa')).reduce((s, r) => s + Math.abs(parseBR(r.qtd)), 0);
-  const totalEntradas21 = ret21.filter(r => (r.tipo_mov || '').includes('Entrada')).reduce((s, r) => s + Math.abs(parseBR(r.qtd)), 0);
-  const taxaRetornoGeral = totalSaidas21 > 0 ? (totalEntradas21 / totalSaidas21) * 100 : 0;
-
-  const barrisAtraso = RAW_SALDO_RET.filter(s => parseBR(s.dias_em_campo) > 30).length;
-  const barrisCriticos = RAW_SALDO_RET.filter(s => parseBR(s.dias_em_campo) > 60).length;
-
-  document.getElementById('kpi-barris1').innerHTML = [
-    kpiCard('Total Barris em Campo', fmtNum(barrisEmCampo)),
-    kpiCard('Clientes com Barris', fmtNum(clientesComBarris)),
-    kpiCard('Taxa Retorno Geral %', fmtPct(taxaRetornoGeral), 'ultimos 21 dias'),
-    kpiCard('Barris em Atraso (>30d)', fmtNum(barrisAtraso)),
-    kpiCard('Barris Criticos (>60d)', fmtNum(barrisCriticos)),
-  ].join('');
-
-  // --- KPI ROW 2 (4 cards) ---
-  const saidas3sem = ret21.filter(r => (r.tipo_mov || '').includes('Sa')).reduce((s, r) => s + Math.abs(parseBR(r.qtd)), 0);
-  const entradas3sem = ret21.filter(r => (r.tipo_mov || '').includes('Entrada')).reduce((s, r) => s + Math.abs(parseBR(r.qtd)), 0);
-  const saldoLiquido = saidas3sem - entradas3sem;
-  const barrisPatio = RAW_SALDO_RET.filter(s => s.no_cd || (s.destino || '').toLowerCase().includes('patio') || (s.destino || '').toLowerCase().includes('pátio')).reduce((sum, s) => sum + parseBR(s.saldo), 0);
-
-  document.getElementById('kpi-barris2').innerHTML = [
-    kpiCard('Saidas (3 sem)', fmtNum(saidas3sem)),
-    kpiCard('Entradas (3 sem)', fmtNum(entradas3sem)),
-    kpiCard('Saldo Liquido (3 sem)', fmtNum(saldoLiquido)),
-    kpiCard('Barris no Patio CD', fmtNum(barrisPatio)),
-  ].join('');
-
-  // --- CHART: Saidas vs Entradas Semanal (last 6 weeks) ---
   const d42 = new Date(); d42.setDate(d42.getDate() - 42);
-  const ret42 = RAW_RETORNAVEIS.filter(r => {
-    const d = parseDateBR(r.data);
-    return d && d >= d42;
-  });
 
-  // Build weekly buckets
+  // === USE BACKLOG DATA if available, otherwise fall back to retornaveis ===
+  const useBacklog = RAW_BACKLOG.length > 0;
+
+  // Normalize backlog records: detect column names dynamically
+  // Expected: terceiro, terceiro_id, qtd_entrada_cd, qtd_saida_cd, produto/sku, data, tipo_mov
+  let backlogData = [];
+  if (useBacklog) {
+    backlogData = RAW_BACKLOG.map(r => {
+      const keys = Object.keys(r);
+      // Find entry/exit columns (flexible naming)
+      const entradaKey = keys.find(k => k.match(/entrada.*cd|entrada_cd/i)) || 'qtd_entrada_cd';
+      const saidaKey = keys.find(k => k.match(/saida.*cd|saída.*cd|saida_cd/i)) || 'qtd_saida_cd';
+      const terceiroKey = keys.find(k => k.match(/^terceiro$/i)) || 'terceiro';
+      const terceiroIdKey = keys.find(k => k.match(/terceiro_id/i)) || 'terceiro_id';
+      const prodKey = keys.find(k => k.match(/^produto$/i)) || keys.find(k => k.match(/^sku$/i)) || 'produto';
+      const dataKey = keys.find(k => k.match(/^data$/i)) || 'data';
+      const tipoKey = keys.find(k => k.match(/tipo_mov|tipo/i)) || 'tipo_mov';
+
+      const entradaCD = parseBR(r[entradaKey]);
+      const saidaCD = parseBR(r[saidaKey]);
+      const produto = r[prodKey] || r.produto || r.sku || '';
+      const size = _barrelSizeFromProduct(produto);
+
+      return {
+        terceiro: r[terceiroKey] || r.destino || '',
+        terceiro_id: r[terceiroIdKey] || r.destino_id || '',
+        entrada_cd: entradaCD,
+        saida_cd: saidaCD,
+        produto: produto,
+        size: size,
+        data: r[dataKey] || r.data || '',
+        _date: parseDateBR(r[dataKey] || r.data || ''),
+        tipo_mov: r[tipoKey] || '',
+        raw: r
+      };
+    });
+  }
+
+  // === Aggregate by client ===
+  const cliMap = {};
+
+  if (useBacklog) {
+    backlogData.forEach(r => {
+      const cli = r.terceiro || 'Desconhecido';
+      if (!cliMap[cli]) cliMap[cli] = { nome: cli, id: r.terceiro_id, totalEntrada: 0, totalSaida: 0, entrada3sem: 0, saida3sem: 0, bySize: {}, ultimaSaida: null, ultimoRetorno: null };
+      cliMap[cli].totalEntrada += r.entrada_cd;
+      cliMap[cli].totalSaida += r.saida_cd;
+      // By barrel size
+      if (r.size) {
+        if (!cliMap[cli].bySize[r.size]) cliMap[cli].bySize[r.size] = { entrada: 0, saida: 0, ent3s: 0, said3s: 0 };
+        cliMap[cli].bySize[r.size].entrada += r.entrada_cd;
+        cliMap[cli].bySize[r.size].saida += r.saida_cd;
+      }
+      // 3 week window
+      if (r._date && r._date >= d21) {
+        cliMap[cli].entrada3sem += r.entrada_cd;
+        cliMap[cli].saida3sem += r.saida_cd;
+        if (r.size && cliMap[cli].bySize[r.size]) {
+          cliMap[cli].bySize[r.size].ent3s += r.entrada_cd;
+          cliMap[cli].bySize[r.size].said3s += r.saida_cd;
+        }
+      }
+      // Track dates
+      if (r.saida_cd > 0 && r._date) {
+        if (!cliMap[cli].ultimaSaida || r._date > cliMap[cli].ultimaSaida) cliMap[cli].ultimaSaida = r._date;
+      }
+      if (r.entrada_cd > 0 && r._date) {
+        if (!cliMap[cli].ultimoRetorno || r._date > cliMap[cli].ultimoRetorno) cliMap[cli].ultimoRetorno = r._date;
+      }
+    });
+  } else {
+    // Fallback to retornaveis_saldo + retornaveis
+    RAW_SALDO_RET.filter(s => !s.no_cd).forEach(s => {
+      const cli = s.destino || 'Desconhecido';
+      if (!cliMap[cli]) cliMap[cli] = { nome: cli, id: s.destino_id||'', totalEntrada: 0, totalSaida: 0, entrada3sem: 0, saida3sem: 0, bySize: {}, ultimaSaida: parseDateBR(s.ultima_saida), ultimoRetorno: null };
+      cliMap[cli].totalEntrada += parseBR(s.entradas);
+      cliMap[cli].totalSaida += parseBR(s.saidas);
+      const size = _barrelSizeFromProduct(s.produto);
+      if (size) {
+        if (!cliMap[cli].bySize[size]) cliMap[cli].bySize[size] = { entrada: 0, saida: 0, ent3s: 0, said3s: 0 };
+        cliMap[cli].bySize[size].entrada += parseBR(s.entradas);
+        cliMap[cli].bySize[size].saida += parseBR(s.saidas);
+      }
+    });
+    // 3-week from retornaveis
+    RAW_RETORNAVEIS.filter(r => { const d = parseDateBR(r.data); return d && d >= d21; }).forEach(r => {
+      const cli = r.destino || 'Desconhecido';
+      if (!cliMap[cli]) return;
+      if ((r.tipo_mov||'').includes('Sa')) cliMap[cli].saida3sem += Math.abs(parseBR(r.qtd));
+      if ((r.tipo_mov||'').includes('Entrada')) {
+        cliMap[cli].entrada3sem += Math.abs(parseBR(r.qtd));
+        const d = parseDateBR(r.data);
+        if (d && (!cliMap[cli].ultimoRetorno || d > cliMap[cli].ultimoRetorno)) cliMap[cli].ultimoRetorno = d;
+      }
+    });
+  }
+
+  // Build client list with calculated fields
+  const cliList = Object.values(cliMap).map(c => {
+    // Saldo = saidas - entradas (saida do CD = barris que foram para o cliente)
+    const saldo = Math.round((c.totalSaida - c.totalEntrada) * 100) / 100;
+    const saldo3sem = Math.round((c.saida3sem - c.entrada3sem) * 100) / 100;
+    const taxa = c.saida3sem > 0 ? (c.entrada3sem / c.saida3sem * 100) : (saldo <= 2 ? 100 : 0);
+    const diasSemRetorno = c.ultimoRetorno ? Math.floor((hoje - c.ultimoRetorno) / 86400000) : (c.ultimaSaida ? Math.floor((hoje - c.ultimaSaida) / 86400000) : 999);
+    // Size breakdown saldos
+    const sizeSaldos = {};
+    BARREL_SIZES.forEach(sz => {
+      const bs = c.bySize[sz];
+      sizeSaldos[sz] = bs ? Math.round((bs.saida - bs.entrada) * 100) / 100 : 0;
+    });
+    const sizeSaldos3s = {};
+    BARREL_SIZES.forEach(sz => {
+      const bs = c.bySize[sz];
+      sizeSaldos3s[sz] = bs ? Math.round((bs.said3s - bs.ent3s) * 100) / 100 : 0;
+    });
+    // Status
+    let statusColor = 'green', statusOrder = 2;
+    if (taxa < 40 && saldo > 3) { statusColor = 'red'; statusOrder = 0; }
+    else if (taxa < 70 && saldo > 2) { statusColor = 'amber'; statusOrder = 1; }
+    if (diasSemRetorno > 60 && saldo > 3) { statusColor = 'red'; statusOrder = 0; }
+
+    return { ...c, saldo, saldo3sem, taxa, diasSemRetorno, sizeSaldos, sizeSaldos3s, statusColor, statusOrder };
+  }).filter(c => c.saldo > 0 || c.totalSaida > 0);
+
+  cliList.sort((a,b) => a.statusOrder !== b.statusOrder ? a.statusOrder - b.statusOrder : b.saldo - a.saldo);
+
+  // === GLOBAL TOTALS ===
+  const totalEmCampo = cliList.reduce((s,c) => s + Math.max(0, c.saldo), 0);
+  const totalClientes = cliList.filter(c => c.saldo > 0).length;
+  const totalSaidas3s = cliList.reduce((s,c) => s + c.saida3sem, 0);
+  const totalEntradas3s = cliList.reduce((s,c) => s + c.entrada3sem, 0);
+  const taxaGeral = totalSaidas3s > 0 ? totalEntradas3s / totalSaidas3s * 100 : 0;
+  const cliAtraso = cliList.filter(c => c.diasSemRetorno > 30 && c.saldo > 0).length;
+  const cliCritico = cliList.filter(c => c.diasSemRetorno > 60 && c.saldo > 0).length;
+  // Size totals
+  const sizeTotal = {};
+  BARREL_SIZES.forEach(sz => { sizeTotal[sz] = cliList.reduce((s,c) => s + Math.max(0, c.sizeSaldos[sz]||0), 0); });
+
+  // === KPI ROW 1 ===
+  document.getElementById('kpi-barris1').innerHTML = [
+    kpiCard('Barris em Campo', fmtNum(totalEmCampo)),
+    kpiCard('Clientes com Barris', fmtNum(totalClientes)),
+    kpiCard('Taxa Retorno 3sem', fmtPct(taxaGeral)),
+    kpiCard('Clientes Atraso >30d', fmtNum(cliAtraso)),
+    kpiCard('Clientes Criticos >60d', fmtNum(cliCritico)),
+  ].join('');
+
+  // === KPI ROW 2 — by barrel size ===
+  document.getElementById('kpi-barris2').innerHTML = [
+    kpiCard('Barril 10L', fmtNum(sizeTotal['10'] || 0), 'em campo'),
+    kpiCard('Barril 20L', fmtNum(sizeTotal['20'] || 0), 'em campo'),
+    kpiCard('Barril 30L', fmtNum(sizeTotal['30'] || 0), 'em campo'),
+    kpiCard('Barril 50L', fmtNum(sizeTotal['50'] || 0), 'em campo'),
+  ].join('');
+
+  // === CHART: Saidas vs Entradas Semanal ===
   const weekBuckets = {};
-  ret42.forEach(r => {
-    const d = parseDateBR(r.data);
-    if (!d) return;
+  const src = useBacklog ? backlogData : RAW_RETORNAVEIS;
+  src.filter(r => { const d = r._date || parseDateBR(r.data); return d && d >= d42; }).forEach(r => {
     const wk = getWeekKey(r.data);
     if (wk === 'SEM') return;
     if (!weekBuckets[wk]) weekBuckets[wk] = { saidas: 0, entradas: 0 };
-    if ((r.tipo_mov || '').includes('Sa')) weekBuckets[wk].saidas += Math.abs(parseBR(r.qtd));
-    if ((r.tipo_mov || '').includes('Entrada')) weekBuckets[wk].entradas += Math.abs(parseBR(r.qtd));
+    if (useBacklog) {
+      weekBuckets[wk].saidas += r.saida_cd || 0;
+      weekBuckets[wk].entradas += r.entrada_cd || 0;
+    } else {
+      if ((r.tipo_mov||'').includes('Sa')) weekBuckets[wk].saidas += Math.abs(parseBR(r.qtd));
+      if ((r.tipo_mov||'').includes('Entrada')) weekBuckets[wk].entradas += Math.abs(parseBR(r.qtd));
+    }
   });
-
   const weekKeys = sortWeekKeys(Object.keys(weekBuckets)).slice(-6);
 
   destroyChart('barrisSemana');
   CHARTS.barrisSemana = new Chart(document.getElementById('ch-barris-semana'), {
-    type: 'bar',
-    data: {
+    type:'bar',
+    data:{
       labels: weekKeys,
-      datasets: [
-        { label: 'Saidas', data: weekKeys.map(w => weekBuckets[w] ? weekBuckets[w].saidas : 0), backgroundColor: '#DC2626' },
-        { label: 'Entradas', data: weekKeys.map(w => weekBuckets[w] ? weekBuckets[w].entradas : 0), backgroundColor: '#0F6E56' }
+      datasets:[
+        { label:'Saidas CD', data:weekKeys.map(w=>weekBuckets[w]?.saidas||0), backgroundColor:'#DC2626', borderRadius:4 },
+        { label:'Entradas CD', data:weekKeys.map(w=>weekBuckets[w]?.entradas||0), backgroundColor:'#0F6E56', borderRadius:4 }
       ]
     },
-    options: chartOpts({ plugins: { datalabels: { display: false }, legend: { position: 'bottom' } } })
+    options: chartOpts({ plugins:{ datalabels:{display:false}, legend:{position:'bottom'} } })
   });
 
-  // --- CHART: Saldo em Campo por Cliente (Top 10) ---
-  const cliSaldoMap = {};
-  RAW_SALDO_RET.filter(s => !s.no_cd && parseBR(s.saldo) > 0).forEach(s => {
-    const dest = s.destino || 'Desconhecido';
-    cliSaldoMap[dest] = (cliSaldoMap[dest] || 0) + parseBR(s.saldo);
-  });
-  const cliSaldoArr = Object.entries(cliSaldoMap).sort((a,b) => b[1] - a[1]).slice(0, 10);
-
+  // === CHART: Saldo por Cliente Top 10 ===
+  const top10 = cliList.filter(c=>c.saldo>0).slice(0,10);
   destroyChart('barrisClientes');
   CHARTS.barrisClientes = new Chart(document.getElementById('ch-barris-clientes'), {
-    type: 'bar',
-    data: {
-      labels: cliSaldoArr.map(c => c[0].length > 25 ? c[0].slice(0,25)+'...' : c[0]),
-      datasets: [{ label: 'Barris em Campo', data: cliSaldoArr.map(c => c[1]), backgroundColor: '#185FA5' }]
+    type:'bar',
+    data:{
+      labels: top10.map(c => c.nome.length > 25 ? c.nome.slice(0,25)+'...' : c.nome),
+      datasets:[{ label:'Barris', data:top10.map(c=>c.saldo), backgroundColor:top10.map(c=>c.statusColor==='red'?'#DC2626':c.statusColor==='amber'?'#D97706':'#0F6E56'), borderRadius:4 }]
     },
-    options: chartOpts({ indexAxis: 'y', plugins: { datalabels: { display: false }, legend: { display: false } } })
+    options: chartOpts({ indexAxis:'y', plugins:{ datalabels:{display:false}, legend:{display:false} } })
   });
 
-  // --- TABLE: Saldo de Barris por Cliente ---
-  // Aggregate RAW_SALDO_RET by destino (client name)
-  const cliBarrisMap = {};
-  RAW_SALDO_RET.forEach(s => {
-    const dest = s.destino || 'Desconhecido';
-    const destId = s.destino_id || '';
-    if (!cliBarrisMap[dest]) cliBarrisMap[dest] = { destino: dest, destino_id: destId, saldo: 0, maxDias: 0, ultimaSaida: null, no_cd: s.no_cd };
-    cliBarrisMap[dest].saldo += parseBR(s.saldo);
-    const dias = parseBR(s.dias_em_campo);
-    if (dias > cliBarrisMap[dest].maxDias) cliBarrisMap[dest].maxDias = dias;
-    const us = parseDateBR(s.ultima_saida);
-    if (us && (!cliBarrisMap[dest].ultimaSaida || us > cliBarrisMap[dest].ultimaSaida)) cliBarrisMap[dest].ultimaSaida = us;
-  });
-
-  // Calc 3-week metrics per client from RAW_RETORNAVEIS
-  const cliRetMap = {};
-  ret21.forEach(r => {
-    const dest = r.destino || 'Desconhecido';
-    if (!cliRetMap[dest]) cliRetMap[dest] = { saidas: 0, entradas: 0, ultimoRetorno: null };
-    if ((r.tipo_mov || '').includes('Sa')) cliRetMap[dest].saidas += Math.abs(parseBR(r.qtd));
-    if ((r.tipo_mov || '').includes('Entrada')) {
-      cliRetMap[dest].entradas += Math.abs(parseBR(r.qtd));
-      const d = parseDateBR(r.data);
-      if (d && (!cliRetMap[dest].ultimoRetorno || d > cliRetMap[dest].ultimoRetorno)) cliRetMap[dest].ultimoRetorno = d;
-    }
-  });
-
-  const cliBarrisList = Object.values(cliBarrisMap).filter(c => c.saldo > 0 && !c.no_cd).map(c => {
-    const ret = cliRetMap[c.destino] || { saidas: 0, entradas: 0, ultimoRetorno: null };
-    const taxa = ret.saidas > 0 ? (ret.entradas / ret.saidas * 100) : (c.saldo <= 2 ? 100 : 0);
-    let statusColor, statusOrder;
-    if (taxa >= 70 || c.saldo <= 2) { statusColor = 'green'; statusOrder = 2; }
-    else if (taxa >= 40 && c.saldo > 2) { statusColor = 'amber'; statusOrder = 1; }
-    else { statusColor = 'red'; statusOrder = 0; }
-    if (c.maxDias > 60 && c.saldo > 3) { statusColor = 'red'; statusOrder = 0; }
-
-    return {
-      ...c,
-      saidas3sem: ret.saidas,
-      entradas3sem: ret.entradas,
-      taxaRetorno: taxa,
-      ultimoRetorno: ret.ultimoRetorno,
-      statusColor,
-      statusOrder
-    };
-  });
-
-  // Sort: red first, then amber, then by saldo desc
-  cliBarrisList.sort((a, b) => {
-    if (a.statusOrder !== b.statusOrder) return a.statusOrder - b.statusOrder;
-    return b.saldo - a.saldo;
-  });
-
+  // === TABLE: Saldo por Cliente (com colunas por tamanho) ===
   const tblSaldo = document.getElementById('tbl-barris-saldo');
-  let htmlS = '<thead><tr><th>Status</th><th>Cliente</th><th class="num">Barris em Campo</th><th class="num">Enviados 3sem</th><th class="num">Retornados 3sem</th><th class="num">Taxa Retorno %</th><th class="num">Dias Sem Retorno</th><th>Ultima Saida</th><th>Ultimo Retorno</th></tr></thead><tbody>';
-  cliBarrisList.forEach(c => {
+  let htmlS = '<thead><tr><th></th><th>Cliente</th><th class="num">Total</th>'
+    + '<th class="num">10L</th><th class="num">20L</th><th class="num">30L</th><th class="num">50L</th>'
+    + '<th class="num">Env. 3s</th><th class="num">Ret. 3s</th><th class="num">Taxa %</th><th class="num">Dias s/ Ret.</th>'
+    + '<th>Ult. Saida</th><th>Ult. Retorno</th></tr></thead><tbody>';
+  cliList.filter(c=>c.saldo>0).forEach(c => {
+    const txStyle = c.taxa < 40 ? 'color:var(--r);font-weight:700' : c.taxa < 70 ? 'color:var(--a)' : 'color:var(--g)';
     htmlS += '<tr>'
-      + '<td><span class="dot dot-' + c.statusColor + '"></span></td>'
-      + '<td>' + c.destino + '</td>'
-      + '<td class="num" data-v="' + c.saldo + '">' + fmtNum(c.saldo) + '</td>'
-      + '<td class="num" data-v="' + c.saidas3sem + '">' + fmtNum(c.saidas3sem) + '</td>'
-      + '<td class="num" data-v="' + c.entradas3sem + '">' + fmtNum(c.entradas3sem) + '</td>'
-      + '<td class="num" data-v="' + c.taxaRetorno + '" style="' + (c.taxaRetorno < 40 ? 'color:var(--r);font-weight:700' : c.taxaRetorno < 70 ? 'color:var(--a)' : 'color:var(--g)') + '">' + fmtPct(c.taxaRetorno) + '</td>'
-      + '<td class="num" data-v="' + c.maxDias + '">' + fmtNum(c.maxDias) + '</td>'
-      + '<td>' + (c.ultimaSaida ? c.ultimaSaida.toLocaleDateString('pt-BR') : '-') + '</td>'
-      + '<td>' + (c.ultimoRetorno ? c.ultimoRetorno.toLocaleDateString('pt-BR') : '-') + '</td>'
+      + '<td><span class="dot dot-'+c.statusColor+'"></span></td>'
+      + '<td>'+c.nome+'</td>'
+      + '<td class="num" data-v="'+c.saldo+'" style="font-weight:700">'+fmtNum(c.saldo)+'</td>'
+      + '<td class="num" data-v="'+Math.max(0,c.sizeSaldos['10']||0)+'">'+(c.sizeSaldos['10']>0?fmtNum(c.sizeSaldos['10']):'-')+'</td>'
+      + '<td class="num" data-v="'+Math.max(0,c.sizeSaldos['20']||0)+'">'+(c.sizeSaldos['20']>0?fmtNum(c.sizeSaldos['20']):'-')+'</td>'
+      + '<td class="num" data-v="'+Math.max(0,c.sizeSaldos['30']||0)+'">'+(c.sizeSaldos['30']>0?fmtNum(c.sizeSaldos['30']):'-')+'</td>'
+      + '<td class="num" data-v="'+Math.max(0,c.sizeSaldos['50']||0)+'">'+(c.sizeSaldos['50']>0?fmtNum(c.sizeSaldos['50']):'-')+'</td>'
+      + '<td class="num" data-v="'+c.saida3sem+'">'+fmtNum(c.saida3sem)+'</td>'
+      + '<td class="num" data-v="'+c.entrada3sem+'">'+fmtNum(c.entrada3sem)+'</td>'
+      + '<td class="num" data-v="'+c.taxa+'" style="'+txStyle+'">'+fmtPct(c.taxa)+'</td>'
+      + '<td class="num" data-v="'+c.diasSemRetorno+'">'+fmtNum(c.diasSemRetorno)+'</td>'
+      + '<td>'+(c.ultimaSaida ? c.ultimaSaida.toLocaleDateString('pt-BR') : '-')+'</td>'
+      + '<td>'+(c.ultimoRetorno ? c.ultimoRetorno.toLocaleDateString('pt-BR') : '-')+'</td>'
       + '</tr>';
   });
   htmlS += '</tbody>';
   tblSaldo.innerHTML = htmlS;
   makeTableSortable(tblSaldo);
 
-  // --- TABLE: Bloqueio Sugerido ---
-  const bloqueio = cliBarrisList.filter(c => c.taxaRetorno < 50 && c.saldo > 3);
+  // === TABLE: Bloqueio Sugerido ===
+  const bloqueio = cliList.filter(c => c.taxa < 50 && c.saldo > 3);
   const tblBloqueio = document.getElementById('tbl-barris-bloqueio');
   const bloqueioSection = document.getElementById('tbl-barris-bloqueio-section');
 
@@ -2278,16 +2358,18 @@ function renderBarris() {
     bloqueioSection.style.display = 'none';
   } else {
     bloqueioSection.style.display = '';
-    let htmlB = '<thead><tr><th>Cliente</th><th class="num">Barris em Campo</th><th class="num">Taxa Retorno %</th><th class="num">Enviados 3sem</th><th class="num">Retornados 3sem</th><th>Sugestao</th></tr></thead><tbody>';
+    let htmlB = '<thead><tr><th>Cliente</th><th class="num">Total</th><th class="num">10L</th><th class="num">20L</th><th class="num">30L</th><th class="num">50L</th><th class="num">Taxa %</th><th>Sugestao</th></tr></thead><tbody>';
     bloqueio.forEach(c => {
       const devolver = Math.max(1, Math.ceil(c.saldo * 0.5));
       htmlB += '<tr class="row-block">'
-        + '<td>' + c.destino + '</td>'
-        + '<td class="num" data-v="' + c.saldo + '">' + fmtNum(c.saldo) + '</td>'
-        + '<td class="num" data-v="' + c.taxaRetorno + '" style="color:var(--r);font-weight:700">' + fmtPct(c.taxaRetorno) + '</td>'
-        + '<td class="num" data-v="' + c.saidas3sem + '">' + fmtNum(c.saidas3sem) + '</td>'
-        + '<td class="num" data-v="' + c.entradas3sem + '">' + fmtNum(c.entradas3sem) + '</td>'
-        + '<td>Bloquear ate devolucao de ' + devolver + ' barris</td>'
+        + '<td>'+c.nome+'</td>'
+        + '<td class="num" style="font-weight:700">'+fmtNum(c.saldo)+'</td>'
+        + '<td class="num">'+(c.sizeSaldos['10']?fmtNum(c.sizeSaldos['10']):'-')+'</td>'
+        + '<td class="num">'+(c.sizeSaldos['20']?fmtNum(c.sizeSaldos['20']):'-')+'</td>'
+        + '<td class="num">'+(c.sizeSaldos['30']?fmtNum(c.sizeSaldos['30']):'-')+'</td>'
+        + '<td class="num">'+(c.sizeSaldos['50']?fmtNum(c.sizeSaldos['50']):'-')+'</td>'
+        + '<td class="num" style="color:var(--r);font-weight:700">'+fmtPct(c.taxa)+'</td>'
+        + '<td>Bloquear ate devolucao de '+devolver+' barris</td>'
         + '</tr>';
     });
     htmlB += '</tbody>';
@@ -2295,30 +2377,36 @@ function renderBarris() {
     makeTableSortable(tblBloqueio);
   }
 
-  // --- TABLE: Movimentacoes Recentes ---
-  const movRecentes = RAW_RETORNAVEIS.slice().sort((a, b) => {
-    const da = parseDateBR(a.data);
-    const db = parseDateBR(b.data);
-    return (db || 0) - (da || 0);
-  }).slice(0, 50);
+  // === TABLE: Movimentacoes Recentes ===
+  let movList;
+  if (useBacklog) {
+    movList = backlogData.slice().sort((a,b) => (b._date||0) - (a._date||0)).slice(0, 50);
+  } else {
+    movList = RAW_RETORNAVEIS.slice().sort((a,b) => {
+      const da = parseDateBR(a.data), db = parseDateBR(b.data);
+      return (db||0)-(da||0);
+    }).slice(0,50).map(r => ({
+      terceiro: r.destino||r.origem||'', produto: r.produto||'',
+      data: r.data, _date: parseDateBR(r.data),
+      entrada_cd: (r.tipo_mov||'').includes('Entrada') ? Math.abs(parseBR(r.qtd)) : 0,
+      saida_cd: (r.tipo_mov||'').includes('Sa') ? Math.abs(parseBR(r.qtd)) : 0,
+      tipo_mov: r.tipo_mov||'', size: _barrelSizeFromProduct(r.produto),
+    }));
+  }
 
   const tblMov = document.getElementById('tbl-barris-mov');
-  let htmlM = '<thead><tr><th>Data</th><th>Cliente</th><th>Tipo</th><th>Produto</th><th class="num">Qtd</th><th>Ref</th><th>Status</th></tr></thead><tbody>';
-  movRecentes.forEach(r => {
-    const d = parseDateBR(r.data);
-    const dtStr = d ? d.toLocaleDateString('pt-BR') : (r.data || '');
-    const tipo = r.tipo_mov || '';
-    let badgeClass = 'badge-ajuste';
-    if (tipo.includes('Sa')) badgeClass = 'badge-saida';
-    else if (tipo.includes('Entrada')) badgeClass = 'badge-entrada';
+  let htmlM = '<thead><tr><th>Data</th><th>Terceiro</th><th>Produto</th><th>Tamanho</th><th class="num">Entrada CD</th><th class="num">Saida CD</th></tr></thead><tbody>';
+  movList.forEach(r => {
+    const dtStr = r._date ? r._date.toLocaleDateString('pt-BR') : (r.data||'');
+    const isEntrada = r.entrada_cd > 0;
+    const isSaida = r.saida_cd > 0;
     htmlM += '<tr>'
-      + '<td>' + dtStr + '</td>'
-      + '<td>' + (r.destino || r.origem || '') + '</td>'
-      + '<td><span class="' + badgeClass + '">' + tipo + '</span></td>'
-      + '<td>' + (r.produto || '') + '</td>'
-      + '<td class="num" data-v="' + parseBR(r.qtd) + '">' + fmtNum(Math.abs(parseBR(r.qtd))) + '</td>'
-      + '<td>' + (r.ref || r.nf || '') + '</td>'
-      + '<td>' + (r.status || '') + '</td>'
+      + '<td>'+dtStr+'</td>'
+      + '<td>'+r.terceiro+'</td>'
+      + '<td>'+r.produto+'</td>'
+      + '<td>'+(r.size ? r.size+'L' : '-')+'</td>'
+      + '<td class="num">'+(isEntrada ? '<span class="badge-entrada">'+fmtNum(r.entrada_cd)+'</span>' : '-')+'</td>'
+      + '<td class="num">'+(isSaida ? '<span class="badge-saida">'+fmtNum(r.saida_cd)+'</span>' : '-')+'</td>'
       + '</tr>';
   });
   htmlM += '</tbody>';
