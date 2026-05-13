@@ -202,6 +202,7 @@ input[type="date"].df:focus{border-color:var(--gold)}
     <div class="ni a" data-s="estoque"><span class="ni-i">▦</span>Estoque</div>
     <div class="ni" data-s="ret"><span class="ni-i">⟳</span>Retornáveis</div>
     <div class="ni" data-s="frota"><span class="ni-i">◬</span>Frota & Combustível</div>
+    <div class="ni" data-s="trocas"><span class="ni-i">🔄</span>Trocas</div>
   </div>
   <div class="sb-ft">Harden Cervejaria © 2025</div>
 </aside>
@@ -366,10 +367,58 @@ input[type="date"].df:focus{border-color:var(--gold)}
   <div class="sc" id="f-dados"><div class="pn"><div class="tw" id="tFD"></div></div></div>
 </section>
 
+<!-- ===== TROCAS ===== -->
+<section class="sec" id="sec-trocas">
+  <div class="sec-t">Trocas de Produto</div>
+  <div id="trocaAlerts"></div>
+  <div class="kr c5" id="kT"></div>
+  <div class="st">
+    <div class="stb a" data-sub="t-visao">Visão Geral</div>
+    <div class="stb" data-sub="t-lista">Todas as Trocas</div>
+    <div class="stb" data-sub="t-cliente">Por Cliente</div>
+    <div class="stb" data-sub="t-produto">Por Produto</div>
+    <div class="stb" data-sub="t-chart">Gráficos</div>
+  </div>
+  <div class="sc a" id="t-visao">
+    <div class="g2">
+      <div class="pn"><div class="pn-h">Pipeline de Status</div><div class="pg" id="gTSt"></div></div>
+      <div class="pn"><div class="pn-h">Tempo Médio por Etapa</div><div class="tw" id="tTTempo"></div></div>
+    </div>
+    <div class="pn"><div class="pn-h">Trocas Recentes (últimos 30 dias)</div><div class="tw" id="tTRec"></div></div>
+  </div>
+  <div class="sc" id="t-lista">
+    <div class="sb-f">
+      <input class="si" placeholder="Buscar troca…" oninput="ft('tTAll',this.value,'cTAll')">
+      <select class="sf" id="fTSt" onchange="ftTrocaStatus()"><option value="">Todos Status</option><option value="pendente">Pendente</option><option value="enviado_fabrica">Na Fábrica</option><option value="pronto">Pronto</option><option value="entregue">Entregue</option><option value="nao_aprovado">Não Aprovado</option><option value="uso_interno">Uso Interno</option></select>
+      <button class="btn-csv" onclick="csvExport('tTAll','trocas')">⬇ CSV</button>
+    </div>
+    <div class="pn"><div class="pn-h">Todas as Trocas <span class="bdg" id="cTAll"></span></div><div class="tw tall" id="tTAll"></div></div>
+  </div>
+  <div class="sc" id="t-cliente">
+    <div class="sb-f"><input class="si" placeholder="Filtrar cliente…" oninput="ft('tTCli',this.value,'cTCli')"><button class="btn-csv" onclick="csvExport('tTCli','trocas_por_cliente')">⬇ CSV</button></div>
+    <div class="pn"><div class="pn-h">Trocas por Cliente <span class="bdg" id="cTCli"></span></div><div class="tw tall" id="tTCli"></div></div>
+  </div>
+  <div class="sc" id="t-produto">
+    <div class="sb-f"><input class="si" placeholder="Filtrar produto…" oninput="ft('tTProd',this.value,'cTProd')"><button class="btn-csv" onclick="csvExport('tTProd','trocas_por_produto')">⬇ CSV</button></div>
+    <div class="pn"><div class="pn-h">Trocas por Produto <span class="bdg" id="cTProd"></span></div><div class="tw tall" id="tTProd"></div></div>
+  </div>
+  <div class="sc" id="t-chart">
+    <div class="g2">
+      <div class="pn"><div class="pn-h">Distribuição por Status</div><div class="cw sm"><canvas id="chTSt"></canvas></div></div>
+      <div class="pn"><div class="pn-h">Top 10 Clientes por Volume de Trocas</div><div class="cw"><canvas id="chTCli"></canvas></div></div>
+    </div>
+    <div class="g2">
+      <div class="pn"><div class="pn-h">Top 10 Produtos Trocados</div><div class="cw"><canvas id="chTProd"></canvas></div></div>
+      <div class="pn"><div class="pn-h">Trocas por Mês</div><div class="cw"><canvas id="chTMes"></canvas></div></div>
+    </div>
+  </div>
+</section>
+
 </main>
 
 <script>
 const API_URL='https://script.google.com/macros/s/AKfycbxholHSDhAuzenkGyrBAukgqdNaJXArt5YBL-pRRELOHDC2uOHu_5M59eIawYWYytb2/exec?app=harden_dashboard';
+const API_BASE=API_URL.split('?')[0];
 let D={};const CH={};
 const COL=['#B8942E','#2563eb','#059669','#d97706','#7c3aed','#db2777','#0891b2','#dc2626','#65a30d','#ea580c','#4f46e5','#0d9488','#c026d3','#f59e0b','#84cc16'];
 const CACHE_KEY='harden_dash_cache';const CACHE_TTL=5*60*1000;
@@ -482,6 +531,7 @@ function gsSearch(q){
   (D.produtos||[]).forEach(pr=>{if((pr.nome_canonico||'').toLowerCase().includes(lq))res.push({cat:'Produtos',lb:pr.nome_canonico,m:pr.categoria,s:'estoque',sub:'e-pos'})});
   (D.backlog||[]).forEach(b=>{if((b.terceiro||'').toLowerCase().includes(lq))res.push({cat:'Retornáveis',lb:b.terceiro,m:b.produto,s:'ret',sub:'r-barril'})});
   (D.frota||[]).forEach(f=>{if((f.placa||'').toLowerCase().includes(lq)||(f.modelo||'').toLowerCase().includes(lq))res.push({cat:'Frota',lb:f.placa+' — '+f.modelo,m:f.motorista_fixo,s:'frota',sub:'f-ab'})});
+  (D.trocas||[]).forEach(t=>{if((t.produto||'').toLowerCase().includes(lq)||(t.cliente||'').toLowerCase().includes(lq)||(t.sku||'').toLowerCase().includes(lq))res.push({cat:'Trocas',lb:t.produto||t.sku,m:t.cliente,s:'trocas',sub:'t-lista'})});
   const seen=new Set();const uniq=[];res.forEach(r=>{const k=r.cat+r.lb;if(!seen.has(k)){seen.add(k);uniq.push(r)}});
   const lim=uniq.slice(0,20);if(!lim.length){box.innerHTML='<div style="padding:12px;text-align:center;color:var(--t3);font-size:.72rem">Nenhum resultado</div>';box.classList.add('open');return}
   const grp={};lim.forEach(r=>{(grp[r.cat]=grp[r.cat]||[]).push(r)});
@@ -500,12 +550,19 @@ function gsGo(s,sub,q){
 /* ================================================================
    RENDER
    ================================================================ */
-function renderAll(){rEstoque();rRet();rFrota()}
+function renderAll(){rEstoque();rRet();rFrota();loadTrocas()}
+async function loadTrocas(){
+  try{
+    const r=await fetch(API_BASE+'?endpoint=trocas');
+    if(r.ok){const j=await r.json();D.trocas=(j.dados||j||[]);}
+  }catch(e){console.warn('Trocas:',e);D.trocas=[];}
+  rTrocas();
+}
 
 /* ──── ESTOQUE ──── */
 function rEstoque(){
   const est=D.estoque||[],prod=D.produtos||[],vendas=D.vendas||[];
-  const pm={};est.forEach(r=>{const pr=r.produto||r.sku||'N/A';const sku=(r.sku||'').trim();const cat=(r.categoria||'').trim();if(!pm[pr])pm[pr]={cat,sku,e:0,s:0};pm[pr].e+=p(r.qtd_entrada);pm[pr].s+=p(r.qtd_saida)});
+  const pm={};est.forEach(r=>{const tm=(r.tipo_mov||'').toLowerCase();if(tm.includes('troca'))return;const pr=r.produto||r.sku||'N/A';const sku=(r.sku||'').trim();const cat=(r.categoria||'').trim();if(!pm[pr])pm[pr]={cat,sku,e:0,s:0};pm[pr].e+=p(r.qtd_entrada);pm[pr].s+=p(r.qtd_saida)});
   const chopp=Object.entries(pm).filter(([,d])=>d.cat==='Chopp Barril');
   const posT=chopp.reduce((s,[,d])=>s+d.e-d.s,0);
   const tSKU=Object.keys(pm).length;
@@ -559,7 +616,7 @@ function rEstoque(){
   // Compostos
   const comp=prod.filter(x=>x.sku_pai&&x.sku_pai.trim()!=='');
   const skuN={};prod.forEach(x=>{skuN[x.sku.trim()]=x.nome_canonico||x.sku});
-  const skuM={};est.forEach(r=>{const s=(r.sku||'').trim();if(!skuM[s])skuM[s]={e:0,s:0};skuM[s].e+=p(r.qtd_entrada);skuM[s].s+=p(r.qtd_saida)});
+  const skuM={};est.forEach(r=>{const tm=(r.tipo_mov||'').toLowerCase();if(tm.includes('troca'))return;const s=(r.sku||'').trim();if(!skuM[s])skuM[s]={e:0,s:0};skuM[s].e+=p(r.qtd_entrada);skuM[s].s+=p(r.qtd_saida)});
   mt('tECo',[{l:'Produto'},{l:'Produto Pai'},{l:'Fator',t:'n',f:'n1'},{l:'Estoque Próprio',t:'n',f:'n1'},{l:'Estoque Pai (÷fator)',t:'n',f:'n1'},{l:'Total',t:'n',f:'n1',color:true}],comp.map(x=>{
     const f=p(x.fator_conversao);const sku=x.sku.trim();const skuPai=(x.sku_pai||'').trim();
     const cs=(skuM[sku]||{e:0,s:0});const ps=(skuM[skuPai]||{e:0,s:0});
@@ -596,7 +653,7 @@ function rRet(){
   const byType={Barril:[],Chopeira:[],Outros:[]};
   bl.forEach(r=>{const t=normRetType((r.tipo_retornavel||'').trim());byType[t].push(r)});
 
-  const estBySize={};est.forEach(r=>{if((r.categoria||'').trim()==='Chopp Barril'){const sz=barrelSize(r.produto);if(sz){estBySize[sz]=(estBySize[sz]||0)+(p(r.qtd_entrada)-p(r.qtd_saida))}}});
+  const estBySize={};est.forEach(r=>{const tm=(r.tipo_mov||'').toLowerCase();if(tm.includes('troca'))return;if((r.categoria||'').trim()==='Chopp Barril'){const sz=barrelSize(r.produto);if(sz){estBySize[sz]=(estBySize[sz]||0)+(p(r.qtd_entrada)-p(r.qtd_saida))}}});
 
   const barris=byType.Barril;
   const siCD=barris.filter(isSI).reduce((s,r)=>s+p(r.qtd_entrada_CD),0);
@@ -953,6 +1010,124 @@ function rFrotaAnal(){
   } else {
     const el=document.getElementById('chFAut');if(el)el.parentElement.innerHTML='<div style="text-align:center;color:var(--t3);padding:40px;font-size:.75rem">Sem dados suficientes para estimar autonomia.</div>';
   }
+}
+
+/* ──── TROCAS ──── */
+function rTrocas(){
+  const trocas=D.trocas||[];
+  if(!trocas.length){
+    document.getElementById('trocaAlerts').innerHTML=alertHTML('warn','🔄','Nenhuma troca registrada ainda.');
+    kpi('kT',[{l:'Total Trocas',v:'0',c:'or'},{l:'Pendentes',v:'0',c:'re'},{l:'Na Fábrica',v:'0',c:'bl'},{l:'Prontas',v:'0',c:'gr'},{l:'Finalizadas',v:'0',c:'pu'}]);
+    return;
+  }
+
+  const stLabels={pendente:'Pendente',enviado_fabrica:'Na Fábrica',pronto:'Pronto',entregue:'Entregue',nao_aprovado:'Não Aprovado',uso_interno:'Uso Interno'};
+  const stCor={pendente:'or',enviado_fabrica:'bl',pronto:'gr',entregue:'pu',nao_aprovado:'re',uso_interno:'bl'};
+
+  // Contagem por status
+  const byStatus={};trocas.forEach(t=>{const st=(t.status||'pendente').toLowerCase();byStatus[st]=(byStatus[st]||0)+1});
+  const total=trocas.length;
+  const pendentes=(byStatus.pendente||0)+(byStatus.enviado_fabrica||0)+(byStatus.pronto||0);
+  const finalizadas=(byStatus.entregue||0)+(byStatus.nao_aprovado||0)+(byStatus.uso_interno||0);
+  const qtdTotal=trocas.reduce((s,t)=>s+p(t.qtd),0);
+
+  // Alertas
+  let alerts='';
+  if((byStatus.pendente||0)>3)alerts+=alertHTML('warn','⏳',`<b>${byStatus.pendente} trocas</b> aguardando envio à fábrica`);
+  if((byStatus.pronto||0)>0)alerts+=alertHTML('info','✅',`<b>${byStatus.pronto} trocas</b> prontas para entrega ao cliente`);
+  const naoAprov=byStatus.nao_aprovado||0;
+  if(naoAprov>0)alerts+=alertHTML('danger','✗',`<b>${naoAprov} trocas</b> não aprovadas pela fábrica`);
+  document.getElementById('trocaAlerts').innerHTML=alerts;
+
+  // KPIs
+  kpi('kT',[
+    {l:'Total Trocas',v:fN(total),c:'or',s:fN(qtdTotal)+' unidades'},
+    {l:'Pendentes',v:fN(byStatus.pendente||0),c:'or'},
+    {l:'Na Fábrica',v:fN(byStatus.enviado_fabrica||0),c:'bl'},
+    {l:'Prontas p/ Entrega',v:fN(byStatus.pronto||0),c:'gr'},
+    {l:'Finalizadas',v:fN(finalizadas),c:'pu',s:(byStatus.entregue||0)+' entregues · '+(byStatus.uso_interno||0)+' uso interno'},
+  ]);
+
+  // ── Visão Geral: Pipeline cards ──
+  const gEl=document.getElementById('gTSt');
+  if(gEl){
+    gEl.innerHTML=Object.entries(stLabels).map(([st,lb])=>{
+      const cnt=byStatus[st]||0;const qtd=trocas.filter(t=>(t.status||'')==st).reduce((s,t)=>s+p(t.qtd),0);
+      const corMap={pendente:'var(--orange)',enviado_fabrica:'var(--blue)',pronto:'var(--green)',entregue:'var(--purple)',nao_aprovado:'var(--red)',uso_interno:'var(--cyan)'};
+      const bgMap={pendente:'var(--orange-bg)',enviado_fabrica:'var(--blue-bg)',pronto:'var(--green-bg)',entregue:'var(--purple-bg)',nao_aprovado:'var(--red-bg)',uso_interno:'var(--blue-bg)'};
+      return`<div class="pc" style="border-left:3px solid ${corMap[st]||'var(--t4)'}"><div class="pc-n">${lb}</div><div class="pc-v" style="color:${corMap[st]||'var(--t2)'}">${cnt}</div><div class="pc-r"><span>Unidades</span><span class="v">${fN(qtd)}</span></div></div>`;
+    }).join('');
+  }
+
+  // ── Tempo médio por etapa ──
+  // Calcular a partir de timestamps se disponíveis
+  mt('tTTempo',[{l:'Etapa'},{l:'Trocas na Etapa',t:'n',f:'n'},{l:'Unidades na Etapa',t:'n',f:'n'}],
+    Object.entries(stLabels).filter(([st])=>byStatus[st]>0).map(([st,lb])=>{
+      const lista=trocas.filter(t=>(t.status||'')==st);
+      return[lb,lista.length,lista.reduce((s,t)=>s+p(t.qtd),0)];
+    })
+  );
+
+  // ── Trocas recentes (últimos 30 dias) ──
+  const now=new Date();const d30=new Date(now.getTime()-30*86400000);
+  const recentes=trocas.filter(t=>{const dt=parseDateBR(t.data);return dt&&dt>=d30}).sort((a,b)=>dK(b.data).localeCompare(dK(a.data)));
+  mt('tTRec',[{l:'Data'},{l:'Produto'},{l:'Qtd',t:'n',f:'n'},{l:'Validade'},{l:'Cliente'},{l:'Status'}],
+    recentes.slice(0,30).map(t=>[t.data,t.produto||t.sku||'—',p(t.qtd),t.validade||t.motivo||'—',t.cliente||'—',stLabels[t.status]||t.status])
+  );
+
+  // ── Lista completa ──
+  const sorted=trocas.slice().sort((a,b)=>dK(b.data).localeCompare(dK(a.data)));
+  mt('tTAll',[{l:'Data'},{l:'Produto'},{l:'SKU',mh:1},{l:'Qtd',t:'n',f:'n'},{l:'Validade'},{l:'Cliente'},{l:'Empresa',mh:1},{l:'Status'},{l:'Pedido Troca',mh:1},{l:'Registrado por',mh:1}],
+    sorted.map(t=>[t.data,t.produto||'—',t.sku||'—',p(t.qtd),t.validade||t.motivo||'—',t.cliente||'—',t.empresa||'—',stLabels[t.status]||t.status,t.pedido_troca||'—',t.registrado_por||'—'])
+  );
+  document.getElementById('cTAll').textContent=sorted.length+' registros';
+
+  // ── Por cliente ──
+  const cliAgg={};trocas.forEach(t=>{const c=t.cliente||'Sem cliente';if(!cliAgg[c])cliAgg[c]={total:0,qtd:0,pendente:0,entregue:0,nao_aprovado:0};cliAgg[c].total++;cliAgg[c].qtd+=p(t.qtd);const st=(t.status||'');if(st==='pendente'||st==='enviado_fabrica'||st==='pronto')cliAgg[c].pendente++;else if(st==='entregue')cliAgg[c].entregue++;else if(st==='nao_aprovado')cliAgg[c].nao_aprovado++});
+  mt('tTCli',[{l:'Cliente'},{l:'Total Trocas',t:'n',f:'n'},{l:'Unidades',t:'n',f:'n'},{l:'Pendentes',t:'n',f:'n'},{l:'Entregues',t:'n',f:'n'},{l:'Não Aprovadas',t:'n',f:'n'}],
+    Object.entries(cliAgg).map(([c,d])=>[c,d.total,d.qtd,d.pendente,d.entregue,d.nao_aprovado]).sort((a,b)=>b[1]-a[1])
+  );
+  document.getElementById('cTCli').textContent=Object.keys(cliAgg).length+' clientes';
+
+  // ── Por produto ──
+  const prodAgg={};trocas.forEach(t=>{const pr=t.produto||t.sku||'N/A';if(!prodAgg[pr])prodAgg[pr]={total:0,qtd:0,pendente:0,entregue:0};prodAgg[pr].total++;prodAgg[pr].qtd+=p(t.qtd);const st=(t.status||'');if(st==='pendente'||st==='enviado_fabrica'||st==='pronto')prodAgg[pr].pendente++;else if(st==='entregue')prodAgg[pr].entregue++});
+  mt('tTProd',[{l:'Produto'},{l:'Total Trocas',t:'n',f:'n'},{l:'Unidades',t:'n',f:'n'},{l:'Pendentes',t:'n',f:'n'},{l:'Entregues',t:'n',f:'n'}],
+    Object.entries(prodAgg).map(([pr,d])=>[pr,d.total,d.qtd,d.pendente,d.entregue]).sort((a,b)=>b[2]-a[2])
+  );
+  document.getElementById('cTProd').textContent=Object.keys(prodAgg).length+' produtos';
+
+  // ── Charts ──
+  // Status donut
+  const stEntries=Object.entries(stLabels).filter(([st])=>(byStatus[st]||0)>0);
+  const stColors={pendente:'#d97706',enviado_fabrica:'#2563eb',pronto:'#059669',entregue:'#7c3aed',nao_aprovado:'#dc2626',uso_interno:'#0891b2'};
+  mk('chTSt',{type:'doughnut',data:{labels:stEntries.map(([,lb])=>lb),datasets:[{data:stEntries.map(([st])=>byStatus[st]||0),backgroundColor:stEntries.map(([st])=>stColors[st]||'#999'),borderWidth:0}]},options:{plugins:{legend:{position:'right'}}}});
+
+  // Top 10 clientes
+  const topCli=Object.entries(cliAgg).sort((a,b)=>b[1].qtd-a[1].qtd).slice(0,10);
+  mk('chTCli',{type:'bar',data:{labels:topCli.map(([c])=>c.length>18?c.slice(0,18)+'…':c),datasets:[{label:'Unidades',data:topCli.map(([,d])=>d.qtd),backgroundColor:'#d97706',borderRadius:3,barPercentage:.7,categoryPercentage:.8}]},options:{indexAxis:'y',scales:{x:{},y:{}},plugins:{legend:{display:false}}}});
+
+  // Top 10 produtos
+  const topProd=Object.entries(prodAgg).sort((a,b)=>b[1].qtd-a[1].qtd).slice(0,10);
+  mk('chTProd',{type:'bar',data:{labels:topProd.map(([pr])=>pr.length>20?pr.slice(0,20)+'…':pr),datasets:[{label:'Unidades',data:topProd.map(([,d])=>d.qtd),backgroundColor:'#7c3aed',borderRadius:3,barPercentage:.7,categoryPercentage:.8}]},options:{indexAxis:'y',scales:{x:{},y:{}},plugins:{legend:{display:false}}}});
+
+  // Por mês
+  const mesAgg={};trocas.forEach(t=>{const dt=t.data||'';const pts=dt.split('/');if(pts.length===3){const m=pts[1]+'/'+pts[2];mesAgg[m]=(mesAgg[m]||0)+p(t.qtd)}});
+  const meses=Object.keys(mesAgg).sort((a,b)=>{const[ma,ya]=a.split('/');const[mb,yb]=b.split('/');return(ya+ma).localeCompare(yb+mb)});
+  mk('chTMes',{type:'bar',data:{labels:meses,datasets:[{label:'Unidades trocadas',data:meses.map(m=>mesAgg[m]),backgroundColor:'#B8942E',borderRadius:3,barPercentage:.6,categoryPercentage:.7}]},options:{scales:{x:{},y:{}},plugins:{legend:{display:false}}}});
+}
+
+function ftTrocaStatus(){
+  const st=document.getElementById('fTSt').value.toLowerCase();
+  const w=document.getElementById('tTAll');if(!w)return;
+  const stLabels={pendente:'Pendente',enviado_fabrica:'Na Fábrica',pronto:'Pronto',entregue:'Entregue',nao_aprovado:'Não Aprovado',uso_interno:'Uso Interno'};
+  let vis=0;
+  w.querySelectorAll('tbody tr').forEach(tr=>{
+    if(!st){tr.style.display='';vis++;return}
+    const stCell=tr.children[7];const txt=(stCell?.textContent||'').trim();
+    const ok=txt===(stLabels[st]||st);
+    tr.style.display=ok?'':'none';if(ok)vis++;
+  });
+  document.getElementById('cTAll').textContent=vis+' registros';
 }
 
 /* INIT */
