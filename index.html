@@ -797,10 +797,13 @@ function rRetTaxas(bMov){
 /* ──── FROTA ──── */
 function rFrota(){
   const ab=D.abastecimento||[],fr=D.frota||[];
-  const kmM={};ab.forEach(r=>{const tm=(r.tipo_mov||'').toLowerCase();if(tm.includes('sa')){const pl=(r.placa||'').trim();if(!pl)return;const km=p(r.km_atual);if(!kmM[pl]||km>kmM[pl])kmM[pl]=km}});
-  const saiT=ab.filter(r=>(r.tipo_mov||'').toLowerCase().includes('sa'));
+  // Abastecimento inclui: Saída Tanque + Abastecimento Externo (qualquer mov com placa que não é Entrada)
+  const _isAbast=r=>{const tm=(r.tipo_mov||'').toLowerCase();return tm.includes('sa')||tm.includes('externo')};
+  const kmM={};ab.forEach(r=>{if(_isAbast(r)){const pl=(r.placa||'').trim();if(!pl)return;const km=p(r.km_atual);if(!kmM[pl]||km>kmM[pl])kmM[pl]=km}});
+  const saiT=ab.filter(_isAbast);
+  const saiTanque=ab.filter(r=>(r.tipo_mov||'').toLowerCase()==='saída tanque');
   const entT=ab.filter(r=>(r.tipo_mov||'').toLowerCase().includes('entrada'));
-  const tLE=entT.reduce((s,r)=>s+p(r.litros),0);const tLS=saiT.reduce((s,r)=>s+p(r.litros),0);
+  const tLE=entT.reduce((s,r)=>s+p(r.litros),0);const tLS=saiTanque.reduce((s,r)=>s+p(r.litros),0);
   const saldo=tLE-tLS;const custoSai=saiT.reduce((s,r)=>s+p(r.valor_total),0);
   const pm2=entT.length>0?entT.reduce((s,r)=>s+p(r.preco_litro),0)/entT.length:0;
 
@@ -856,7 +859,7 @@ function rFrotaAnal(){
   const dtI=document.getElementById('fFDI')?.value||'';
   const dtF=document.getElementById('fFDF')?.value||'';
 
-  let sai=ab.filter(r=>(r.tipo_mov||'').toLowerCase().includes('sa'));
+  let sai=ab.filter(r=>{const tm=(r.tipo_mov||'').toLowerCase();return tm.includes('sa')||tm.includes('externo')});
   if(selV)sai=sai.filter(r=>(r.placa||'').trim()===selV);
   if(dtI||dtF){
     const di=dtI?dtI.replace(/-/g,''):'00000000';
