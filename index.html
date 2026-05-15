@@ -566,8 +566,9 @@ function rEstoque(){
   const chopp=Object.entries(pm).filter(([,d])=>d.cat==='Chopp Barril');
   const posT=chopp.reduce((s,[,d])=>s+d.e-d.s,0);
   const tSKU=Object.keys(pm).length;
-  const tE=est.reduce((s,r)=>s+p(r.qtd_entrada),0);
-  const tS=est.reduce((s,r)=>s+p(r.qtd_saida),0);
+  const estSemTroca=est.filter(r=>!(r.tipo_mov||'').toLowerCase().includes('troca'));
+  const tE=estSemTroca.reduce((s,r)=>s+p(r.qtd_entrada),0);
+  const tS=estSemTroca.reduce((s,r)=>s+p(r.qtd_saida),0);
 
   // Giro: qtd vendida / estoque médio
   const tVendido=vendas.reduce((s,r)=>s+p(r.qtd),0);
