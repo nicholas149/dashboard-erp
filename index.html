@@ -381,15 +381,15 @@ input[type="date"].df:focus{border-color:var(--gold)}
   </div>
   <div class="sc a" id="t-visao">
     <div class="g2">
-      <div class="pn"><div class="pn-h">Pipeline de Status</div><div class="pg" id="gTSt"></div></div>
-      <div class="pn"><div class="pn-h">Tempo Médio por Etapa</div><div class="tw" id="tTTempo"></div></div>
+      <div class="pn"><div class="pn-h">Pipeline de Trocas</div><div class="pg" id="gTSt"></div></div>
+      <div class="pn"><div class="pn-h">Distribuição por Etapa</div><div class="tw" id="tTTempo"></div></div>
     </div>
     <div class="pn"><div class="pn-h">Trocas Recentes (últimos 30 dias)</div><div class="tw" id="tTRec"></div></div>
   </div>
   <div class="sc" id="t-lista">
     <div class="sb-f">
       <input class="si" placeholder="Buscar troca…" oninput="ft('tTAll',this.value,'cTAll')">
-      <select class="sf" id="fTSt" onchange="ftTrocaStatus()"><option value="">Todos Status</option><option value="pendente">Pendente</option><option value="enviado_fabrica">Na Fábrica</option><option value="pronto">Pronto</option><option value="entregue">Entregue</option><option value="nao_aprovado">Não Aprovado</option><option value="uso_interno">Uso Interno</option></select>
+      <select class="sf" id="fTSt" onchange="ftTrocaStatus()"><option value="">Todos</option><option value="triagem">Triagem</option><option value="fabrica">Fábrica</option><option value="problema_barril">Prob. Barril</option><option value="uso_interno">Uso Interno</option><option value="nao_autorizada">Não Autorizada</option><option value="entrega_pendente">Entrega Pend.</option><option value="efetuada">Efetuada</option></select>
       <button class="btn-csv" onclick="csvExport('tTAll','trocas')">⬇ CSV</button>
     </div>
     <div class="pn"><div class="pn-h">Todas as Trocas <span class="bdg" id="cTAll"></span></div><div class="tw tall" id="tTAll"></div></div>
@@ -404,7 +404,7 @@ input[type="date"].df:focus{border-color:var(--gold)}
   </div>
   <div class="sc" id="t-chart">
     <div class="g2">
-      <div class="pn"><div class="pn-h">Distribuição por Status</div><div class="cw sm"><canvas id="chTSt"></canvas></div></div>
+      <div class="pn"><div class="pn-h">Distribuição por Destino</div><div class="cw sm"><canvas id="chTSt"></canvas></div></div>
       <div class="pn"><div class="pn-h">Top 10 Clientes por Volume de Trocas</div><div class="cw"><canvas id="chTCli"></canvas></div></div>
     </div>
     <div class="g2">
@@ -1020,90 +1020,147 @@ function rTrocas(){
   const trocas=D.trocas||[];
   if(!trocas.length){
     document.getElementById('trocaAlerts').innerHTML=alertHTML('warn','🔄','Nenhuma troca registrada ainda.');
-    kpi('kT',[{l:'Total Trocas',v:'0',c:'or'},{l:'Pendentes',v:'0',c:'re'},{l:'Na Fábrica',v:'0',c:'bl'},{l:'Prontas',v:'0',c:'gr'},{l:'Finalizadas',v:'0',c:'pu'}]);
+    kpi('kT',[{l:'Total Trocas',v:'0',c:'or'},{l:'Triagem',v:'0',c:'or'},{l:'Fábrica',v:'0',c:'bl'},{l:'Entrega Pend.',v:'0',c:'gr'},{l:'Finalizadas',v:'0',c:'pu'}]);
     return;
   }
 
-  const stLabels={pendente:'Pendente',enviado_fabrica:'Na Fábrica',pronto:'Pronto',entregue:'Entregue',nao_aprovado:'Não Aprovado',uso_interno:'Uso Interno'};
-  const stCor={pendente:'or',enviado_fabrica:'bl',pronto:'gr',entregue:'pu',nao_aprovado:'re',uso_interno:'bl'};
+  // ── Helpers de classificação (nova estrutura: destino + etapa_fabrica + status_cliente) ──
+  const dstLabels={pendente:'Triagem',fabrica:'Fábrica',problema_barril:'Prob. Barril',uso_interno:'Uso Interno',nao_autorizada:'Não Autorizada'};
+  const efLabels={aguardando_envio:'Aguard. Envio',enviado:'Enviado',recebido:'Recebido'};
+  const scLabels={pendente:'Pendente',efetuada:'Efetuada'};
 
-  // Contagem por status
-  const byStatus={};trocas.forEach(t=>{const st=(t.status||'pendente').toLowerCase();byStatus[st]=(byStatus[st]||0)+1});
+  function trocaStatusLabel(t){
+    const dst=(t.destino||'pendente').toLowerCase();
+    const ef=(t.etapa_fabrica||'').toLowerCase();
+    const sc=(t.status_cliente||'pendente').toLowerCase();
+    if(dst==='pendente') return 'Triagem';
+    if(dst==='nao_autorizada') return 'Não Autorizada';
+    if(dst==='uso_interno') return 'Uso Interno';
+    var lb=dstLabels[dst]||dst;
+    if(ef) lb+=' · '+(efLabels[ef]||ef);
+    if(sc==='efetuada') lb+=' · Efetuada';
+    else lb+=' · Cliente Pend.';
+    return lb;
+  }
+
+  function trocaFilterKey(t){
+    const dst=(t.destino||'pendente').toLowerCase();
+    const ef=(t.etapa_fabrica||'').toLowerCase();
+    const sc=(t.status_cliente||'pendente').toLowerCase();
+    if(dst==='pendente') return 'triagem';
+    if(dst==='nao_autorizada') return 'nao_autorizada';
+    if(dst==='uso_interno') return 'uso_interno';
+    if(sc==='efetuada') return 'efetuada';
+    if(ef==='recebido'&&sc==='pendente') return 'entrega_pendente';
+    if(dst==='problema_barril') return 'problema_barril';
+    return 'fabrica';
+  }
+
+  // ── Contagens ──
   const total=trocas.length;
-  const pendentes=(byStatus.pendente||0)+(byStatus.enviado_fabrica||0)+(byStatus.pronto||0);
-  const finalizadas=(byStatus.entregue||0)+(byStatus.nao_aprovado||0)+(byStatus.uso_interno||0);
   const qtdTotal=trocas.reduce((s,t)=>s+p(t.qtd),0);
+  var cnt={triagem:0,fabrica:0,problema_barril:0,aguardando_envio:0,enviado:0,recebido:0,entrega_pendente:0,efetuada:0,uso_interno:0,nao_autorizada:0};
 
-  // Alertas
+  trocas.forEach(t=>{
+    const dst=(t.destino||'pendente').toLowerCase();
+    const ef=(t.etapa_fabrica||'').toLowerCase();
+    const sc=(t.status_cliente||'pendente').toLowerCase();
+    if(dst==='pendente'){cnt.triagem++;return}
+    if(dst==='nao_autorizada'){cnt.nao_autorizada++;return}
+    if(dst==='uso_interno'){cnt.uso_interno++;return}
+    if(dst==='problema_barril')cnt.problema_barril++;
+    else cnt.fabrica++;
+    if(ef==='aguardando_envio')cnt.aguardando_envio++;
+    else if(ef==='enviado')cnt.enviado++;
+    else if(ef==='recebido')cnt.recebido++;
+    if(sc==='efetuada')cnt.efetuada++;
+    else if(ef==='recebido')cnt.entrega_pendente++;
+  });
+
+  var emAndamento=cnt.triagem+cnt.aguardando_envio+cnt.enviado+cnt.entrega_pendente;
+  var finalizadas=cnt.efetuada+cnt.nao_autorizada+cnt.uso_interno;
+
+  // ── Alertas ──
   let alerts='';
-  if((byStatus.pendente||0)>3)alerts+=alertHTML('warn','⏳',`<b>${byStatus.pendente} trocas</b> aguardando envio à fábrica`);
-  if((byStatus.pronto||0)>0)alerts+=alertHTML('info','✅',`<b>${byStatus.pronto} trocas</b> prontas para entrega ao cliente`);
-  const naoAprov=byStatus.nao_aprovado||0;
-  if(naoAprov>0)alerts+=alertHTML('danger','✗',`<b>${naoAprov} trocas</b> não aprovadas pela fábrica`);
+  if(cnt.triagem>3)alerts+=alertHTML('warn','⏳',`<b>${cnt.triagem} trocas</b> aguardando triagem`);
+  if(cnt.entrega_pendente>0)alerts+=alertHTML('info','✅',`<b>${cnt.entrega_pendente} trocas</b> prontas para entrega ao cliente`);
+  if(cnt.nao_autorizada>0)alerts+=alertHTML('danger','✗',`<b>${cnt.nao_autorizada} trocas</b> não autorizadas`);
   document.getElementById('trocaAlerts').innerHTML=alerts;
 
-  // KPIs
+  // ── KPIs ──
   kpi('kT',[
     {l:'Total Trocas',v:fN(total),c:'or',s:fN(qtdTotal)+' unidades'},
-    {l:'Pendentes',v:fN(byStatus.pendente||0),c:'or'},
-    {l:'Na Fábrica',v:fN(byStatus.enviado_fabrica||0),c:'bl'},
-    {l:'Prontas p/ Entrega',v:fN(byStatus.pronto||0),c:'gr'},
-    {l:'Finalizadas',v:fN(finalizadas),c:'pu',s:(byStatus.entregue||0)+' entregues · '+(byStatus.uso_interno||0)+' uso interno'},
+    {l:'Triagem',v:fN(cnt.triagem),c:'or'},
+    {l:'Fábrica',v:fN(cnt.aguardando_envio+cnt.enviado),c:'bl',s:cnt.aguardando_envio+' aguard. · '+cnt.enviado+' enviado'},
+    {l:'Entrega Pend.',v:fN(cnt.entrega_pendente),c:'gr'},
+    {l:'Finalizadas',v:fN(finalizadas),c:'pu',s:cnt.efetuada+' efetuadas · '+cnt.uso_interno+' uso int. · '+cnt.nao_autorizada+' não aut.'},
   ]);
 
-  // ── Visão Geral: Pipeline cards ──
+  // ── Pipeline cards ──
   const gEl=document.getElementById('gTSt');
   if(gEl){
-    gEl.innerHTML=Object.entries(stLabels).map(([st,lb])=>{
-      const cnt=byStatus[st]||0;const qtd=trocas.filter(t=>(t.status||'')==st).reduce((s,t)=>s+p(t.qtd),0);
-      const corMap={pendente:'var(--orange)',enviado_fabrica:'var(--blue)',pronto:'var(--green)',entregue:'var(--purple)',nao_aprovado:'var(--red)',uso_interno:'var(--cyan)'};
-      const bgMap={pendente:'var(--orange-bg)',enviado_fabrica:'var(--blue-bg)',pronto:'var(--green-bg)',entregue:'var(--purple-bg)',nao_aprovado:'var(--red-bg)',uso_interno:'var(--blue-bg)'};
-      return`<div class="pc" style="border-left:3px solid ${corMap[st]||'var(--t4)'}"><div class="pc-n">${lb}</div><div class="pc-v" style="color:${corMap[st]||'var(--t2)'}">${cnt}</div><div class="pc-r"><span>Unidades</span><span class="v">${fN(qtd)}</span></div></div>`;
+    const pipe=[
+      {lb:'Triagem',cnt:cnt.triagem,cor:'var(--orange)'},
+      {lb:'Fábrica',cnt:cnt.fabrica+cnt.problema_barril,cor:'var(--blue)',sub:'Aguard: '+cnt.aguardando_envio+' · Enviado: '+cnt.enviado+' · Recebido: '+cnt.recebido},
+      {lb:'Prob. Barril',cnt:cnt.problema_barril,cor:'#d97706'},
+      {lb:'Entrega Pend.',cnt:cnt.entrega_pendente,cor:'var(--green)'},
+      {lb:'Efetuada',cnt:cnt.efetuada,cor:'var(--purple)'},
+      {lb:'Uso Interno',cnt:cnt.uso_interno,cor:'var(--cyan)'},
+      {lb:'Não Autorizada',cnt:cnt.nao_autorizada,cor:'var(--red)'},
+    ];
+    gEl.innerHTML=pipe.filter(x=>x.cnt>0).map(x=>{
+      const unid=trocas.filter(t=>trocaFilterKey(t)===x.lb.toLowerCase().replace(/[^a-z_]/g,'_')).reduce((s,t)=>s+p(t.qtd),0);
+      return`<div class="pc" style="border-left:3px solid ${x.cor}"><div class="pc-n">${x.lb}</div><div class="pc-v" style="color:${x.cor}">${x.cnt}</div>${x.sub?'<div class="pc-r" style="font-size:10px;color:var(--t4)">'+x.sub+'</div>':''}</div>`;
     }).join('');
   }
 
-  // ── Tempo médio por etapa ──
-  // Calcular a partir de timestamps se disponíveis
-  mt('tTTempo',[{l:'Etapa'},{l:'Trocas na Etapa',t:'n',f:'n'},{l:'Unidades na Etapa',t:'n',f:'n'}],
-    Object.entries(stLabels).filter(([st])=>byStatus[st]>0).map(([st,lb])=>{
-      const lista=trocas.filter(t=>(t.status||'')==st);
-      return[lb,lista.length,lista.reduce((s,t)=>s+p(t.qtd),0)];
-    })
-  );
+  // ── Distribuição por etapa (tabela) ──
+  const etapas=[
+    ['Triagem',cnt.triagem],['Aguard. Envio',cnt.aguardando_envio],['Enviado',cnt.enviado],
+    ['Recebido',cnt.recebido],['Entrega Pend.',cnt.entrega_pendente],['Efetuada',cnt.efetuada],
+    ['Uso Interno',cnt.uso_interno],['Não Autorizada',cnt.nao_autorizada],
+  ].filter(e=>e[1]>0);
+  mt('tTTempo',[{l:'Etapa'},{l:'Trocas',t:'n',f:'n'}],etapas);
 
   // ── Trocas recentes (últimos 30 dias) ──
   const now=new Date();const d30=new Date(now.getTime()-30*86400000);
   const recentes=trocas.filter(t=>{const dt=parseDateBR(t.data);return dt&&dt>=d30}).sort((a,b)=>dK(b.data).localeCompare(dK(a.data)));
-  mt('tTRec',[{l:'Data'},{l:'Produto'},{l:'Qtd',t:'n',f:'n'},{l:'Validade'},{l:'Cliente'},{l:'Status'}],
-    recentes.slice(0,30).map(t=>[t.data,t.produto||t.sku||'—',p(t.qtd),t.validade||t.motivo||'—',t.cliente||'—',stLabels[t.status]||t.status])
+  mt('tTRec',[{l:'Data'},{l:'Produto'},{l:'Qtd',t:'n',f:'n'},{l:'Validade'},{l:'Cliente'},{l:'Destino'},{l:'Etapa Fáb.'},{l:'Cliente Status'}],
+    recentes.slice(0,30).map(t=>[t.data,t.produto||t.sku||'—',p(t.qtd),t.validade||'—',t.cliente||'—',dstLabels[t.destino]||t.destino||'—',efLabels[t.etapa_fabrica]||t.etapa_fabrica||'—',scLabels[t.status_cliente]||t.status_cliente||'—'])
   );
 
   // ── Lista completa ──
   const sorted=trocas.slice().sort((a,b)=>dK(b.data).localeCompare(dK(a.data)));
-  mt('tTAll',[{l:'Data'},{l:'Produto'},{l:'SKU',mh:1},{l:'Qtd',t:'n',f:'n'},{l:'Validade'},{l:'Cliente'},{l:'Empresa',mh:1},{l:'Status'},{l:'Pedido Troca',mh:1},{l:'Registrado por',mh:1}],
-    sorted.map(t=>[t.data,t.produto||'—',t.sku||'—',p(t.qtd),t.validade||t.motivo||'—',t.cliente||'—',t.empresa||'—',stLabels[t.status]||t.status,t.pedido_troca||'—',t.registrado_por||'—'])
+  mt('tTAll',[{l:'Data'},{l:'Produto'},{l:'SKU',mh:1},{l:'Qtd',t:'n',f:'n'},{l:'Validade'},{l:'Cliente'},{l:'Empresa',mh:1},{l:'Destino'},{l:'Etapa Fáb.'},{l:'Status Cliente'},{l:'Pedido Troca',mh:1},{l:'Motivo',mh:1},{l:'Registrado por',mh:1}],
+    sorted.map(t=>[t.data,t.produto||'—',t.sku||'—',p(t.qtd),t.validade||'—',t.cliente||'—',t.empresa||'—',dstLabels[t.destino]||t.destino||'—',efLabels[t.etapa_fabrica]||t.etapa_fabrica||'—',scLabels[t.status_cliente]||t.status_cliente||'—',t.pedido_troca||'—',t.motivo_inicial||'—',t.registrado_por||'—'])
   );
   document.getElementById('cTAll').textContent=sorted.length+' registros';
 
   // ── Por cliente ──
-  const cliAgg={};trocas.forEach(t=>{const c=t.cliente||'Sem cliente';if(!cliAgg[c])cliAgg[c]={total:0,qtd:0,pendente:0,entregue:0,nao_aprovado:0};cliAgg[c].total++;cliAgg[c].qtd+=p(t.qtd);const st=(t.status||'');if(st==='pendente'||st==='enviado_fabrica'||st==='pronto')cliAgg[c].pendente++;else if(st==='entregue')cliAgg[c].entregue++;else if(st==='nao_aprovado')cliAgg[c].nao_aprovado++});
-  mt('tTCli',[{l:'Cliente'},{l:'Total Trocas',t:'n',f:'n'},{l:'Unidades',t:'n',f:'n'},{l:'Pendentes',t:'n',f:'n'},{l:'Entregues',t:'n',f:'n'},{l:'Não Aprovadas',t:'n',f:'n'}],
-    Object.entries(cliAgg).map(([c,d])=>[c,d.total,d.qtd,d.pendente,d.entregue,d.nao_aprovado]).sort((a,b)=>b[1]-a[1])
+  const cliAgg={};trocas.forEach(t=>{const c=t.cliente||'Sem cliente';if(!cliAgg[c])cliAgg[c]={total:0,qtd:0,em_andamento:0,efetuada:0,nao_autorizada:0};cliAgg[c].total++;cliAgg[c].qtd+=p(t.qtd);const fk=trocaFilterKey(t);if(fk==='efetuada')cliAgg[c].efetuada++;else if(fk==='nao_autorizada')cliAgg[c].nao_autorizada++;else if(fk!=='uso_interno')cliAgg[c].em_andamento++});
+  mt('tTCli',[{l:'Cliente'},{l:'Total Trocas',t:'n',f:'n'},{l:'Unidades',t:'n',f:'n'},{l:'Em Andamento',t:'n',f:'n'},{l:'Efetuadas',t:'n',f:'n'},{l:'Não Autorizadas',t:'n',f:'n'}],
+    Object.entries(cliAgg).map(([c,d])=>[c,d.total,d.qtd,d.em_andamento,d.efetuada,d.nao_autorizada]).sort((a,b)=>b[1]-a[1])
   );
   document.getElementById('cTCli').textContent=Object.keys(cliAgg).length+' clientes';
 
   // ── Por produto ──
-  const prodAgg={};trocas.forEach(t=>{const pr=t.produto||t.sku||'N/A';if(!prodAgg[pr])prodAgg[pr]={total:0,qtd:0,pendente:0,entregue:0};prodAgg[pr].total++;prodAgg[pr].qtd+=p(t.qtd);const st=(t.status||'');if(st==='pendente'||st==='enviado_fabrica'||st==='pronto')prodAgg[pr].pendente++;else if(st==='entregue')prodAgg[pr].entregue++});
-  mt('tTProd',[{l:'Produto'},{l:'Total Trocas',t:'n',f:'n'},{l:'Unidades',t:'n',f:'n'},{l:'Pendentes',t:'n',f:'n'},{l:'Entregues',t:'n',f:'n'}],
-    Object.entries(prodAgg).map(([pr,d])=>[pr,d.total,d.qtd,d.pendente,d.entregue]).sort((a,b)=>b[2]-a[2])
+  const prodAgg={};trocas.forEach(t=>{const pr=t.produto||t.sku||'N/A';if(!prodAgg[pr])prodAgg[pr]={total:0,qtd:0,em_andamento:0,efetuada:0};prodAgg[pr].total++;prodAgg[pr].qtd+=p(t.qtd);const fk=trocaFilterKey(t);if(fk==='efetuada')prodAgg[pr].efetuada++;else if(fk!=='nao_autorizada'&&fk!=='uso_interno')prodAgg[pr].em_andamento++});
+  mt('tTProd',[{l:'Produto'},{l:'Total Trocas',t:'n',f:'n'},{l:'Unidades',t:'n',f:'n'},{l:'Em Andamento',t:'n',f:'n'},{l:'Efetuadas',t:'n',f:'n'}],
+    Object.entries(prodAgg).map(([pr,d])=>[pr,d.total,d.qtd,d.em_andamento,d.efetuada]).sort((a,b)=>b[2]-a[2])
   );
   document.getElementById('cTProd').textContent=Object.keys(prodAgg).length+' produtos';
 
   // ── Charts ──
-  // Status donut
-  const stEntries=Object.entries(stLabels).filter(([st])=>(byStatus[st]||0)>0);
-  const stColors={pendente:'#d97706',enviado_fabrica:'#2563eb',pronto:'#059669',entregue:'#7c3aed',nao_aprovado:'#dc2626',uso_interno:'#0891b2'};
-  mk('chTSt',{type:'doughnut',data:{labels:stEntries.map(([,lb])=>lb),datasets:[{data:stEntries.map(([st])=>byStatus[st]||0),backgroundColor:stEntries.map(([st])=>stColors[st]||'#999'),borderWidth:0}]},options:{plugins:{legend:{position:'right'}}}});
+  // Destino donut
+  const dstEntries=[
+    {k:'triagem',lb:'Triagem',v:cnt.triagem,c:'#d97706'},
+    {k:'fabrica',lb:'Fábrica',v:cnt.fabrica,c:'#7c3aed'},
+    {k:'problema_barril',lb:'Prob. Barril',v:cnt.problema_barril,c:'#d97706'},
+    {k:'uso_interno',lb:'Uso Interno',v:cnt.uso_interno,c:'#0891b2'},
+    {k:'nao_autorizada',lb:'Não Autorizada',v:cnt.nao_autorizada,c:'#dc2626'},
+    {k:'efetuada',lb:'Efetuada',v:cnt.efetuada,c:'#059669'},
+  ].filter(x=>x.v>0);
+  mk('chTSt',{type:'doughnut',data:{labels:dstEntries.map(x=>x.lb),datasets:[{data:dstEntries.map(x=>x.v),backgroundColor:dstEntries.map(x=>x.c),borderWidth:0}]},options:{plugins:{legend:{position:'right'}}}});
 
   // Top 10 clientes
   const topCli=Object.entries(cliAgg).sort((a,b)=>b[1].qtd-a[1].qtd).slice(0,10);
@@ -1122,12 +1179,22 @@ function rTrocas(){
 function ftTrocaStatus(){
   const st=document.getElementById('fTSt').value.toLowerCase();
   const w=document.getElementById('tTAll');if(!w)return;
-  const stLabels={pendente:'Pendente',enviado_fabrica:'Na Fábrica',pronto:'Pronto',entregue:'Entregue',nao_aprovado:'Não Aprovado',uso_interno:'Uso Interno'};
+  const dstLabels={pendente:'Triagem',fabrica:'Fábrica',problema_barril:'Prob. Barril',uso_interno:'Uso Interno',nao_autorizada:'Não Autorizada'};
+  const scLabels={pendente:'Pendente',efetuada:'Efetuada'};
   let vis=0;
   w.querySelectorAll('tbody tr').forEach(tr=>{
     if(!st){tr.style.display='';vis++;return}
-    const stCell=tr.children[7];const txt=(stCell?.textContent||'').trim();
-    const ok=txt===(stLabels[st]||st);
+    // col 7=Destino, col 8=Etapa Fáb, col 9=Status Cliente
+    const dstTxt=(tr.children[7]?.textContent||'').trim();
+    const scTxt=(tr.children[9]?.textContent||'').trim();
+    let ok=false;
+    if(st==='triagem') ok=dstTxt==='Triagem';
+    else if(st==='fabrica') ok=dstTxt==='Fábrica';
+    else if(st==='problema_barril') ok=dstTxt==='Prob. Barril';
+    else if(st==='uso_interno') ok=dstTxt==='Uso Interno';
+    else if(st==='nao_autorizada') ok=dstTxt==='Não Autorizada';
+    else if(st==='entrega_pendente') ok=scTxt==='Pendente'&&dstTxt!=='Triagem';
+    else if(st==='efetuada') ok=scTxt==='Efetuada';
     tr.style.display=ok?'':'none';if(ok)vis++;
   });
   document.getElementById('cTAll').textContent=vis+' registros';
