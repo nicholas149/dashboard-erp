@@ -661,7 +661,9 @@ function rRet(){
   const bTerc=bMov.reduce((s,r)=>s+p(r.qtd_saida_CD)-p(r.qtd_entrada_CD),0);
   const totRet=bMov.reduce((s,r)=>s+p(r.qtd_entrada_CD),0);
   const totSai=bMov.reduce((s,r)=>s+p(r.qtd_saida_CD),0);
-  const bCD=siCD+totRet-totSai;
+  // Ajustes internos (sem terceiro, não SI) — ex: Ajuste +, retorno troca, etc.
+  const bAjuste=barris.filter(r=>!isSI(r)&&(r.terceiro||'').trim()==='').reduce((s,r)=>s+p(r.qtd_entrada_CD)-p(r.qtd_saida_CD),0);
+  const bCD=siCD+totRet-totSai+bAjuste;
   const taxa=totSai>0?totRet/totSai*100:0;
   const choppInBarrels=Object.values(estBySize).reduce((s,v)=>s+v,0);
   const bDisp=bCD-choppInBarrels;
@@ -669,7 +671,8 @@ function rRet(){
   const chopSI=byType.Chopeira.filter(isSI).reduce((s,r)=>s+p(r.qtd_entrada_CD),0);
   const chopMov=byType.Chopeira.filter(r=>!isSI(r)&&(r.terceiro||'').trim()!=='');
   const chopTerc=chopMov.reduce((s,r)=>s+p(r.qtd_saida_CD)-p(r.qtd_entrada_CD),0);
-  const chopCD=chopSI+chopMov.reduce((s,r)=>s+p(r.qtd_entrada_CD),0)-chopMov.reduce((s,r)=>s+p(r.qtd_saida_CD),0);
+  const chopAjuste=byType.Chopeira.filter(r=>!isSI(r)&&(r.terceiro||'').trim()==='').reduce((s,r)=>s+p(r.qtd_entrada_CD)-p(r.qtd_saida_CD),0);
+  const chopCD=chopSI+chopMov.reduce((s,r)=>s+p(r.qtd_entrada_CD),0)-chopMov.reduce((s,r)=>s+p(r.qtd_saida_CD),0)+chopAjuste;
 
   // Alertas
   let alerts='';
