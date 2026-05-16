@@ -232,6 +232,7 @@ input[type="date"].df:focus{border-color:var(--gold)}
   <div class="pn"><div class="pn-h">Produtos Principais — Chopp Barril</div><div class="pg" id="gE"></div></div>
   <div class="st">
     <div class="stb a" data-sub="e-pos">Posição Atual</div>
+    <div class="stb" data-sub="e-extrato">Extrato</div>
     <div class="stb" data-sub="e-mov">Movimentações</div>
     <div class="stb" data-sub="e-cat">Por Categoria</div>
     <div class="stb" data-sub="e-comp">Compostos</div>
@@ -240,6 +241,13 @@ input[type="date"].df:focus{border-color:var(--gold)}
   <div class="sc a" id="e-pos">
     <div class="sb-f"><input class="si" placeholder="Filtrar produto…" oninput="ft('tEP',this.value,'cEP')"><select class="sf" id="fEC" onchange="ft('tEP',this.closest('.sc').querySelector('.si').value,'cEP')"><option value="">Todas Categorias</option></select><button class="btn-csv" onclick="csvExport('tEP','estoque_posicao')">⬇ CSV</button></div>
     <div class="pn"><div class="pn-h">Posição Completa <span class="bdg" id="cEP"></span></div><div class="tw tall" id="tEP"></div></div>
+  </div>
+  <div class="sc" id="e-extrato">
+    <div class="sb-f">
+      <select class="sf" id="fExtProd" onchange="renderExtrato()" style="min-width:200px"><option value="">Selecione o produto...</option></select>
+      <button class="btn-csv" onclick="csvExport('tEExt','extrato_estoque')">⬇ CSV</button>
+    </div>
+    <div class="pn"><div class="pn-h">Extrato de Movimentação <span class="bdg" id="cEExt"></span></div><div class="tw tall" id="tEExt"></div></div>
   </div>
   <div class="sc" id="e-mov">
     <div class="sb-f"><input class="si" placeholder="Buscar movimentação…" oninput="ft('tEM',this.value,'cEM')"><button class="btn-csv" onclick="csvExport('tEM','estoque_mov')">⬇ CSV</button></div>
@@ -596,6 +604,11 @@ function rEstoque(){
   const cats=[...new Set(est.map(r=>(r.categoria||'').trim()).filter(Boolean))];
   document.getElementById('fEC').innerHTML='<option value="">Todas Categorias</option>'+cats.map(c=>`<option value="${c}">${c}</option>`).join('');
 
+  // Extrato: popular select com produtos Chopp Barril
+  const prodExtrato=[...new Set(est.filter(r=>(r.categoria||'').trim()==='Chopp Barril').map(r=>r.produto||r.sku||''))].filter(Boolean).sort();
+  const selExt=document.getElementById('fExtProd');
+  if(selExt){selExt.innerHTML='<option value="">Selecione o produto...</option>'+prodExtrato.map(pr=>`<option value="${pr}">${pr}</option>`).join('')};
+
   // Posição completa — foco em quantidades
   mt('tEP',[{l:'SKU',mh:1},{l:'Produto'},{l:'Categoria',mh:1},{l:'Saldo',t:'n',f:'n',color:true},{l:'Entradas',t:'n',f:'n'},{l:'Saídas',t:'n',f:'n'}],
     Object.entries(pm).map(([pr,d])=>[d.sku,pr,d.cat,d.e-d.s,d.e,d.s]).sort((a,b)=>b[3]-a[3]));
@@ -646,6 +659,55 @@ function rEstoque(){
   mk('chCob',{type:'bar',data:{labels:cobChart.map(r=>r[0].length>18?r[0].slice(0,18)+'…':r[0]),datasets:[{label:'Dias',data:cobChart.map(r=>r[4]),backgroundColor:cobChart.map(r=>r[4]<=3?'#dc2626':r[4]<=7?'#d97706':'#059669'),borderRadius:3,barPercentage:.7}]},options:{indexAxis:'y',scales:{x:{title:{display:true,text:'Dias de Cobertura'}},y:{}},plugins:{legend:{display:false}}}});
 }
 
+/* ──── EXTRATO DE ESTOQUE ──── */
+function renderExtrato(){
+  const sel=document.getElementById('fExtProd');
+  const prod=sel?sel.value:'';
+  const cntEl=document.getElementById('cEExt');
+  if(!prod){
+    document.getElementById('tEExt').innerHTML='<p style="text-align:center;color:var(--t3);padding:24px">Selecione um produto para visualizar o extrato.</p>';
+    if(cntEl)cntEl.textContent='';
+    return;
+  }
+  const est=D.estoque||[];
+  const vendas=D.vendas||[];
+  // Map pedido → cliente para referência
+  const pedCli={};vendas.forEach(v=>{if(v.pedido&&v.cliente)pedCli[v.pedido.trim()]=v.cliente});
+
+  // Filtrar movimentações do produto selecionado (excluir trocas)
+  const movs=est.filter(r=>{
+    const pr=r.produto||r.sku||'';
+    const tm=(r.tipo_mov||'').toLowerCase();
+    return pr===prod&&!tm.includes('troca');
+  });
+
+  // Ordenar cronologicamente (mais antigo primeiro)
+  movs.sort((a,b)=>dK(a.data).localeCompare(dK(b.data)));
+
+  // Calcular saldo acumulado linha a linha
+  let saldo=0;
+  const rows=movs.map(r=>{
+    const ent=p(r.qtd_entrada);
+    const sai=p(r.qtd_saida);
+    saldo+=ent-sai;
+    const ref=(r.ref||'').trim();
+    const cli=pedCli[ref]||'';
+    const refLabel=ref?(cli?ref+' — '+cli:ref):'—';
+    return[r.data||'—',r.tipo_mov||'—',refLabel,ent,sai,saldo];
+  });
+
+  mt('tEExt',[
+    {l:'Data'},
+    {l:'Tipo Mov.'},
+    {l:'Pedido / Referência'},
+    {l:'Entrada',t:'n',f:'n'},
+    {l:'Saída',t:'n',f:'n'},
+    {l:'Saldo Acumulado',t:'n',f:'n',color:true}
+  ],rows);
+
+  if(cntEl)cntEl.textContent=rows.length+' movimentações';
+}
+
 /* ──── RETORNÁVEIS ──── */
 function rRet(){
   const bl=D.backlog||[],est=D.estoque||[];
@@ -662,7 +724,6 @@ function rRet(){
   const bTerc=bMov.reduce((s,r)=>s+p(r.qtd_saida_CD)-p(r.qtd_entrada_CD),0);
   const totRet=bMov.reduce((s,r)=>s+p(r.qtd_entrada_CD),0);
   const totSai=bMov.reduce((s,r)=>s+p(r.qtd_saida_CD),0);
-  // Ajustes internos (sem terceiro, não SI) — ex: Ajuste +, retorno troca, etc.
   const bAjuste=barris.filter(r=>!isSI(r)&&(r.terceiro||'').trim()==='').reduce((s,r)=>s+p(r.qtd_entrada_CD)-p(r.qtd_saida_CD),0);
   const bCD=siCD+totRet-totSai+bAjuste;
   const taxa=totSai>0?totRet/totSai*100:0;
