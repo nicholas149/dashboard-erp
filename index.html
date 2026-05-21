@@ -276,6 +276,7 @@ input[type="date"].df:focus{border-color:var(--gold)}
     <div class="stb" data-sub="r-chop">Chopeira</div>
     <div class="stb" data-sub="r-outros">Outros</div>
     <div class="stb" data-sub="r-taxas">Taxa Retorno</div>
+    <div class="stb" data-sub="r-extrato">Extrato</div>
   </div>
   <div class="sc a" id="r-barril">
     <div class="pn"><div class="pn-h">Posição por Tipo de Barril</div><div class="pg" id="gRB"></div></div>
@@ -322,6 +323,14 @@ input[type="date"].df:focus{border-color:var(--gold)}
       <div class="pn"><div class="pn-h">Clientes com Menor Taxa de Retorno</div><div class="cw"><canvas id="chRTaxa"></canvas></div></div>
       <div class="pn"><div class="pn-h">Distribuição de Status</div><div class="cw sm"><canvas id="chRStatus"></canvas></div></div>
     </div>
+  </div>
+  <div class="sc" id="r-extrato">
+    <div class="sb-f">
+      <select class="sf" id="fRetExtProd" onchange="renderExtratoRet()" style="min-width:200px"><option value="">Todos os produtos</option></select>
+      <input class="si" id="fRetExtCli" placeholder="Buscar cliente…" oninput="renderExtratoRet()" style="min-width:180px">
+      <button class="btn-csv" onclick="csvExport('tRExt','extrato_retornaveis')">⬇ CSV</button>
+    </div>
+    <div class="pn"><div class="pn-h">Extrato de Movimentação — Retornáveis <span class="bdg" id="cRExt"></span></div><div class="tw tall" id="tRExt"></div></div>
   </div>
 </section>
 
@@ -790,6 +799,11 @@ function rRet(){
 
   // Taxa de Retorno
   rRetTaxas(bMov);
+
+  // Extrato: popular select com todos os produtos retornáveis
+  const prodRet=[...new Set(bl.map(r=>(r.produto||'').trim()).filter(Boolean))].sort();
+  const selRetExt=document.getElementById('fRetExtProd');
+  if(selRetExt){selRetExt.innerHTML='<option value="">Todos os produtos</option>'+prodRet.map(pr=>`<option value="${pr}">${pr}</option>`).join('')}
 }
 
 function rRetSubCD(items,gridId,tblId,cntId,isSI){
@@ -805,6 +819,58 @@ function rRetSubCD(items,gridId,tblId,cntId,isSI){
   mt(tblId,[{l:'Terceiro'},{l:'Tipo Op.'},{l:'Produto'},{l:'Saídas CD',t:'n',f:'n'},{l:'Entradas CD',t:'n',f:'n'},{l:'Saldo',t:'n',f:'n',color:true}],
     Object.values(tM).map(d=>[d.terc,gTT(d.id),d.prod,d.s,d.e,d.s-d.e]).sort((a,b)=>b[5]-a[5]));
   if(cntId)document.getElementById(cntId).textContent=Object.keys(tM).length+' registros';
+}
+
+/* ──── EXTRATO DE RETORNÁVEIS ──── */
+function renderExtratoRet(){
+  const selProd=document.getElementById('fRetExtProd');
+  const inpCli=document.getElementById('fRetExtCli');
+  const prod=selProd?selProd.value:'';
+  const cliBusca=(inpCli?inpCli.value:'').toLowerCase().trim();
+  const cntEl=document.getElementById('cRExt');
+
+  const bl=D.backlog||[];
+  const isSI=r=>(r.tipo_mov||'').trim()==='Saldo Inicial';
+
+  // Filtrar por produto (se selecionado) e por cliente (se digitado)
+  let movs=bl.filter(r=>{
+    if(prod&&(r.produto||'').trim()!==prod)return false;
+    if(cliBusca&&!(r.terceiro||'').toLowerCase().includes(cliBusca))return false;
+    return true;
+  });
+
+  if(!movs.length){
+    document.getElementById('tRExt').innerHTML='<p style="text-align:center;color:var(--t3);padding:24px">Nenhuma movimentação encontrada para os filtros selecionados.</p>';
+    if(cntEl)cntEl.textContent='0 movimentações';
+    return;
+  }
+
+  // Ordenar cronologicamente (mais antigo primeiro)
+  movs.sort((a,b)=>dK(a.data).localeCompare(dK(b.data)));
+
+  // Calcular saldo acumulado linha a linha (entrada_CD - saída_CD)
+  let saldo=0;
+  const rows=movs.map(r=>{
+    const ent=p(r.qtd_entrada_CD);
+    const sai=p(r.qtd_saida_CD);
+    saldo+=ent-sai;
+    const tipo=(r.tipo_retornavel||'').trim();
+    const tipoMov=isSI(r)?'Saldo Inicial':(r.tipo_mov||'—');
+    return[r.data||'—',r.produto||'—',tipo,r.terceiro||'(interno)',tipoMov,ent,sai,saldo];
+  });
+
+  mt('tRExt',[
+    {l:'Data'},
+    {l:'Produto'},
+    {l:'Tipo',mh:1},
+    {l:'Cliente / Terceiro'},
+    {l:'Tipo Mov.'},
+    {l:'Entrada CD',t:'n',f:'n'},
+    {l:'Saída CD',t:'n',f:'n'},
+    {l:'Saldo Acumulado',t:'n',f:'n',color:true}
+  ],rows);
+
+  if(cntEl)cntEl.textContent=rows.length+' movimentações';
 }
 
 /* ── Taxa de Retorno por Cliente (3 semanas) ── */
